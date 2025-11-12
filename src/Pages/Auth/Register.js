@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Register.css';
+import API_BASE_URL from '../../api'; // Import API base URL
 
 const Register = () => {
   const navigate = useNavigate();
@@ -111,41 +113,40 @@ const Register = () => {
     const { fullName, idNumber, birthdate, password, confirmPassword } = formData;
 
     if (!fullName || !idNumber || !birthdate || !password || !confirmPassword) {
-      alert('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
 
     if (!validateIDNumber(idNumber)) {
-      alert('Please enter a valid ID number in format: TUPT-XX-XXXX');
+      toast.error('Please enter a valid ID number in format: TUPT-XX-XXXX');
       return;
     }
 
     const age = calculateAge(birthdate);
     if (age < 16) {
-      alert('You must be at least 16 years old to register');
+      toast.error('You must be at least 16 years old to register');
       return;
     }
 
     if (age > 100) {
-      alert('Please enter a valid birthdate');
+      toast.error('Please enter a valid birthdate');
       return;
     }
 
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      alert('Password must be at least 6 characters long');
+      toast.error('Password must be at least 6 characters long');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // TODO: Replace with your actual API endpoint
-      const response = await fetch(`/api/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -161,16 +162,16 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message || 'Account created successfully!');
+        toast.success(data.message || 'Account created successfully!');
         setTimeout(() => {
           navigate('/login');
         }, 1500);
       } else {
-        alert(data.message || 'Registration failed');
+        toast.error(data.message || 'Registration failed');
       }
     } catch (error) {
       console.error('Registration error:', error);
-      alert('Cannot connect to server. Please try again.');
+      toast.error('Cannot connect to server. Please try again.');
     } finally {
       setIsLoading(false);
     }

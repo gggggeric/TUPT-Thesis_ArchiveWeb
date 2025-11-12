@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Login.css';
-import tupLogo from '../../assets/tup-logo.png'; // Added import
+import tupLogo from '../../assets/tup-logo.png';
+import API_BASE_URL from '../../api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -43,20 +45,19 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!idNumber || !password) {
-      alert('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
 
     if (!validateIDNumber(idNumber)) {
-      alert('Please enter a valid ID number in format: TUPT-XX-XXXX');
+      toast.error('Please enter a valid ID number in format: TUPT-XX-XXXX');
       return;
     }
     
     setIsLoading(true);
 
     try {
-      // TODO: Replace with your actual API endpoint
-      const response = await fetch(`/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,15 +83,15 @@ const Login = () => {
         
         localStorage.setItem('userData', JSON.stringify(userData));
         
-        alert(data.message || 'Logged in successfully!');
+        toast.success(data.message || 'Logged in successfully!');
         console.log('User data stored:', userData);
         navigate('/dashboard');
       } else {
-        alert(data.message || 'Login failed');
+        toast.error(data.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('Cannot connect to server. Please try again.');
+      toast.error('Cannot connect to server. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +117,7 @@ const Login = () => {
             <div className="login-header-section">
               <div className="login-logo-container">
                 <img 
-                  src={tupLogo} // Updated to use imported variable
+                  src={tupLogo}
                   alt="TUP Logo"
                   className="login-logo-image"
                 />
