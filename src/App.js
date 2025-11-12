@@ -7,7 +7,7 @@ import Landing from './Pages/Landing';
 import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
 import Home from './Pages/Home';
-
+import MyDocuments from './Pages/Thesis/MyDocuments';
 function App() {
   return (
     <Router>
@@ -21,7 +21,7 @@ function App() {
             <Route path="/dashboard" element={<Home />} />
             
             {/* Add routes for hamburger menu navigation */}
-            <Route path="/documents" element={<Home />} />
+            <Route path="/documents" element={<MyDocuments />} />
             <Route path="/analysis" element={<Home />} />
             <Route path="/library" element={<Home />} />
             <Route path="/settings" element={<Home />} />
