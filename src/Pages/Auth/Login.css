@@ -264,3 +264,69 @@
     width: 100%;
   }
 }
+
+/* Add these styles to your existing Login.css */
+
+.login-input-icon {
+  margin-right: 10px;
+  color: #6b7280;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.login-eye-icon {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.login-eye-icon:hover {
+  color: #374151;
+}
+
+.login-clear-icon {
+  font-size: 16px;
+  color: #c7242c;
+}
+
+.login-arrow-icon {
+  font-size: 16px;
+  color: white;
+}
+
+.login-signup-link {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #c7242c;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-signup-link:hover {
+  color: #991b1b;
+  text-decoration: underline;
+}
+
+/* Ensure the input wrapper has proper positioning */
+.login-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 0 16px;
+  position: relative;
+}
+
+/* Rest of your existing CSS remains the same */

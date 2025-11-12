@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { 
+  FaUser, 
+  FaLock, 
+  FaEye, 
+  FaEyeSlash, 
+  FaIdCard, 
+  FaCalendarAlt,
+  FaTimes, 
+  FaArrowRight,
+  FaUserPlus,
+  FaSignInAlt
+} from 'react-icons/fa';
 import './Register.css';
-import API_BASE_URL from '../../api'; // Import API base URL
+import API_BASE_URL from '../../api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -202,7 +214,7 @@ const Register = () => {
             {/* Header Section */}
             <div className="register-header-section">
               <div className="register-logo-container">
-                <span className="register-person-icon">👤</span>
+                <FaUserPlus className="register-person-icon" />
               </div>
               <h1 className="register-welcome-title">Create Account</h1>
               <p className="register-welcome-subtitle">Join our research community</p>
@@ -214,7 +226,7 @@ const Register = () => {
               <div className="register-input-container">
                 <label className="register-label">Full Name</label>
                 <div className="register-input-wrapper">
-                  <span className="register-input-icon">👤</span>
+                  <FaUser className="register-input-icon" />
                   <input
                     type="text"
                     className="register-input"
@@ -230,7 +242,7 @@ const Register = () => {
               <div className="register-input-container">
                 <label className="register-label">ID Number</label>
                 <div className="register-input-wrapper">
-                  <span className="register-input-icon">🎫</span>
+                  <FaIdCard className="register-input-icon" />
                   <input
                     type="text"
                     className="register-input"
@@ -248,7 +260,7 @@ const Register = () => {
               <div className="register-input-container">
                 <label className="register-label">Birthdate</label>
                 <div className="register-input-wrapper">
-                  <span className="register-input-icon">📅</span>
+                  <FaCalendarAlt className="register-input-icon" />
                   <input
                     type="date"
                     className="register-input"
@@ -269,7 +281,7 @@ const Register = () => {
               <div className="register-input-container">
                 <label className="register-label">Password</label>
                 <div className="register-input-wrapper">
-                  <span className="register-input-icon">🔒</span>
+                  <FaLock className="register-input-icon" />
                   <input
                     type={showPassword ? "text" : "password"}
                     className="register-input register-password-input"
@@ -283,7 +295,7 @@ const Register = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     type="button"
                   >
-                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
                 
@@ -312,7 +324,7 @@ const Register = () => {
               <div className="register-input-container">
                 <label className="register-label">Confirm Password</label>
                 <div className="register-input-wrapper">
-                  <span className="register-input-icon">🔒</span>
+                  <FaLock className="register-input-icon" />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     className="register-input register-password-input"
@@ -326,7 +338,7 @@ const Register = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     type="button"
                   >
-                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
               </div>
@@ -339,7 +351,7 @@ const Register = () => {
                   disabled={isLoading}
                   type="button"
                 >
-                  <span className="register-clear-icon">❌</span>
+                  <FaTimes className="register-clear-icon" />
                   <span className="register-clear-button-text">Clear</span>
                 </button>
                 
@@ -354,7 +366,7 @@ const Register = () => {
                   ) : (
                     <>
                       <span className="register-button-text">Register</span>
-                      <span className="register-arrow-icon">→</span>
+                      <FaArrowRight className="register-arrow-icon" />
                     </>
                   )}
                 </button>
@@ -364,6 +376,7 @@ const Register = () => {
               <div className="register-signin-container">
                 <span className="register-signin-text">Already have an account? </span>
                 <Link to="/login" className="register-signin-link">
+                  <FaSignInAlt style={{ marginRight: '8px' }} />
                   Sign in
                 </Link>
               </div>

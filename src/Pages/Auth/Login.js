@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { 
+  FaUser, 
+  FaLock, 
+  FaEye, 
+  FaEyeSlash, 
+  FaIdCard, 
+  FaTimes, 
+  FaArrowRight,
+  FaSignInAlt 
+} from 'react-icons/fa';
 import './Login.css';
 import tupLogo from '../../assets/tup-logo.png';
 import API_BASE_URL from '../../api';
@@ -132,7 +142,7 @@ const Login = () => {
               <div className="login-input-container">
                 <label className="login-label">ID Number</label>
                 <div className="login-input-wrapper">
-                  <span className="login-input-icon">🎫</span>
+                  <FaIdCard className="login-input-icon" />
                   <input
                     type="text"
                     className="login-input"
@@ -150,7 +160,7 @@ const Login = () => {
               <div className="login-input-container">
                 <label className="login-label">Password</label>
                 <div className="login-input-wrapper">
-                  <span className="login-input-icon">🔒</span>
+                  <FaLock className="login-input-icon" />
                   <input
                     type={showPassword ? "text" : "password"}
                     className="login-input login-password-input"
@@ -164,7 +174,7 @@ const Login = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     type="button"
                   >
-                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
               </div>
@@ -182,7 +192,7 @@ const Login = () => {
                   disabled={isLoading}
                   type="button"
                 >
-                  <span className="login-clear-icon">❌</span>
+                  <FaTimes className="login-clear-icon" />
                   <span className="login-clear-button-text">Clear</span>
                 </button>
                 
@@ -197,7 +207,7 @@ const Login = () => {
                   ) : (
                     <>
                       <span className="login-button-text">Login</span>
-                      <span className="login-arrow-icon">→</span>
+                      <FaArrowRight className="login-arrow-icon" />
                     </>
                   )}
                 </button>
@@ -207,6 +217,7 @@ const Login = () => {
               <div className="login-signup-container">
                 <span className="login-signup-text">Don't have an account? </span>
                 <Link to="/register" className="login-signup-link">
+                  <FaSignInAlt style={{ marginRight: '8px' }} />
                   Sign up
                 </Link>
               </div>

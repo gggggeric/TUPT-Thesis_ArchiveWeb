@@ -1,15 +1,29 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  FaFileAlt, 
+  FaLightbulb, 
+  FaChartLine, 
+  FaArrowRight, 
+  FaLock, 
+  FaShieldAlt,
+  FaUserPlus,
+  FaSignInAlt
+} from 'react-icons/fa';
 import './Landing.css';
 import tupLogo from '../assets/tup-logo.png'; 
+
 const LandingPage = () => {
+  const navigate = useNavigate();
+
   const handleGetStarted = () => {
-    // Navigate to register page
-    window.location.href = '/register';
+    // Navigate to register page using React Router
+    navigate('/register');
   };
 
   const handleSignIn = () => {
-    // Navigate to login page
-    window.location.href = '/login';
+    // Navigate to login page using React Router
+    navigate('/login');
   };
 
   return (
@@ -20,7 +34,7 @@ const LandingPage = () => {
           <div className="header-section">
             <div className="logo-container">
               <img 
-                src={tupLogo} // Fixed: using imported variable
+                src={tupLogo}
                 alt="TUP Logo"
                 className="logo-image"
               />
@@ -37,7 +51,7 @@ const LandingPage = () => {
             <div className="feature-list">
               <div className="feature-item">
                 <div className="feature-icon-container">
-                  <span className="icon">📄</span>
+                  <FaFileAlt className="feature-icon" />
                 </div>
                 <div className="feature-text-container">
                   <h3 className="feature-title">Analyze Thesis Content</h3>
@@ -49,7 +63,7 @@ const LandingPage = () => {
 
               <div className="feature-item">
                 <div className="feature-icon-container">
-                  <span className="icon">💡</span>
+                  <FaLightbulb className="feature-icon" />
                 </div>
                 <div className="feature-text-container">
                   <h3 className="feature-title">Get Recommendations</h3>
@@ -61,7 +75,7 @@ const LandingPage = () => {
 
               <div className="feature-item">
                 <div className="feature-icon-container">
-                  <span className="icon">📊</span>
+                  <FaChartLine className="feature-icon" />
                 </div>
                 <div className="feature-text-container">
                   <h3 className="feature-title">Track Your Progress</h3>
@@ -79,8 +93,9 @@ const LandingPage = () => {
                 onClick={handleGetStarted}
               >
                 <div className="primary-gradient">
+                  <FaUserPlus className="primary-button-icon" />
                   <span className="primary-button-text">Get Started</span>
-                  <span className="icon-arrow">→</span>
+                  <FaArrowRight className="icon-arrow" />
                 </div>
               </button>
 
@@ -88,14 +103,14 @@ const LandingPage = () => {
                 className="btn-secondary"
                 onClick={handleSignIn}
               >
-                <span className="icon-login">🔐</span>
+                <FaSignInAlt className="icon-login" />
                 <span className="secondary-button-text">Sign In</span>
               </button>
             </div>
 
             {/* Footer Text */}
             <div className="footer-container">
-              <span className="icon-shield">🛡️</span>
+              <FaShieldAlt className="icon-shield" />
               <p className="footer-text">
                 Secure and reliable thesis management system
               </p>
