@@ -1,0 +1,304 @@
+.register-gradient-background {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.register-scroll-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.register-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-header-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.register-logo-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #c7242c 0%, #991b1b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 4px 8px rgba(199, 36, 44, 0.3);
+}
+
+.register-person-icon {
+  font-size: 32px;
+  color: white;
+}
+
+.register-welcome-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.register-welcome-subtitle {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.register-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.register-input-container {
+  margin-bottom: 20px;
+}
+
+.register-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.register-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 0 16px;
+  position: relative;
+  min-height: 50px;
+}
+
+.register-input-icon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.register-input {
+  flex: 1;
+  padding: 14px 0;
+  font-size: 16px;
+  color: #1f2937;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.register-input::placeholder {
+  color: #9ca3af;
+}
+
+.register-password-input {
+  padding-right: 40px;
+}
+
+.register-eye-icon {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+
+.register-hint-text {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.register-date-display {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.register-password-strength-container {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.register-strength-bar-container {
+  flex: 1;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.register-password-strength {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.register-strength-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.register-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.register-btn-clear {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.register-btn-clear:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.register-clear-icon {
+  font-size: 16px;
+}
+
+.register-clear-button-text {
+  color: #c7242c;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.register-btn-register {
+  flex: 2;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #c7242c 0%, #991b1b 100%);
+  border: none;
+  cursor: pointer;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(199, 36, 44, 0.3);
+}
+
+.register-btn-register:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(199, 36, 44, 0.4);
+}
+
+.register-button-text {
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.register-arrow-icon {
+  color: white;
+  font-size: 16px;
+}
+
+.register-disabled-button {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.register-signin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.register-signin-text {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.register-signin-link {
+  font-size: 14px;
+  color: #c7242c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-signin-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .register-gradient-background {
+    padding: 10px;
+  }
+  
+  .register-box {
+    padding: 20px;
+  }
+  
+  .register-welcome-title {
+    font-size: 28px;
+  }
+  
+  .register-buttons {
+    flex-direction: column;
+  }
+  
+  .register-btn-clear,
+  .register-btn-register {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* Date input styling */
+.register-input[type="date"] {
+  color: #1f2937;
+}
+
+.register-input[type="date"]:invalid {
+  color: #9ca3af;
+}
+
+/* Hide calendar icon in some browsers */
+.register-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 2px;
+}
