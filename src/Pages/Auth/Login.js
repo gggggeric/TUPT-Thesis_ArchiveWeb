@@ -95,7 +95,7 @@ const Login = () => {
         
         toast.success(data.message || 'Logged in successfully!');
         console.log('User data stored:', userData);
-        navigate('/dashboard');
+        navigate('/home');
       } else {
         toast.error(data.message || 'Login failed');
       }

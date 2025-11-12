@@ -6,6 +6,7 @@ import './App.css';
 import Landing from './Pages/Landing';
 import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
+import Home from './Pages/Home';
 
 function App() {
   return (
@@ -16,10 +17,19 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/dashboard" element={<Home />} />
+            
+            {/* Add routes for hamburger menu navigation */}
+            <Route path="/documents" element={<Home />} />
+            <Route path="/analysis" element={<Home />} />
+            <Route path="/library" element={<Home />} />
+            <Route path="/settings" element={<Home />} />
+            <Route path="/help" element={<Home />} />
+            <Route path="/profile" element={<Home />} />
           </Routes>
         </main>
         
-        {/* Toast Container - Add this */}
         <ToastContainer
           position="top-right"
           autoClose={5000}
