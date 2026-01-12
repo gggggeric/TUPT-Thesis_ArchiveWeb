@@ -42,10 +42,7 @@ const HamburgerMenu = ({ isVisible, onClose }) => {
   const menuItems = [
     { icon: FaHome, label: 'Home', path: '/dashboard' },
     { icon: FaFileAlt, label: 'My Documents', path: '/documents' },
-    { icon: FaChartBar, label: 'Analysis', path: '/analysis' },
-    { icon: FaBook, label: 'Library', path: '/library' },
-    { icon: FaCog, label: 'Settings', path: '/settings' },
-    { icon: FaQuestionCircle, label: 'Help & Support', path: '/help' },
+
   ];
 
   const handleMenuItemPress = (path) => {
