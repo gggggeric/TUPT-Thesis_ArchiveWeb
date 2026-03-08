@@ -10,11 +10,13 @@ import {
     FaFilter,
     FaFolder,
     FaCalendarAlt,
-    FaFileAlt
+    FaFileAlt,
+    FaSignOutAlt
 } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 // API Base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Thesis {
     id?: string;
@@ -61,6 +63,7 @@ const CustomHeader = ({
     const [scrolled, setScrolled] = useState(false);
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -82,39 +85,36 @@ const CustomHeader = ({
 
     useEffect(() => {
         const fetchFilters = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
             try {
-                const token = localStorage.getItem('token');
                 const headers: Record<string, string> = {
                     'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    'Authorization': `Bearer ${token}`
                 };
 
                 // Fetch Years
                 const yearsUrl = `${API_BASE_URL}/thesis/years`;
-                console.log('Fetching years from:', yearsUrl);
                 const yearsRes = await fetch(yearsUrl, { headers });
                 if (yearsRes.ok) {
                     const yearsData = await yearsRes.json();
-                    console.log('Years received:', yearsData);
                     if (Array.isArray(yearsData)) setYears(['all', ...yearsData]);
-                } else {
+                } else if (yearsRes.status !== 401) {
                     console.error(`Failed to fetch years (${yearsRes.status}) from ${yearsUrl}`);
                 }
 
                 // Fetch Categories
                 const catUrl = `${API_BASE_URL}/thesis/categories`;
-                console.log('Fetching categories from:', catUrl);
                 const catRes = await fetch(catUrl, { headers });
                 if (catRes.ok) {
                     const catData = await catRes.json();
-                    console.log('Categories received:', catData);
                     if (Array.isArray(catData)) {
                         const uniqueCats = Array.from(new Set(['all', ...catData]));
                         setCategories(uniqueCats);
                     }
-                } else {
-                    const errorText = await catRes.text();
-                    console.error(`Failed to fetch categories (${catRes.status}) from ${catUrl}. Response:`, errorText);
+                } else if (catRes.status !== 401) {
+                    console.error(`Failed to fetch categories (${catRes.status}) from ${catUrl}`);
                 }
             } catch (err) {
                 console.error('Error fetching filters:', err);
@@ -236,7 +236,15 @@ const CustomHeader = ({
         };
 
         const checkAuth = () => {
-            setIsLoggedIn(!!localStorage.getItem('userData'));
+            const userDataString = localStorage.getItem('userData');
+            if (userDataString) {
+                const userData = JSON.parse(userDataString);
+                setIsLoggedIn(true);
+                setIsAdmin(!!userData.isAdmin);
+            } else {
+                setIsLoggedIn(false);
+                setIsAdmin(false);
+            }
         };
 
         checkAuth();
@@ -275,6 +283,15 @@ const CustomHeader = ({
         setIsSearchFocused(false);
     };
 
+    const handleLogout = () => {
+        const userDataString = localStorage.getItem('userData');
+        const userName = userDataString ? JSON.parse(userDataString).name : 'Admin';
+        localStorage.removeItem('userData');
+        localStorage.removeItem('token');
+        toast.success(`Goodbye, ${userName}! You have been logged out successfully.`);
+        router.push('/login');
+    };
+
     const handleFilterChange = (filterType: keyof Filters, value: string) => {
         setFilters(prev => ({ ...prev, [filterType]: value }));
 
@@ -310,7 +327,7 @@ const CustomHeader = ({
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-6 ${headerBgClass}`}>
             {/* Left Section: Menu + Branding */}
             <div className="flex items-center gap-3 md:gap-4 z-10">
-                {(!isLanding && isLoggedIn) && (
+                {(!isLanding && isLoggedIn && !isAdmin) && (
                     <button
                         className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
                         onClick={onMenuPress}
@@ -321,9 +338,15 @@ const CustomHeader = ({
                 )}
                 <div
                     className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition-opacity active:scale-95 transform duration-200"
-                    onClick={() => router.push(isLoggedIn ? '/home' : '/')}
+                    onClick={() => {
+                        if (isLoggedIn) {
+                            router.push(isAdmin ? '/admin' : '/home');
+                        } else {
+                            router.push('/');
+                        }
+                    }}
                     role="button"
-                    aria-label="Go to Home"
+                    aria-label="Go to Dashboard"
                 >
                     <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1.5 shadow-sm overflow-hidden">
                         <img
@@ -338,8 +361,8 @@ const CustomHeader = ({
                 </div>
             </div>
 
-            {/* Centered Search Bar (Only if logged in) */}
-            {isLoggedIn && (
+            {/* Centered Search Bar (Only if logged in and NOT admin) */}
+            {(isLoggedIn && !isAdmin) && (
                 <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
                     <div
                         ref={searchContainerRef}
@@ -502,12 +525,22 @@ const CustomHeader = ({
                         </button>
                     </>
                 ) : (
-                    <button
-                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
-                        aria-label="Notifications"
-                    >
-                        <FaBell />
-                    </button>
+                    isAdmin ? (
+                        <button
+                            onClick={handleLogout}
+                            className="bg-white/15 text-white text-[11px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all flex items-center gap-2 active:scale-95 border border-white/20 shadow-lg"
+                        >
+                            <FaSignOutAlt className="text-sm" />
+                            Sign Out
+                        </button>
+                    ) : (
+                        <button
+                            className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
+                            aria-label="Notifications"
+                        >
+                            <FaBell />
+                        </button>
+                    )
                 )}
             </div>
         </header>

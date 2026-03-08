@@ -5,7 +5,7 @@ import { useState, useEffect, Suspense } from 'react';
 import CustomHeader from '@/components/Navigation/CustomHeader';
 import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
 import Footer from '@/components/Navigation/Footer';
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { FaCalendarAlt, FaFileAlt, FaUserGraduate, FaArrowLeft, FaBookOpen, FaTimes } from 'react-icons/fa';
 import Link from 'next/link';
 

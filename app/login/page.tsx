@@ -78,12 +78,18 @@ const Login: React.FC = () => {
                     birthdate: data.user.birthdate,
                     age: data.user.age,
                     createdAt: data.user.createdAt,
+                    isAdmin: data.user.isAdmin,
                 };
 
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userData', JSON.stringify(userData));
                 toast.success(data.message || 'Logged in successfully!');
-                router.push('/home');
+
+                if (data.user.isAdmin) {
+                    router.push('/admin');
+                } else {
+                    router.push('/home');
+                }
             } else {
                 toast.error(data.message || 'Login failed');
             }

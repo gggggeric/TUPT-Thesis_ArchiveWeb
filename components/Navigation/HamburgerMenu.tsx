@@ -11,7 +11,8 @@ import {
     FaInfoCircle,
     FaSignOutAlt,
     FaSignInAlt,
-    FaChevronRight
+    FaChevronRight,
+    FaUserShield
 } from 'react-icons/fa';
 import { IconType } from 'react-icons';
 
@@ -19,6 +20,7 @@ interface UserData {
     name?: string;
     idNumber?: string;
     age?: number;
+    isAdmin?: boolean;
     [key: string]: unknown;
 }
 
@@ -52,6 +54,7 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
 
     const menuItems: MenuItem[] = [
         { icon: FaHome, label: 'Home', path: '/home' },
+        ...(user?.isAdmin ? [{ icon: FaUserShield, label: 'Admin Panel', path: '/admin' }] : []),
         { icon: FaFileAlt, label: 'My Documents', path: '/documents' },
     ];
 
