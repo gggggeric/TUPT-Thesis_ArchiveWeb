@@ -91,10 +91,11 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
 
             {/* Menu */}
             <div className="fixed top-0 left-0 h-full w-[320px] max-w-[85vw] bg-white shadow-2xl z-[1000] flex flex-col animate-[slide-in-left_0.3s_ease] border-r border-gray-100">
-                {/* Header Section with Dark Institutional Style */}
-                <div className="bg-[#3f2b2b] pt-16 pb-8 px-6 relative overflow-hidden border-b-8 border-[#8b0000]">
+                {/* Header Section with TUPT Theme Gradient */}
+                <div className="bg-gradient-to-br from-[#8b0000] to-[#500000] pt-16 pb-8 px-6 relative overflow-hidden border-b-4 border-white/10">
                     {/* Background decoration */}
-                    <div className="absolute top-[-30%] right-[-20%] w-[200px] h-[200px] bg-white/5 rounded-full" />
+                    <div className="absolute top-[-30%] right-[-20%] w-[200px] h-[200px] bg-white/10 rounded-full blur-3xl" />
+                    <div className="absolute bottom-[-20%] left-[-10%] w-[150px] h-[150px] bg-white/5 rounded-full blur-2xl" />
 
                     {/* User Profile Section */}
                     <div
@@ -117,8 +118,8 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                                 {user?.idNumber || 'TUPT-00-0000'}
                             </span>
                         </div>
-                        <div className="text-[10px] text-white/40 mt-2 font-black tracking-[0.2em] uppercase">
-                            Institutional Profile
+                        <div className="text-[10px] text-white/60 mt-2 font-black tracking-[0.2em] uppercase">
+                            University Archive Portal
                         </div>
                     </div>
                 </div>
@@ -155,11 +156,11 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                     {/* Logout Button */}
                     {user && (
                         <button
-                            className="w-full py-4 px-4 rounded-xl bg-[#3f2b2b] text-white flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:bg-black hover:shadow-xl group border-none"
+                            className="w-full py-4 px-4 rounded-2xl bg-[#8b0000]/5 text-[#8b0000] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:bg-[#8b0000] hover:text-white hover:shadow-xl group border border-[#8b0000]/10"
                             onClick={handleLogout}
                         >
-                            <FaSignOutAlt className="text-base text-[#fecaca] transition-transform group-hover:translate-x-[-2px]" />
-                            <span className="text-xs font-black uppercase tracking-widest">Terminate Session</span>
+                            <FaSignOutAlt className="text-base transition-transform group-hover:translate-x-[-2px]" />
+                            <span className="text-xs font-black uppercase tracking-widest">Logout</span>
                         </button>
                     )}
 
@@ -174,10 +175,11 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                         </button>
                     )}
 
-                    {/* App Info */}
+                    {/* App Info Footer */}
                     <div className="text-center">
-                        <span className="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] inline-flex items-center gap-2">
-                            <FaInfoCircle className="text-[8px]" /> v1.2.0-stable
+                        <div className="w-12 h-1 bg-gray-200 mx-auto rounded-full mb-4 opacity-50" />
+                        <span className="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em]">
+                            TUPT Thesis Archive
                         </span>
                     </div>
                 </div>

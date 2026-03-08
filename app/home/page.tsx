@@ -2,40 +2,35 @@
 
 import { useState, useEffect, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
     FaSearch,
-    FaFileAlt,
-    FaLightbulb,
-    FaChartLine,
     FaArrowRight,
-    FaFolder,
-    FaCalendarAlt,
-    FaChevronRight,
-    FaBookOpen,
-    FaUpload,
-    FaClipboardList,
+    FaHistory,
+    FaFolderOpen,
+    FaGraduationCap,
+    FaChevronDown,
+    FaChevronUp,
+    FaTrash
 } from 'react-icons/fa';
 import CustomHeader from '@/components/Navigation/CustomHeader';
 import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
-import thesisData from '@/data/trained_model.json';
+import Footer from '@/components/Navigation/Footer';
+import API_BASE_URL from '@/lib/api';
 
 interface Thesis {
-    id?: string;
-    title?: string;
-    abstract?: string;
-    filename?: string;
-    folder?: string;
+    id: string;
+    title: string;
+    abstract: string;
+    filename: string;
+    category?: string;
     year_range?: string;
-    [key: string]: unknown;
+    author?: string;
 }
 
 interface SearchResult extends Thesis {
     score: number;
     relevance: string;
-}
-
-interface ThesisData {
-    theses?: Thesis[];
 }
 
 interface UserData {
@@ -48,17 +43,50 @@ const HomePage: React.FC = () => {
     const router = useRouter();
     const [menuVisible, setMenuVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [mounted, setMounted] = useState(false);
     const [user, setUser] = useState<UserData | null>(null);
-
-    const theses: Thesis[] = (thesisData as ThesisData).theses || [];
-
+    const [thesisCount, setThesisCount] = useState<number>(0);
+    const [recentTheses, setRecentTheses] = useState<any[]>([]);
+    const [deptCounts, setDeptCounts] = useState<{ category: string, count: number }[]>([]);
+    const [isDeptDropdownOpen, setIsDeptDropdownOpen] = useState(false);
     useEffect(() => {
         setMounted(true);
         const userData = localStorage.getItem('userData');
-        if (userData) {
+        const token = localStorage.getItem('token');
+        const recent = JSON.parse(localStorage.getItem('recent_theses') || '[]');
+        setRecentTheses(recent);
+
+        if (userData && token) {
             setUser(JSON.parse(userData));
+
+            // Fetch real thesis count from backend
+            const fetchCount = async () => {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/thesis/count`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setThesisCount(data.count);
+                    }
+
+                    // Fetch Department Counts
+                    const deptRes = await fetch(`${API_BASE_URL}/thesis/department-counts`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (deptRes.ok) {
+                        const deptData = await deptRes.json();
+                        setDeptCounts(deptData);
+                    }
+                } catch (err) {
+                    console.error('Error fetching data:', err);
+                }
+            };
+            fetchCount();
         } else {
             router.push('/login');
         }
@@ -71,92 +99,26 @@ const HomePage: React.FC = () => {
         return 'Good Evening';
     };
 
-    const performSearch = () => {
-        if (!searchQuery.trim()) { setSearchResults([]); return; }
-        const query = searchQuery.toLowerCase().trim();
-        let results: SearchResult[] = [];
-
-        theses.forEach(thesis => {
-            let score = 0;
-            if (thesis.title?.toLowerCase().includes(query)) score += 3;
-            if (thesis.abstract?.toLowerCase().includes(query)) score += 2;
-            if (thesis.filename?.toLowerCase().includes(query)) score += 1;
-            if (score > 0) {
-                results.push({
-                    ...thesis,
-                    score,
-                    relevance: score >= 3 ? 'High' : score >= 2 ? 'Medium' : 'Low',
-                });
-            }
-        });
-
-        results.sort((a, b) => b.score - a.score);
-        setSearchResults(results.slice(0, 10));
+    // Note: Search is now handled by the CustomHeader component which redirects to /search_result
+    const onSearch = () => {
+        if (searchQuery.trim()) {
+            router.push(`/search_result?query=${encodeURIComponent(searchQuery.trim())}`);
+        }
     };
 
-    const highlightText = (text: string | undefined, query: string): ReactElement | string => {
-        if (!text || !query) return text || '';
-        const regex = new RegExp(`(${query})`, 'gi');
-        const parts = text.split(regex);
-        return (
-            <>
-                {parts.map((part, i) =>
-                    regex.test(part) ? <mark key={i} className="bg-[#8b0000] text-white px-0.5 rounded">{part}</mark> : part
-                )}
-            </>
-        );
+    const clearHistory = () => {
+        localStorage.removeItem('recent_theses');
+        setRecentTheses([]);
     };
 
-    const relevanceBadge: Record<string, string> = {
-        High: 'bg-emerald-600 text-white',
-        Medium: 'bg-amber-500 text-gray-900',
-        Low: 'bg-[#8b0000] text-white',
-    };
 
-    const features = [
-        {
-            icon: FaUpload,
-            title: 'Submit',
-            description: 'Upload and verify your research.',
-            path: '/documents',
-        },
-        {
-            icon: FaSearch,
-            title: 'Search',
-            description: 'Browse the school archive.',
-            path: '/home',
-        },
-        {
-            icon: FaChartLine,
-            title: 'Stats',
-            description: 'Track your thesis progress.',
-            path: '/home',
-        },
-    ];
-
-    const activities = [
-        {
-            icon: FaFileAlt,
-            title: 'Login Saved',
-            description: 'You are now signed in',
-            time: 'Just now',
-            colorClass: 'text-[#fecaca] bg-white/10',
-        },
-        {
-            icon: FaChartLine,
-            title: 'Archive Ready',
-            description: 'Folders updated',
-            time: 'Active',
-            colorClass: 'text-emerald-400 bg-white/10',
-        },
-    ];
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+        <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
             {/* Header */}
             <CustomHeader
                 onMenuPress={() => setMenuVisible(true)}
-                onSearch={performSearch}
+                onSearch={onSearch}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
             />
@@ -165,185 +127,136 @@ const HomePage: React.FC = () => {
             <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
 
             {/* Main Content */}
-            <main className="flex-grow">
-                {/* Hero Section - Matching Landing Page Gradient */}
-                <section className="bg-gradient-to-br from-[#8b0000] via-[#fecaca] to-white pt-32 pb-20 px-6 relative overflow-hidden">
-                    <div className="absolute top-[-50%] right-[-20%] w-[400px] h-[400px] bg-[#8b0000]/5 rounded-full blur-3xl" />
+            <main className="flex-grow flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#8b0000]/5 rounded-full blur-[150px]" />
+                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#8b0000]/5 rounded-full blur-[150px]" />
 
-                    <div className="max-w-5xl mx-auto relative z-10">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                            <div>
-                                <p className="text-[10px] text-[#8b0000] font-black uppercase tracking-[0.3em] mb-4">
-                                    {mounted ? (
-                                        <>
-                                            {getGreeting()} &bull; {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                        </>
-                                    ) : (
-                                        <>Welcome</>
-                                    )}
-                                </p>
-                                <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">
-                                    Archive Portal
-                                </p>
+                <div className="max-w-6xl w-full flex flex-col gap-12 relative z-10 pt-20">
+                    {/* Dashboard Cards Side-by-Side */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Summary Card */}
+                        <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-black/5 border border-gray-100 flex items-center justify-between group hover:border-[#8b0000]/30 transition-all duration-500 h-full relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#8b0000]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="relative z-10">
+                                <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em] mb-2">Archive Size</p>
+                                <p className="text-5xl font-black text-gray-900 leading-none tracking-tighter">{thesisCount.toLocaleString()}</p>
+                                <p className="text-[11px] text-[#8b0000] font-black uppercase tracking-[0.1em] mt-3">Theses Indexed</p>
+                            </div>
+                            <div className="relative z-10 w-20 h-20 rounded-2xl bg-[#8b0000]/5 flex items-center justify-center border border-[#8b0000]/10 group-hover:bg-[#8b0000] group-hover:border-[#8b0000] transition-all duration-500">
+                                <FaSearch className="text-3xl text-[#8b0000] group-hover:text-white transition-all duration-500" />
                             </div>
                         </div>
 
-                        {/* Stats - Using Institutional Dark Red Accents */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
-                            {[
-                                { value: theses.length.toLocaleString(), label: 'Thesis Count', icon: FaBookOpen },
-                                { value: 'Active', label: 'Signal', icon: FaClipboardList },
-                                { value: 'Stable', label: 'Server', icon: FaChartLine },
-                            ].map(({ value, label, icon: Icon }, i) => (
-                                <div key={i} className="bg-gradient-to-br from-[#8b0000] to-[#500000] p-8 rounded-[1.5rem] shadow-2xl shadow-black/40 border-4 border-[#8b0000]/20 hover:translate-y-[-4px] transition-all duration-300 group">
-                                    <div className="flex items-center gap-5 mb-3">
-                                        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 group-hover:bg-[#b91c1c]">
-                                            <Icon className="text-white text-xl" />
+                        {/* Recently Viewed */}
+                        <div className="bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-[2.5rem] p-10 shadow-2xl border border-white/10 text-white space-y-8 h-full relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2 group-hover:bg-white/10 transition-colors" />
+                            <div className="relative z-10 flex items-center justify-between">
+                                <h2 className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                                    <FaHistory className="text-[#fecaca] text-lg" /> Recently Viewed
+                                </h2>
+                                {recentTheses.length > 0 && (
+                                    <button
+                                        onClick={clearHistory}
+                                        className="text-[10px] font-black bg-white/20 px-3 py-1 rounded-full uppercase tracking-widest border border-white/20 hover:bg-white/40 hover:border-white/40 transition-all flex items-center gap-2 group/clear"
+                                    >
+                                        <FaTrash className="text-[8px] opacity-60 group-hover/clear:opacity-100 transition-opacity" />
+                                        Clear History
+                                    </button>
+                                )}
+                            </div>
+
+                            {recentTheses.length > 0 ? (
+                                <div className="space-y-4">
+                                    {recentTheses.map((thesis) => (
+                                        <div
+                                            key={thesis.id}
+                                            className="group cursor-pointer"
+                                            onClick={() => router.push(`/search_result?id=${thesis.id}`)}
+                                        >
+                                            <p className="text-[10px] text-[#fecaca] font-black uppercase tracking-widest mb-1">{thesis.year}</p>
+                                            <h3 className="text-sm font-bold leading-tight line-clamp-1 group-hover:text-[#fecaca] transition-colors">{thesis.title}</h3>
+                                            <div className="w-8 h-0.5 bg-white/10 mt-3 group-hover:w-full transition-all duration-500" />
                                         </div>
-                                        <span className="text-2xl font-black text-white">{value}</span>
-                                    </div>
-                                    <span className="text-[10px] text-[#fecaca] font-black uppercase tracking-[0.2em]">{label}</span>
+                                    ))}
                                 </div>
-                            ))}
+                            ) : (
+                                <div className="py-8 text-center bg-white/5 rounded-2xl border border-white/10">
+                                    <p className="text-xs font-bold text-white/40">No recent views yet</p>
+                                </div>
+                            )}
                         </div>
                     </div>
-                </section>
 
-                {/* Content Area */}
-                <div className="max-w-5xl mx-auto px-6 py-12">
-                    {/* Search Results Section */}
-                    {searchResults.length > 0 && (
-                        <section className="mb-16 animate-fade-in">
-                            <div className="flex items-center justify-between mb-10 pb-4 border-b-2 border-gray-100">
-                                <h2 className="text-sm font-black text-gray-900 tracking-[0.2em] uppercase flex items-center gap-4">
-                                    <span className="w-1.5 h-6 bg-[#8b0000] rounded-full" />
-                                    Archive Matches ({searchResults.length})
-                                </h2>
+                    {/* Department Distributions */}
+                    <div className="mt-12">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-sm font-black text-gray-900 tracking-[0.2em] uppercase flex items-center gap-4">
+                                <span className="w-2 h-7 bg-[#8b0000] rounded-full" />
+                                Thesis Repository Breakdown
+                            </h2>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-[#8b0000] bg-[#8b0000]/5 px-4 py-1.5 rounded-full border border-[#8b0000]/10">
+                                Department Level
+                            </span>
+                        </div>
+
+                        {deptCounts.length > 0 ? (
+                            <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden transition-all duration-500">
+                                {/* The 'One Container' Header/Trigger */}
                                 <button
-                                    className="text-[10px] font-black text-gray-400 hover:text-[#8b0000] uppercase tracking-widest transition-colors"
-                                    onClick={() => { setSearchQuery(''); setSearchResults([]); }}
+                                    onClick={() => setIsDeptDropdownOpen(!isDeptDropdownOpen)}
+                                    className="w-full p-8 flex items-center justify-between hover:bg-gray-50 transition-colors group"
                                 >
-                                    Reset
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-[#8b0000]/5 flex items-center justify-center border border-[#8b0000]/10 group-hover:bg-[#8b0000] transition-all duration-500">
+                                            <FaFolderOpen className="text-2xl text-[#8b0000] group-hover:text-white transition-all duration-500" />
+                                        </div>
+                                        <div className="text-left">
+                                            <h3 className="text-lg font-black text-gray-900 uppercase tracking-tight">Explore Departments</h3>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
+                                                {deptCounts.filter(d => d.category.toUpperCase() !== 'UNCATEGORIZED').length} Academic Disciplines
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className={`w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center transition-all duration-500 ${isDeptDropdownOpen ? 'bg-[#8b0000] border-[#8b0000] text-white rotate-180' : 'bg-white text-gray-400'}`}>
+                                        <FaChevronDown />
+                                    </div>
                                 </button>
-                            </div>
-                            <div className="grid grid-cols-1 gap-6">
-                                {searchResults.map((result, index) => (
-                                    <div key={`${result.id}-${index}`} className="bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-[1.5rem] p-8 shadow-2xl shadow-black/30 border-4 border-[#8b0000]/20 hover:scale-[1.01] transition-all duration-300 group cursor-pointer relative overflow-hidden">
-                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest self-start ${relevanceBadge[result.relevance]}`}>
-                                                {result.relevance} Relevance
-                                            </span>
-                                            <div className="flex items-center gap-4">
-                                                <span className="flex items-center gap-2 text-[10px] text-[#fecaca] font-black uppercase tracking-widest">
-                                                    <FaFolder className="text-[#8b0000]" /> {result.folder}
-                                                </span>
-                                                {result.year_range && result.year_range !== 'unknown' && (
-                                                    <span className="flex items-center gap-2 text-[10px] text-[#fecaca] font-black uppercase tracking-widest">
-                                                        <FaCalendarAlt className="text-[#8b0000]" /> {result.year_range}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <h3 className="text-xl font-black text-white mb-4 leading-tight group-hover:text-[#fecaca] transition-colors">
-                                            {highlightText(result.title, searchQuery)}
-                                        </h3>
-                                        <p className="text-sm text-white/50 leading-relaxed mb-6 font-bold line-clamp-2">
-                                            {highlightText(result.abstract, searchQuery)}
-                                        </p>
-                                        <div className="flex items-center gap-4 pt-6 border-t border-white/5 text-[9px] text-white/30 font-black uppercase tracking-[0.2em]">
-                                            <FaFileAlt className="text-[#8b0000]" /> {result.filename}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
 
-                    {/* Features Section */}
-                    <section className="mb-20">
-                        <div className="flex items-center mb-10">
-                            <h2 className="text-sm font-black text-gray-900 tracking-[0.2em] uppercase flex items-center gap-4">
-                                <span className="w-1.5 h-6 bg-[#8b0000] rounded-full" />
-                                Portal Modules
-                            </h2>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {features.map((feature, index) => {
-                                const Icon = feature.icon;
-                                return (
-                                    <div
-                                        key={index}
-                                        className="bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-[2rem] p-10 shadow-2xl shadow-black/40 border-4 border-[#8b0000]/20 hover:translate-y-[-8px] transition-all duration-500 cursor-pointer group"
-                                        onClick={() => router.push(feature.path)}
-                                    >
-                                        <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-8 border-2 border-white/10 transition-all duration-500 group-hover:bg-[#b91c1c] group-hover:scale-110">
-                                            <Icon className="text-2xl text-white" />
-                                        </div>
-                                        <h3 className="text-lg font-black text-white mb-2 uppercase tracking-wider">{feature.title}</h3>
-                                        <p className="text-[11px] text-white/40 font-bold leading-relaxed mb-8">{feature.description}</p>
-                                        <div className="flex items-center gap-2 text-[#fecaca] text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                            Open <FaArrowRight className="text-[8px]" />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </section>
-
-                    {/* Activity Feed Section */}
-                    <section className="mb-20">
-                        <div className="flex items-center mb-10">
-                            <h2 className="text-sm font-black text-gray-900 tracking-[0.2em] uppercase flex items-center gap-4">
-                                <span className="w-1.5 h-6 bg-[#8b0000] rounded-full" />
-                                Activity Feed
-                            </h2>
-                        </div>
-                        <div className="space-y-4">
-                            {activities.map((activity, index) => (
-                                <div key={index} className="flex items-center bg-gradient-to-br from-[#8b0000] to-[#500000] p-6 rounded-2xl shadow-xl shadow-black/20 border-4 border-[#8b0000]/20 hover:translate-x-3 transition-all duration-300 cursor-pointer group">
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 border border-white/10 ${activity.colorClass}`}>
-                                        <activity.icon />
-                                    </div>
-                                    <div className="flex-1 ml-6">
-                                        <h3 className="text-sm font-black text-white uppercase tracking-wider mb-0.5">{activity.title}</h3>
-                                        <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">{activity.description}</p>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-[9px] text-[#fecaca]/50 font-black uppercase tracking-widest">{activity.time}</span>
-                                        <FaChevronRight className="text-white/20 group-hover:text-white transition-all" />
+                                {/* Dropdown Content */}
+                                <div className={`transition-all duration-700 ease-in-out ${isDeptDropdownOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                                    <div className="p-8 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 border-t border-gray-50">
+                                        {deptCounts
+                                            .filter(dept => dept.category.toUpperCase() !== 'UNCATEGORIZED')
+                                            .map((dept, index) => (
+                                                <div
+                                                    key={dept.category + index}
+                                                    className="flex items-center justify-between p-5 rounded-2xl bg-gray-50 border border-transparent hover:border-[#8b0000]/20 hover:bg-white hover:shadow-xl hover:shadow-black/5 transition-all duration-300 cursor-pointer group/item"
+                                                    onClick={() => router.push(`/search_result?category=${encodeURIComponent(dept.category)}`)}
+                                                >
+                                                    <div>
+                                                        <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-widest group-hover/item:text-[#8b0000] transition-colors mb-1">{dept.category}</h4>
+                                                        <div className="w-4 h-0.5 bg-[#8b0000]/20 rounded-full group-hover/item:w-full transition-all duration-500" />
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className="text-xl font-black text-gray-900 leading-none">{dept.count}</span>
+                                                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Files</p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Tip Section */}
-                    <section>
-                        <div className="relative bg-gradient-to-br from-[#8b0000] to-[#500000] p-10 rounded-[2.5rem] shadow-2xl shadow-black/50 border-8 border-[#3f2b2b]/10 overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -mr-20 -mt-20 opacity-5 blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                            <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-                                <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border-2 border-white/10 shadow-inner">
-                                    <FaLightbulb className="text-4xl text-[#fecaca] animate-pulse" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-black text-white mb-2 uppercase tracking-[0.2em]">Quick Tip</h3>
-                                    <p className="text-sm text-white/50 leading-loose font-bold italic">
-                                        Use the search to explore previous research.
-                                        All files are verified by the TUP analysis engine.
-                                    </p>
-                                </div>
                             </div>
-                        </div>
-                    </section>
+                        ) : (
+                            <div className="p-12 text-center bg-white rounded-[2.5rem] border border-gray-100 italic text-gray-400 text-sm shadow-xl shadow-black/5">
+                                Loading archive statistics...
+                            </div>
+                        )}
+                    </div>
                 </div>
             </main>
 
             {/* Footer */}
-            <footer className="py-12 bg-white border-t border-gray-100 text-center">
-                <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.4em]">
-                    Technological University of the Philippines &bull; Taguig &copy; {new Date().getFullYear()}
-                </p>
-            </footer>
+            <Footer />
         </div>
     );
 };

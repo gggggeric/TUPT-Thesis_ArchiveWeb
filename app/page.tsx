@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import CustomHeader from '@/components/Navigation/CustomHeader';
+import Footer from '@/components/Navigation/Footer';
 
 const LandingPage: React.FC = () => {
   const router = useRouter();
@@ -166,18 +167,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-white border-t border-gray-100 text-center">
-        <div className="flex justify-center mb-8">
-          <img src="/assets/tup-logo.png" alt="TUP" className="h-12 grayscale opacity-30" />
-        </div>
-        <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.4em]">
-          Technological University of the Philippines &bull; Taguig &copy; {new Date().getFullYear()}
-        </p>
-        <div className="mt-4 flex justify-center gap-6 opacity-30">
-          <span className="text-[9px] font-black uppercase tracking-widest">Build v1.2.0</span>
-          <span className="text-[9px] font-black uppercase tracking-widest">SECURE PORTAL</span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

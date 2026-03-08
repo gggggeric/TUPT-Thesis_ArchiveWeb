@@ -153,8 +153,9 @@ const CustomHeader = ({
             }));
 
             setSearchResults(processedResults);
-            setShowSearchResults(true);
-            onSearch();
+            if (processedResults.length > 0) {
+                setShowSearchResults(true);
+            }
         } catch (err) {
             console.error('Search error:', err);
         } finally {
@@ -162,11 +163,7 @@ const CustomHeader = ({
         }
     };
 
-    const getRelevanceLabel = (score: number): string => {
-        if (score >= 3) return 'High';
-        if (score >= 2) return 'Medium';
-        return 'Low';
-    };
+
 
     const highlightText = (text: string | undefined, query: string): ReactElement | string => {
         if (!text || !query) return text || '';
@@ -175,27 +172,30 @@ const CustomHeader = ({
         return (
             <>
                 {parts.map((part, index) =>
-                    regex.test(part) ? <mark key={index}>{part}</mark> : part
+                    regex.test(part) ? <span key={index} className="text-[#8b0000] font-black">{part}</span> : part
                 )}
             </>
         );
     };
 
+    const triggerFullSearch = () => {
+        const query = localSearchQuery.trim();
+        if (query) {
+            const params = new URLSearchParams();
+            params.append('query', query);
+            if (filters.year !== 'all') params.append('year', filters.year);
+            if (filters.category !== 'all') params.append('category', filters.category);
+            if (filters.searchType !== 'all') params.append('type', filters.searchType);
+
+            router.push(`/search_result?${params.toString()}`);
+            setShowSearchResults(false);
+            setShowFilters(false);
+        }
+    };
+
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            const query = localSearchQuery.trim();
-            if (query) {
-                const params = new URLSearchParams();
-                params.append('query', query);
-                if (filters.year !== 'all') params.append('year', filters.year);
-                if (filters.category !== 'all') params.append('category', filters.category);
-                if (filters.searchType !== 'all') params.append('type', filters.searchType);
-
-                router.push(`/search_result?${params.toString()}`);
-                setShowSearchResults(false);
-            } else {
-                performSearch();
-            }
+            triggerFullSearch();
             (e.target as HTMLInputElement).blur();
         }
     };
@@ -260,7 +260,7 @@ const CustomHeader = ({
 
     const handleSearchFocus = () => {
         setIsSearchFocused(true);
-        if (searchQuery.trim() && searchResults.length > 0) setShowSearchResults(true);
+        if (localSearchQuery.trim()) setShowSearchResults(true);
     };
 
     const handleSearchBlur = () => {
@@ -294,20 +294,17 @@ const CustomHeader = ({
         }
     };
 
-    const relevanceBadgeColors: Record<string, string> = {
-        high: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
-        medium: 'bg-gradient-to-r from-yellow-400 to-amber-400 text-gray-800',
-        low: 'bg-gradient-to-r from-[#8b0000] to-red-600 text-white',
-    };
 
-    const isTransparentPage = isLanding || pathname === '/home';
 
-    const headerBgClass = isTransparentPage
-        ? (scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-6')
+    const isTransparentPage = isLanding;
+    const isRedHeader = !isTransparentPage || scrolled;
+
+    const headerBgClass = isTransparentPage && !scrolled
+        ? 'bg-transparent py-6'
         : 'bg-gradient-to-r from-[#8b0000] to-[#660000] shadow-xl py-3';
 
-    const textClass = (isTransparentPage && !scrolled) ? 'text-white' : (isLanding || pathname === '/home' ? 'text-[#8b0000]' : 'text-white');
-    const iconClass = (isTransparentPage && !scrolled) ? 'text-white' : 'text-[#8b0000]';
+    const textClass = 'text-white';
+    const iconClass = 'text-white';
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-6 ${headerBgClass}`}>
@@ -315,7 +312,7 @@ const CustomHeader = ({
             <div className="flex items-center gap-3 md:gap-4 z-10">
                 {(!isLanding && isLoggedIn) && (
                     <button
-                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer ${scrolled || !isTransparentPage ? 'bg-[#8b0000]/5 text-[#8b0000] hover:bg-[#8b0000]/10' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
                         onClick={onMenuPress}
                         aria-label="Menu"
                     >
@@ -349,9 +346,12 @@ const CustomHeader = ({
                         className="relative flex items-center"
                     >
                         <div className="relative flex items-center w-full">
+                            <div className={`absolute left-4 text-gray-400 z-10 pointer-events-none transition-colors ${localSearchQuery ? 'text-[#8b0000]' : ''}`}>
+                                <FaSearch className="text-sm" />
+                            </div>
                             <input
                                 type="text"
-                                className={`w-full py-2.5 pl-4 pr-20 rounded-full border-2 text-gray-800 text-sm font-medium placeholder:text-gray-400 outline-none transition-all duration-300 focus:bg-white focus:shadow-lg ${scrolled || !isTransparentPage ? 'bg-white/95 border-gray-200 focus:border-[#8b0000]' : 'bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:bg-white focus:text-gray-800'}`}
+                                className={`w-full py-3 pl-11 pr-24 rounded-full border-2 text-gray-800 text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
                                 placeholder="Search thesis titles, abstracts..."
                                 value={localSearchQuery}
                                 onChange={(e) => {
@@ -365,20 +365,30 @@ const CustomHeader = ({
                                 autoCorrect="off"
                                 autoComplete="off"
                             />
-                            <button
-                                className={`absolute right-10 text-sm bg-transparent border-none cursor-pointer p-1.5 transition-colors ${scrolled || !isTransparentPage ? 'text-[#8b0000] hover:text-[#660000]' : 'text-white/80 hover:text-white'}`}
-                                onClick={() => setShowFilters(!showFilters)}
-                                aria-label="Search filters"
-                            >
-                                <FaFilter />
-                            </button>
-                            <button
-                                className={`absolute right-3 text-sm bg-transparent border-none cursor-pointer p-1.5 transition-colors ${scrolled || !isTransparentPage ? 'text-gray-400 hover:text-gray-600' : 'text-white/50 hover:text-white'}`}
-                                onClick={clearSearch}
-                                aria-label="Clear search"
-                            >
-                                <FaTimes />
-                            </button>
+                            <div className="absolute right-3 flex items-center gap-1">
+                                <div className={`flex items-center justify-center transition-all duration-300 overflow-hidden ${localSearchQuery ? 'w-9 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
+                                    <button
+                                        className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#8b0000]'}`}
+                                        onClick={clearSearch}
+                                        aria-label="Clear search"
+                                    >
+                                        <FaTimes className="text-xs" />
+                                    </button>
+                                </div>
+                                <button
+                                    className={`ml-1 px-4 py-1.5 rounded-full bg-[#8b0000] text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-md active:scale-95 ${localSearchQuery ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}`}
+                                    onClick={triggerFullSearch}
+                                >
+                                    Search
+                                </button>
+                                <button
+                                    className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#8b0000]'}`}
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    aria-label="Search filters"
+                                >
+                                    <FaFilter className="text-xs" />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -436,10 +446,7 @@ const CustomHeader = ({
                                             setShowSearchResults(false);
                                         }}
                                     >
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide shadow-sm ${relevanceBadgeColors[result.relevance.toLowerCase()]}`}>
-                                                {result.relevance}
-                                            </span>
+                                        <div className="flex items-center justify-end mb-2">
                                             <span className="flex items-center gap-1 text-xs text-gray-500 font-semibold">
                                                 <FaCalendarAlt className="text-[10px] text-[#8b0000]" /> {String(result.year_range && result.year_range !== 'unknown' ? result.year_range : 'N/A')}
                                             </span>
@@ -488,7 +495,7 @@ const CustomHeader = ({
                         </button>
                         <button
                             onClick={() => router.push('/register')}
-                            className={`text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg shadow-lg transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-white text-[#8b0000] scale-105 ring-4 ring-white/20' : 'bg-[#8b0000] text-white hover:bg-red-700'}`}
+                            className={`text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg shadow-lg transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-white text-[#8b0000] scale-105 ring-4 ring-white/20' : (isRedHeader ? 'bg-white text-[#8b0000] hover:bg-gray-100' : 'bg-[#8b0000] text-white hover:bg-red-700')}`}
                         >
                             Register
                             {pathname === '/register' && <div className="absolute bottom-1 left-6 right-6 h-[2px] bg-[#8b0000]/50 rounded-full" />}
@@ -496,7 +503,7 @@ const CustomHeader = ({
                     </>
                 ) : (
                     <button
-                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer ${scrolled || !isTransparentPage ? 'bg-[#8b0000]/5 text-[#8b0000] hover:bg-[#8b0000]/10' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
                         aria-label="Notifications"
                     >
                         <FaBell />
