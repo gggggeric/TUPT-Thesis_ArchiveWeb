@@ -21,7 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="TUPT Thesis Archive - AI-powered thesis analysis" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/assets/tup-logo.png" />
         <title>TUPT-Thesis Archive</title>
       </head>
       <body className="antialiased font-sans">
