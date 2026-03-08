@@ -116,16 +116,22 @@ const ForgotPassword: React.FC = () => {
     const labelClasses = "text-[13px] font-bold text-[#fecaca]";
 
     return (
-        <div className="min-h-screen bg-white flex flex-col font-sans">
+        <div className="min-h-screen bg-transparent flex flex-col font-sans">
             <CustomHeader isLanding={false} />
-            <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 bg-gradient-to-br from-[#8b0000] via-[#fecaca] to-white relative overflow-hidden">
+            <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
                 <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#8b0000]/[0.05] rounded-full blur-3xl animate-pulse-slow" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-[#8b0000]/[0.05] rounded-full blur-3xl animate-pulse-slow" />
 
-                <div className="w-full max-w-lg bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border-4 border-[#8b0000]/20 overflow-hidden relative z-10">
-                    <div className="p-4 md:p-8 pb-2">
-                        <h3 className="text-white text-sm font-bold mb-2 uppercase tracking-widest">Reset Password</h3>
-                        <div className="h-[1px] bg-white/40 w-full mb-6" />
+                <div className="w-full max-w-lg bg-white/5 backdrop-blur-md rounded-[2.5rem] shadow-2xl shadow-black/40 border border-white/10 overflow-hidden relative z-10">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                    <div className="p-8 md:p-12 pb-6 relative z-10">
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+                                <FaKey className="text-white text-lg" />
+                            </div>
+                            <h3 className="text-white text-base font-black uppercase tracking-[0.2em]">Reset Password</h3>
+                        </div>
+                        <div className="h-px bg-white/10 w-full mb-10" />
 
                         <div className="space-y-5">
                             {/* ID Number Field */}
@@ -133,7 +139,7 @@ const ForgotPassword: React.FC = () => {
                                 <label className={labelClasses}>ID Number:</label>
                                 <input
                                     type="text"
-                                    className={inputInnerClasses}
+                                    className="w-full h-12 bg-white/5 border border-white/20 px-4 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/10 transition-all font-bold"
                                     placeholder="TUPT-XX-XXXX"
                                     value={idNumber}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleIdInputChange(e.target.value)}
@@ -147,7 +153,7 @@ const ForgotPassword: React.FC = () => {
                                 <label className={labelClasses}>Birthdate:</label>
                                 <input
                                     type="date"
-                                    className={inputInnerClasses}
+                                    className="w-full h-12 bg-white/5 border border-white/20 px-4 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/10 transition-all font-bold [color-scheme:dark]"
                                     value={birthdate}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                                     onKeyPress={handleKeyPress}
@@ -160,7 +166,7 @@ const ForgotPassword: React.FC = () => {
                                 <label className={labelClasses}>New Password:</label>
                                 <input
                                     type="password"
-                                    className={inputInnerClasses}
+                                    className="w-full h-12 bg-white/5 border border-white/20 px-4 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/10 transition-all font-bold"
                                     placeholder="New Password"
                                     value={newPassword}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
@@ -173,7 +179,7 @@ const ForgotPassword: React.FC = () => {
                                 <label className={labelClasses}>Repeat Password:</label>
                                 <input
                                     type="password"
-                                    className={inputInnerClasses}
+                                    className="w-full h-12 bg-white/5 border border-white/20 px-4 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/10 transition-all font-bold"
                                     placeholder="Confirm New Password"
                                     value={confirmPassword}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
@@ -184,7 +190,7 @@ const ForgotPassword: React.FC = () => {
                             <div className="flex items-center justify-between pt-4 pb-6">
                                 <button
                                     onClick={handleClear}
-                                    className="bg-[#b91c1c] text-white text-[11px] font-bold px-4 py-2 border-2 border-white/20 rounded-lg hover:bg-red-800 transition-colors"
+                                    className="bg-transparent text-white/60 text-[11px] font-bold px-4 py-2 border-2 border-white/20 rounded-lg hover:bg-white/10 hover:text-white transition-colors"
                                 >
                                     Clear
                                 </button>
@@ -202,9 +208,9 @@ const ForgotPassword: React.FC = () => {
                 </div>
 
                 <div className="mt-8 relative z-10">
-                    <p className="text-gray-800 text-sm font-medium">
+                    <p className="text-white/60 text-sm font-medium">
                         Remembered your password?{' '}
-                        <Link href="/login" className="text-[#8b0000] font-bold hover:underline">
+                        <Link href="/login" className="text-white font-bold hover:underline">
                             Back to Login
                         </Link>
                     </p>

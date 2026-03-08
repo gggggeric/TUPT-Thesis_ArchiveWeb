@@ -39,20 +39,20 @@ const SubmissionsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-white font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
             <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
             <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
 
             {mounted && (
                 <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#8b0000]/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse" style={{ animationDuration: '8s' }} />
+                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#8b0000]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
                 </div>
             )}
 
             <main className="relative z-10 flex-1 w-full pt-32 px-6 max-w-6xl mx-auto pb-16">
                 <button
                     onClick={() => router.push('/documents')}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#8b0000] transition-colors mb-[-40px] ml-6 relative z-20"
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors mb-[-40px] ml-6 relative z-20"
                 >
                     <FaArrowLeft /> Back to Workspace
                 </button>

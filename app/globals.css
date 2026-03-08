@@ -209,3 +209,59 @@ mark {
   color: #1a1a1a;
   font-weight: 700;
 }
+
+/* ── Scroll-triggered fade animations ── */
+@keyframes scroll-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-fade-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for children inside a visible section */
+.scroll-fade-section.visible .stagger-1 {
+  transition-delay: 0.08s;
+}
+
+.scroll-fade-section.visible .stagger-2 {
+  transition-delay: 0.16s;
+}
+
+.scroll-fade-section.visible .stagger-3 {
+  transition-delay: 0.24s;
+}
+
+.scroll-fade-section.visible .stagger-4 {
+  transition-delay: 0.32s;
+}
+
+/* Stagger children base class */
+.stagger-child {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-fade-section.visible .stagger-child {
+  opacity: 1;
+  transform: translateY(0);
+}

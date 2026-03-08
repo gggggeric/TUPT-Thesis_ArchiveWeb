@@ -145,14 +145,14 @@ const DocumentsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-white font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
             <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
             <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
 
             {mounted && (
                 <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#8b0000]/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse" style={{ animationDuration: '8s' }} />
-                    <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#8b0000]/5 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse" style={{ animationDuration: '12s' }} />
+                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#8b0000]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
+                    <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#8b0000]/10 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse-slow" />
                 </div>
             )}
 

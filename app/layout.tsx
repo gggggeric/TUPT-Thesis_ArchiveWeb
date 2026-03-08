@@ -25,6 +25,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <title>TUPT-Thesis Archive</title>
       </head>
       <body className="antialiased font-sans">
+        <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+          <img
+            src="/assets/TupForLanding.jpg"
+            alt="Background"
+            className="w-full h-full object-cover blur-[8px] scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#8b0000]/95 via-[#450a0a]/90 to-black/95" />
+        </div>
         <div className="min-h-screen flex flex-col relative">
           <main className="flex-grow">
             {children}

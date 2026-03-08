@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
   FaFileAlt,
   FaLightbulb,
@@ -12,13 +13,80 @@ import {
   FaChevronDown,
   FaSearch,
   FaCheckCircle,
-  FaRocket
+  FaRocket,
+  FaRobot,
+  FaFileUpload,
 } from 'react-icons/fa';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 import CustomHeader from '@/components/Navigation/CustomHeader';
 import Footer from '@/components/Navigation/Footer';
+
+/* ───── Shared animation variants ───── */
+const fadeUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -60 },
+  visible: { opacity: 1, x: 0 },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 60 },
+  visible: { opacity: 1, x: 0 },
+};
+
+const smoothEase: any = [0.22, 1, 0.36, 1];
+
+/* ───── Feature data for alternating sections ───── */
+const features = [
+  {
+    number: '01',
+    badge: 'Smart Search',
+    title: 'Find Any Thesis in Seconds',
+    desc: 'Our advanced semantic search engine indexes thousands of institutional papers. Search by title, abstract, author, or keywords — results are ranked by relevance in milliseconds.',
+    icon: FaSearch,
+    color: '#3B82F6',       // blue
+    bgLight: 'bg-blue-50',
+    borderLight: 'border-blue-100',
+    textColor: 'text-blue-500',
+  },
+  {
+    number: '02',
+    badge: 'AI Assistance',
+    title: 'Get AI-Powered Title Ideas',
+    desc: 'Stuck on a thesis topic? Use our AI recommendation engine to generate title ideas, structural suggestions, and research directions — all tailored to your department and interests.',
+    icon: FaRobot,
+    color: '#8B5CF6',       // purple
+    bgLight: 'bg-purple-50',
+    borderLight: 'border-purple-100',
+    textColor: 'text-purple-500',
+  },
+  {
+    number: '03',
+    badge: 'Advanced Filtering',
+    title: 'Narrow Down with Precision',
+    desc: 'Filter search results by department, publication year, author, or category. Combine multiple filters to pinpoint exactly the research you need from the entire archive.',
+    icon: FaChartLine,
+    color: '#F97316',       // orange
+    bgLight: 'bg-orange-50',
+    borderLight: 'border-orange-100',
+    textColor: 'text-orange-500',
+  },
+  {
+    number: '04',
+    badge: 'Document Analysis',
+    title: 'Upload & Extract Metadata Instantly',
+    desc: 'Upload your thesis PDF and let our system automatically extract the title, authors, abstract, and key metadata. No manual entry needed — everything is processed in seconds.',
+    icon: FaFileUpload,
+    color: '#22C55E',       // green
+    bgLight: 'bg-green-50',
+    borderLight: 'border-green-100',
+    textColor: 'text-green-500',
+  },
+];
 
 const LandingPage: React.FC = () => {
   const router = useRouter();
@@ -28,10 +96,12 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 scroll-smooth">
+    <div className="min-h-screen bg-transparent font-sans text-white scroll-smooth">
       <CustomHeader isLanding={true} />
 
-      {/* Hero Section */}
+      {/* ════════════════════════════════════════════
+          HERO SECTION
+      ════════════════════════════════════════════ */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
@@ -42,7 +112,12 @@ const LandingPage: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#8b0000]/90" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl animate-fade-in">
+        <motion.div
+          className="relative z-10 text-center px-6 max-w-4xl"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: smoothEase }}
+        >
           <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8 uppercase">
             The Digital Archive of TUP Excellence
           </h1>
@@ -57,86 +132,192 @@ const LandingPage: React.FC = () => {
               Start Your Journey <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce text-white/50 cursor-pointer" onClick={() => window.scrollTo(0, window.innerHeight)}>
+        <motion.div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-white/50 cursor-pointer"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+        >
           <FaChevronDown size={30} />
-        </div>
+        </motion.div>
       </section>
 
-      {/* Why Choose Section */}
-      <section className="py-32 px-6 bg-white overflow-hidden">
+      {/* ════════════════════════════════════════════
+          FEATURE SECTIONS — alternating left/right
+      ════════════════════════════════════════════ */}
+      {features.map((feat, i) => {
+        const isEven = i % 2 === 0; // even = title left, content right
+        const Icon = feat.icon;
+
+        return (
+          <section key={feat.number} className="py-24 md:py-32 px-6 overflow-hidden border-b border-white/5">
+            <div className="max-w-7xl mx-auto">
+              <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-24`}>
+
+                {/* TITLE SIDE */}
+                <motion.div
+                  className="flex-1 space-y-6"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.4 }}
+                  variants={isEven ? fadeLeft : fadeRight}
+                  transition={{ duration: 0.8, ease: smoothEase }}
+                >
+                  <span className={`${feat.textColor} font-black uppercase tracking-[0.3em] text-xs`}>Feature {feat.number}</span>
+                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-white uppercase">
+                    {feat.title}
+                  </h2>
+                  <div className="w-16 h-1 rounded-full" style={{ backgroundColor: feat.color }} />
+                </motion.div>
+
+                {/* CONTENT SIDE */}
+                <motion.div
+                  className="flex-1"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.4 }}
+                  variants={isEven ? fadeRight : fadeLeft}
+                  transition={{ duration: 0.8, ease: smoothEase, delay: 0.15 }}
+                >
+                  <div className={`${feat.bgLight} rounded-[2.5rem] p-10 md:p-14 border ${feat.borderLight} relative overflow-hidden group`}>
+                    <motion.div
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center mb-8 border"
+                      style={{ backgroundColor: `${feat.color}10`, borderColor: `${feat.color}20` }}
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                    >
+                      <Icon className="text-3xl" style={{ color: feat.color }} />
+                    </motion.div>
+                    <span className={`inline-block ${feat.textColor} font-black uppercase tracking-widest text-[10px] mb-4 px-3 py-1 rounded-full border ${feat.borderLight}`}>
+                      {feat.badge}
+                    </span>
+                    <p className="text-lg text-white/90 leading-relaxed font-medium">
+                      {feat.desc}
+                    </p>
+                  </div>
+                </motion.div>
+
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {/* ════════════════════════════════════════════
+          WHY CHOOSE SECTION
+      ════════════════════════════════════════════ */}
+      <section className="py-32 px-6 bg-transparent overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-20">
-            <div className="flex-1 space-y-8">
+            <motion.div
+              className="flex-1 space-y-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.3 }}
+              variants={fadeLeft}
+              transition={{ duration: 0.8, ease: smoothEase }}
+            >
               <span className="text-[#8b0000] font-black uppercase tracking-[0.3em] text-xs">Innovation First</span>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-gray-900">
+              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-white">
                 WHY CHOOSE TUP THESIS ARCHIVE?
               </h2>
-              <p className="text-xl text-gray-500 leading-relaxed font-medium">
-                We've built more than just a storage system. It's a high-performance environment designed to protect institutional knowledge while making it accessible for the next generation of researchers.
+              <p className="text-xl text-white/80 leading-relaxed font-semibold transition-colors">
+                We&apos;ve built more than just a storage system. It&apos;s a high-performance environment designed to protect institutional knowledge while making it accessible for the next generation of researchers.
               </p>
-            </div>
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            </motion.div>
+            <motion.div
+              className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.3 }}
+              variants={fadeRight}
+              transition={{ duration: 0.8, ease: smoothEase, delay: 0.15 }}
+            >
               {[
                 { title: 'Institutional Trust', desc: 'Secure repository endorsed by TUP-Taguig leadership.', icon: FaShieldAlt },
                 { title: 'Modern Tools', desc: 'Next-gen search and analysis interface.', icon: FaRocket },
                 { title: 'Clean Design', desc: 'A minimalist, flawless student-focused experience.', icon: FaLightbulb },
                 { title: 'Verified Quality', desc: 'AI-assisted verification for academic standards.', icon: FaCheckCircle },
               ].map((item, i) => (
-                <div key={i} className="bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100 hover:bg-[#8b0000] group transition-all duration-500">
-                  <item.icon className="text-3xl text-[#8b0000] mb-6 group-hover:text-white transition-colors" />
-                  <h3 className="text-xl font-black mb-3 text-gray-900 group-hover:text-white uppercase tracking-tight">{item.title}</h3>
-                  <p className="text-sm text-gray-500 group-hover:text-white/60 font-bold leading-relaxed">{item.desc}</p>
-                </div>
+                <motion.div
+                  key={i}
+                  className="bg-white/5 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/10 hover:bg-[#8b0000] group transition-all duration-500"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ delay: i * 0.1, duration: 0.5, ease: smoothEase }}
+                >
+                  <item.icon className="text-3xl text-[#fecaca] mb-6 group-hover:text-white transition-colors" />
+                  <h3 className="text-xl font-black mb-3 text-white group-hover:text-white uppercase tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-white/70 group-hover:text-white font-bold leading-relaxed">{item.desc}</p>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* What It Do Section */}
+      {/* ════════════════════════════════════════════
+          WHAT IT DOES SECTION
+      ════════════════════════════════════════════ */}
       <section className="py-32 px-6 bg-gradient-to-br from-[#8b0000] to-[#500000] text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-24">
+          <motion.div
+            className="text-center mb-24"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.5 }}
+            variants={fadeUp}
+            transition={{ duration: 0.8, ease: smoothEase }}
+          >
             <span className="text-[#fecaca] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">Core Functions</span>
             <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase">WHAT DOES IT DO?</h2>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div className="space-y-6 group">
-              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-[#b91c1c] transition-all">
-                <FaSearch className="text-4xl text-[#fecaca]" />
-              </div>
-              <h3 className="text-2xl font-black uppercase tracking-tight">Rapid Search</h3>
-              <p className="text-white/50 font-bold leading-relaxed">Search through thousands of institutional papers in milliseconds with our advanced indexing engine.</p>
-            </div>
-            <div className="space-y-6 group">
-              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-[#b91c1c] transition-all">
-                <FaCheckCircle className="text-4xl text-[#fecaca]" />
-              </div>
-              <h3 className="text-2xl font-black uppercase tracking-tight">AI Validation</h3>
-              <p className="text-white/50 font-bold leading-relaxed">Ensure your research title and abstract meet quality standards before official submission.</p>
-            </div>
-            <div className="space-y-6 group">
-              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-[#b91c1c] transition-all">
-                <FaFileAlt className="text-4xl text-[#fecaca]" />
-              </div>
-              <h3 className="text-2xl font-black uppercase tracking-tight">Full Archive</h3>
-              <p className="text-white/50 font-bold leading-relaxed">Digitally store your approved thesis with metadata to inspire future Technologists.</p>
-            </div>
+            {[
+              { icon: FaSearch, title: 'Rapid Search', desc: 'Search through thousands of institutional papers in milliseconds with our advanced indexing engine.' },
+              { icon: FaCheckCircle, title: 'AI Validation', desc: 'Ensure your research title and abstract meet quality standards before official submission.' },
+              { icon: FaFileAlt, title: 'Full Archive', desc: 'Digitally store your approved thesis with metadata to inspire future Technologists.' },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                className="space-y-6 group"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.4 }}
+                transition={{ delay: i * 0.15, duration: 0.7, ease: smoothEase }}
+              >
+                <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-[#b91c1c] transition-all">
+                  <item.icon className="text-4xl text-[#fecaca]" />
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight">{item.title}</h3>
+                <p className="text-white/50 font-bold leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-32 px-6 bg-gray-50 overflow-hidden">
+      {/* ════════════════════════════════════════════
+          HOW IT WORKS SECTION
+      ════════════════════════════════════════════ */}
+      <section className="py-32 px-6 bg-transparent overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
+          <motion.div
+            className="text-center mb-24"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.5 }}
+            variants={fadeUp}
+            transition={{ duration: 0.8, ease: smoothEase }}
+          >
             <span className="text-[#8b0000] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">System Workflow</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-gray-900 uppercase">HOW DOES IT WORK?</h2>
-          </div>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase">HOW DOES IT WORK?</h2>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
             {[
@@ -145,24 +326,37 @@ const LandingPage: React.FC = () => {
               { step: '03', title: 'Analyze', desc: 'Upload your title and abstract for institutional verification.' },
               { step: '04', title: 'Archive', desc: 'Secure your legacy in the official TUP digital library.' },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-black/5 hover:translate-y-[-10px] transition-all duration-500 border border-gray-100 flex flex-col justify-between h-full">
+              <motion.div
+                key={i}
+                className="bg-white/5 backdrop-blur-md p-10 rounded-[2.5rem] shadow-2xl shadow-black/20 hover:translate-y-[-10px] transition-all duration-500 border border-white/10 flex flex-col justify-between h-full"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: i * 0.12, duration: 0.6, ease: smoothEase }}
+              >
                 <div>
-                  <span className="text-6xl font-black text-gray-100 mb-8 block leading-none">{item.step}</span>
-                  <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight mb-4">{item.title}</h3>
-                  <p className="text-sm text-gray-500 font-bold leading-relaxed">{item.desc}</p>
+                  <span className="text-6xl font-black text-white/10 mb-8 block leading-none">{item.step}</span>
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-4">{item.title}</h3>
+                  <p className="text-sm text-white/50 font-bold leading-relaxed">{item.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          <div className="mt-24 text-center">
+          <motion.div
+            className="mt-24 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.6, ease: smoothEase }}
+          >
             <button
               onClick={handleGetStarted}
               className="bg-[#8b0000] text-white px-12 py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-2xl transform hover:scale-105"
             >
               Get Started Now
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
 

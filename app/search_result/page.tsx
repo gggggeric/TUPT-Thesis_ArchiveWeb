@@ -188,7 +188,7 @@ const SearchResultContent = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col relative overflow-hidden">
+        <div className="min-h-screen bg-transparent flex flex-col relative overflow-hidden font-sans text-white">
             {/* Background Glows */}
             <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#8b0000]/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#8b0000]/5 rounded-full blur-[100px] pointer-events-none" />
@@ -243,7 +243,7 @@ const SearchResultContent = () => {
 
                         {/* AI Recommendation Feature for Search Queries */}
                         {!singleThesis && query && (
-                            <div className="mb-8 bg-white rounded-2xl shadow-lg border border-[#8b0000]/20 overflow-hidden animate-fade-in relative">
+                            <div className="mb-8 bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden animate-fade-in relative">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-50 to-[#8b0000]/10 rounded-bl-full pointer-events-none -z-0" />
 
                                 <div className="p-6 md:p-8 relative z-10">
@@ -270,7 +270,7 @@ const SearchResultContent = () => {
 
                                     {aiRecommendation && (
                                         <div className="mt-4 animate-fade-in">
-                                            <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 md:p-6 shadow-inner whitespace-pre-wrap text-sm text-gray-700 font-medium leading-relaxed">
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-5 md:p-6 shadow-inner whitespace-pre-wrap text-sm text-white/80 font-medium leading-relaxed">
                                                 {aiRecommendation}
                                             </div>
                                             <div className="mt-4 flex justify-end">
@@ -290,7 +290,7 @@ const SearchResultContent = () => {
 
                         {singleThesis ? (
                             /* Detail View */
-                            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 animate-fade-in">
+                            <div className="bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/10 animate-fade-in">
                                 <div className="bg-gradient-to-r from-[#8b0000] to-[#660000] p-8 md:p-12 text-white">
                                     <div className="flex items-center gap-3 mb-4 opacity-90">
                                         <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
@@ -319,20 +319,20 @@ const SearchResultContent = () => {
                                     <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-3">
                                         <FaBookOpen className="text-[#8b0000]" /> Abstract Summary
                                     </h2>
-                                    <div className="prose prose-red max-w-none text-gray-600 leading-relaxed text-lg">
+                                    <div className="prose prose-invert max-w-none text-white/70 leading-relaxed text-lg">
                                         {singleThesis.abstract?.split('\n').map((para, i) => (
                                             <p key={i} className="mb-4">{para}</p>
                                         ))}
                                     </div>
 
-                                    <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-8 items-center text-gray-400">
+                                    <div className="mt-12 pt-8 border-t border-white/10 flex flex-wrap gap-8 items-center text-white/40">
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest mb-1">Filename</p>
-                                            <p className="text-sm font-semibold text-gray-600">{singleThesis.filename}</p>
+                                            <p className="text-sm font-semibold text-white/70">{singleThesis.filename}</p>
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest mb-1">Source</p>
-                                            <p className="text-sm font-semibold text-gray-600">Digital Archive Module</p>
+                                            <p className="text-sm font-semibold text-white/70">Digital Archive Module</p>
                                         </div>
                                     </div>
                                 </div>
@@ -344,7 +344,7 @@ const SearchResultContent = () => {
                                     <Link
                                         key={thesis.id}
                                         href={`/search_result?id=${thesis.id}`}
-                                        className="group bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:border-[#8b0000]/30 hover:shadow-2xl transition-all duration-300"
+                                        className="group bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/10 hover:border-[#fecaca]/30 hover:shadow-2xl transition-all duration-300"
                                     >
                                         <div className="flex items-center justify-between mb-4">
                                             {thesis.year_range && thesis.year_range.toLowerCase() !== 'unknown' ? (
@@ -358,25 +358,25 @@ const SearchResultContent = () => {
                                             )}
                                             <FaUserGraduate className="text-gray-200 group-hover:text-[#8b0000]/20 transition-colors" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2 leading-tight group-hover:text-[#8b0000] transition-colors">
+                                        <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 leading-tight group-hover:text-[#fecaca] transition-colors">
                                             {thesis.title}
                                         </h3>
-                                        <p className="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed italic">
+                                        <p className="text-xs text-white/50 line-clamp-3 mb-4 leading-relaxed italic">
                                             {thesis.abstract?.substring(0, 150)}...
                                         </p>
-                                        <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-auto">
+                                        <div className="flex items-center gap-2 text-[10px] font-bold text-white/30 uppercase tracking-widest mt-auto">
                                             <FaFileAlt /> {thesis.id}
                                         </div>
                                     </Link>
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-20 text-center bg-white rounded-3xl shadow-sm border border-gray-100">
-                                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <FaFileAlt className="text-4xl text-gray-200" />
+                            <div className="py-20 text-center bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl border border-white/10">
+                                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <FaFileAlt className="text-4xl text-white/20" />
                                 </div>
-                                <h2 className="text-2xl font-black text-gray-400">No results found</h2>
-                                <p className="text-gray-400 mt-2">Try adjusting your search or filters in the header.</p>
+                                <h2 className="text-2xl font-black text-white/40">No results found</h2>
+                                <p className="text-white/40 mt-2">Try adjusting your search or filters in the header.</p>
                                 <Link href="/home" className="inline-block mt-8 bg-[#8b0000] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-all">
                                     Return Home
                                 </Link>
@@ -394,8 +394,8 @@ const SearchResultContent = () => {
 const SearchResultPage = () => {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-white">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8b0000]"></div>
+            <div className="min-h-screen flex items-center justify-center bg-transparent">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
             </div>
         }>
             <SearchResultContent />

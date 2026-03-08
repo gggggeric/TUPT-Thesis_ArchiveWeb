@@ -65,12 +65,12 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
         <section className="max-w-[1600px] mx-auto px-6 py-12 relative z-10 animate-fade-in">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase mb-1">Analysis Workspace</h2>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8b0000]">Analysis View</p>
+                    <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-1">Analysis Workspace</h2>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#fecaca]">Analysis View</p>
                 </div>
                 <button
                     onClick={onClose}
-                    className="px-6 py-3 rounded-full bg-white text-gray-500 font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-gray-50 border border-gray-100 flex items-center gap-2 transition-all"
+                    className="px-6 py-3 rounded-full bg-white/10 text-white font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-white/20 border border-white/10 flex items-center gap-2 transition-all backdrop-blur-md"
                 >
                     <FaTimes /> Close Workspace
                 </button>
@@ -78,24 +78,24 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[80vh] min-h-[800px]">
                 {/* Left Panel - Native Text Editor View */}
-                <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-2xl shadow-black/5 flex flex-col relative">
-                    <div className="bg-gray-50 px-8 py-5 border-b border-gray-100 flex items-center justify-between z-10">
+                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl shadow-black/20 flex flex-col relative">
+                    <div className="bg-white/5 px-8 py-5 border-b border-white/10 flex items-center justify-between z-10">
                         <div className="flex items-center gap-3">
-                            <FaFileAlt className="text-[#8b0000]" />
-                            <span className="text-xs font-black uppercase tracking-widest text-gray-900 line-clamp-1">{file.name}</span>
+                            <FaFileAlt className="text-white/60" />
+                            <span className="text-xs font-black uppercase tracking-widest text-white line-clamp-1">{file.name}</span>
                         </div>
                         <a
                             href={fileUrl}
                             download={file.name}
-                            className="bg-white border border-gray-200 text-gray-400 hover:text-gray-900 px-4 py-2 rounded-lg transition-colors text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
+                            className="bg-white/10 border border-white/10 text-white/60 hover:text-white px-4 py-2 rounded-lg transition-colors text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
                             title="Download Original PDF"
                         >
                             <FaDownload className="text-[10px]" /> Original
                         </a>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto bg-[#fafafa] p-10 md:p-14 custom-scrollbar relative">
-                        <div className="max-w-3xl mx-auto bg-white p-12 md:p-16 rounded shadow-sm border border-gray-100 min-h-full">
+                    <div className="flex-1 overflow-y-auto bg-black/20 p-10 md:p-14 custom-scrollbar relative">
+                        <div className="max-w-3xl mx-auto bg-white p-12 md:p-16 rounded shadow-xl border border-gray-100 min-h-full">
                             {result.pagesText && result.pagesText.length > 0 ? (
                                 result.pagesText.map((page, idx) => (
                                     <div
@@ -127,29 +127,29 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                 </div>
 
                 {/* Right Panel - Analysis Findings */}
-                <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl shadow-black/5 flex flex-col overflow-hidden">
+                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 flex flex-col overflow-hidden">
                     {/* Header Score */}
-                    <div className="px-10 py-8 border-b border-gray-100 bg-gray-50 flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg border border-gray-100 shrink-0">
-                            <span className="text-2xl font-black text-[#8b0000]">{result.overallScore}</span>
+                    <div className="px-10 py-8 border-b border-white/10 bg-white/5 flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center shadow-lg border border-white/20 shrink-0">
+                            <span className="text-2xl font-black text-[#fecaca]">{result.overallScore}</span>
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">Overall Assessment</h3>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                                Status: <span className="text-[#8b0000]">{getScoreLabel(result.overallScore || 0)}</span>
+                            <h3 className="text-xl font-black text-white tracking-tight uppercase">Overall Assessment</h3>
+                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">
+                                Status: <span className="text-[#fecaca]">{getScoreLabel(result.overallScore || 0)}</span>
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-10 bg-white custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-10 bg-transparent custom-scrollbar">
                         {/* Highlights Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-10">
                             {[
-                                { label: 'Total Issues', value: result.totalIssues, color: 'text-[#8b0000]' },
-                                { label: 'Words / Stats', value: result.wordCount, color: 'text-gray-900' },
+                                { label: 'Total Issues', value: result.totalIssues, color: 'text-[#fecaca]' },
+                                { label: 'Words / Stats', value: result.wordCount, color: 'text-white' },
                             ].map((stat, i) => (
-                                <div key={i} className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
-                                    <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">{stat.label}</p>
+                                <div key={i} className="bg-white/5 rounded-2xl p-5 border border-white/10">
+                                    <p className="text-[9px] text-white/40 font-black uppercase tracking-widest mb-1">{stat.label}</p>
                                     <p className={`text-xl font-black ${stat.color} tracking-tight`}>{stat.value}</p>
                                 </div>
                             ))}
@@ -157,16 +157,16 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
 
                         {/* Detailed Findings */}
                         <div className="space-y-6">
-                            <h4 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4 flex items-center gap-4">
-                                <span className="h-px flex-1 bg-gray-100" />
+                            <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-4">
+                                <span className="h-px flex-1 bg-white/10" />
                                 Feedback
-                                <span className="h-px flex-1 bg-gray-100" />
+                                <span className="h-px flex-1 bg-white/10" />
                             </h4>
 
                             {result.categories?.map((category, idx) => (
-                                <div key={idx} className="border border-gray-100 rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                <div key={idx} className="border border-white/10 rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                     <button
-                                        className="w-full px-8 py-5 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors border-b border-gray-50"
+                                        className="w-full px-8 py-5 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors border-b border-white/5"
                                         onClick={() => toggleCategory(idx)}
                                     >
                                         <div className="flex items-center gap-4">
@@ -174,55 +174,55 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                 className="w-2.5 h-2.5 rounded-full"
                                                 style={{ backgroundColor: category.color }}
                                             />
-                                            <h4 className="font-black text-xs text-gray-900 uppercase tracking-widest">{category.name}</h4>
-                                            <span className="text-[9px] font-black uppercase tracking-widest bg-gray-100 text-gray-500 px-3 py-1 rounded-full">
+                                            <h4 className="font-black text-xs text-white uppercase tracking-widest">{category.name}</h4>
+                                            <span className="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white/60 px-3 py-1 rounded-full border border-white/10">
                                                 {category.issues.length} {category.issues.length === 1 ? 'Issue' : 'Issues'}
                                             </span>
                                         </div>
-                                        <div className="text-gray-400 text-xs">
+                                        <div className="text-white/40 text-xs">
                                             {expandedCategories[idx] ? <FaChevronUp /> : <FaChevronDown />}
                                         </div>
                                     </button>
 
                                     {expandedCategories[idx] && (
-                                        <div className="bg-gray-50 p-6 space-y-6">
+                                        <div className="bg-black/20 p-6 space-y-6">
                                             {category.issues.map((issue, i) => (
-                                                <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-gray-200 transition-colors">
+                                                <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-sm relative overflow-hidden group hover:border-white/20 transition-colors">
                                                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${issue.severity === 'high' ? 'bg-[#8b0000]'
                                                         : issue.severity === 'medium' ? 'bg-amber-500'
                                                             : 'bg-blue-500'
                                                         }`} />
 
                                                     <div className="flex items-start justify-between gap-4 mb-3 pl-4">
-                                                        <h5 className="font-black text-gray-900 tracking-tight uppercase text-xs leading-relaxed">{issue.title}</h5>
+                                                        <h5 className="font-black text-white tracking-tight uppercase text-xs leading-relaxed">{issue.title}</h5>
                                                         <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shrink-0 ${issue.severity === 'high'
-                                                            ? 'bg-[#8b0000]/10 text-[#8b0000] border-[#8b0000]/20'
+                                                            ? 'bg-[#8b0000]/20 text-[#fecaca] border-[#8b0000]/40'
                                                             : issue.severity === 'medium'
-                                                                ? 'bg-amber-50 text-amber-600 border-amber-200'
-                                                                : 'bg-blue-50 text-blue-600 border-blue-200'
+                                                                ? 'bg-amber-500/10 text-amber-200 border-amber-500/20'
+                                                                : 'bg-blue-500/10 text-blue-200 border-blue-500/20'
                                                             }`}>
                                                             {issue.severity} Severity
                                                         </span>
                                                     </div>
 
                                                     <div className="pl-4 space-y-4">
-                                                        <p className="text-xs text-gray-500 font-medium leading-relaxed">{issue.description}</p>
+                                                        <p className="text-xs text-white/60 font-medium leading-relaxed">{issue.description}</p>
 
-                                                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                            <p className="text-[9px] font-black text-[#8b0000] uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                        <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                                            <p className="text-[9px] font-black text-[#fecaca] uppercase tracking-widest mb-2 flex items-center gap-2">
                                                                 <FaRedo className="text-[8px]" /> Suggested Action
                                                             </p>
-                                                            <p className="text-xs text-gray-700 font-medium">{issue.suggestion}</p>
+                                                            <p className="text-xs text-white/80 font-medium">{issue.suggestion}</p>
                                                         </div>
 
                                                         {issue.pages && issue.pages.length > 0 && (
-                                                            <div className="pt-2">
+                                                            <div className="pt-2 pl-4">
                                                                 <div className="flex flex-wrap gap-2">
                                                                     {issue.pages.map(page => (
                                                                         <button
                                                                             key={page}
                                                                             onClick={() => jumpToPage(page)}
-                                                                            className={`text-[9px] font-black uppercase tracking-widest transition-colors px-3 py-1.5 rounded-lg shadow-sm border active:scale-95 ${activePage === page ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white hover:bg-gray-900 hover:text-white text-gray-500 border-gray-200'}`}
+                                                                            className={`text-[9px] font-black uppercase tracking-widest transition-colors px-3 py-1.5 rounded-lg shadow-sm border active:scale-95 ${activePage === page ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white/10 hover:bg-white/20 text-white/60 hover:text-white border-white/10'}`}
                                                                         >
                                                                             Locate on Page {page}
                                                                         </button>

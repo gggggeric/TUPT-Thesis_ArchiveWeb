@@ -4,7 +4,6 @@ import { useState, KeyboardEvent, ChangeEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { FaUserPlus } from 'react-icons/fa';
 import API_BASE_URL from '@/lib/api';
 import CustomHeader from '@/components/Navigation/CustomHeader';
 
@@ -109,23 +108,19 @@ const Register: React.FC = () => {
         if (e.key === 'Enter') { handleRegister(); }
     };
 
-    const inputInnerClasses = "w-full h-10 bg-white border border-gray-300 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-red-500";
+    const inputInnerClasses = "w-full h-12 bg-white/5 border border-white/20 px-4 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/10 transition-all font-bold";
     const labelClasses = "text-[13px] font-bold text-[#fecaca]";
 
     return (
-        <div className="min-h-screen bg-white flex flex-col font-sans">
+        <div className="min-h-screen bg-transparent flex flex-col font-sans">
             <CustomHeader isLanding={false} />
-            <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 bg-gradient-to-br from-[#8b0000] via-[#fecaca] to-white relative overflow-hidden">
-                <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#8b0000]/[0.05] rounded-full blur-3xl animate-pulse-slow" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-[#8b0000]/[0.05] rounded-full blur-3xl animate-pulse-slow" />
-
+            <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
                 <div className="w-full max-w-lg bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border-4 border-[#8b0000]/20 overflow-hidden relative z-10">
                     <div className="p-4 md:p-8 pb-2">
                         <h3 className="text-white text-sm font-bold mb-2 uppercase tracking-widest">Create Account</h3>
                         <div className="h-[1px] bg-white/40 w-full mb-6" />
 
                         <div className="space-y-4">
-                            {/* Full Name Field */}
                             <div className="space-y-1">
                                 <label className={labelClasses}>Name:</label>
                                 <input
@@ -138,7 +133,6 @@ const Register: React.FC = () => {
                                 />
                             </div>
 
-                            {/* ID Number Field */}
                             <div className="space-y-1">
                                 <label className={labelClasses}>ID Number:</label>
                                 <input
@@ -152,12 +146,11 @@ const Register: React.FC = () => {
                                 />
                             </div>
 
-                            {/* Birthdate Field */}
                             <div className="space-y-1">
                                 <label className={labelClasses}>Birthdate:</label>
                                 <input
                                     type="date"
-                                    className={inputInnerClasses}
+                                    className={`${inputInnerClasses} [color-scheme:dark]`}
                                     value={formData.birthdate}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('birthdate', e.target.value)}
                                     max={mounted ? new Date().toISOString().split('T')[0] : undefined}
@@ -165,7 +158,6 @@ const Register: React.FC = () => {
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {/* Password Field */}
                                 <div className="space-y-1">
                                     <label className={labelClasses}>Password:</label>
                                     <input
@@ -178,7 +170,6 @@ const Register: React.FC = () => {
                                     />
                                 </div>
 
-                                {/* Confirm Password Field */}
                                 <div className="space-y-1">
                                     <label className={labelClasses}>Repeat Password:</label>
                                     <input

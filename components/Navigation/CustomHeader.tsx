@@ -66,6 +66,7 @@ const CustomHeader = ({
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -251,6 +252,7 @@ const CustomHeader = ({
                 setIsLoggedIn(false);
                 setIsAdmin(false);
             }
+            setMounted(true);
         };
 
         checkAuth();
@@ -375,18 +377,18 @@ const CustomHeader = ({
     const isTransparentPage = isLanding;
     const isRedHeader = !isTransparentPage || scrolled;
 
-    const headerBgClass = isTransparentPage && !scrolled
-        ? 'bg-transparent py-6'
-        : 'bg-gradient-to-r from-[#8b0000] to-[#660000] shadow-xl py-3';
+    const headerBgClass = scrolled
+        ? 'bg-black/20 backdrop-blur-xl border-b border-white/10 shadow-2xl py-3'
+        : 'bg-transparent py-6';
 
-    const textClass = 'text-white';
-    const iconClass = 'text-white';
+    const textClass = 'text-white drop-shadow-sm';
+    const iconClass = 'text-white drop-shadow-sm';
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-6 ${headerBgClass}`}>
             {/* Left Section: Menu + Branding */}
             <div className="flex items-center gap-3 md:gap-4 z-10">
-                {(!isLanding && isLoggedIn && !isAdmin) && (
+                {(mounted && !isLanding && isLoggedIn && !isAdmin) && (
                     <button
                         className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
                         onClick={onMenuPress}
@@ -421,7 +423,7 @@ const CustomHeader = ({
             </div>
 
             {/* Centered Search Bar (Only if logged in and NOT admin) */}
-            {(isLoggedIn && !isAdmin) && (
+            {(mounted && isLoggedIn && !isAdmin) && (
                 <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
                     <div
                         ref={searchContainerRef}
@@ -588,7 +590,9 @@ const CustomHeader = ({
 
             {/* Right Section: Auth or Notifications */}
             <div className="flex items-center gap-4 z-10">
-                {!isLoggedIn ? (
+                {!mounted ? (
+                    <div className="h-10 opacity-0 pointer-events-none w-24"></div>
+                ) : !isLoggedIn ? (
                     <>
                         <button
                             onClick={() => router.push('/login')}
