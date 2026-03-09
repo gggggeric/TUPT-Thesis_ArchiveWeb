@@ -378,7 +378,7 @@ const CustomHeader = ({
     const isRedHeader = !isTransparentPage || scrolled;
 
     const headerBgClass = scrolled
-        ? 'bg-black/20 backdrop-blur-xl border-b border-white/10 shadow-2xl py-3'
+        ? 'bg-black/20 backdrop-blur-xl shadow-2xl py-3'
         : 'bg-transparent py-6';
 
     const textClass = 'text-white drop-shadow-sm';
@@ -435,7 +435,7 @@ const CustomHeader = ({
                             </div>
                             <input
                                 type="text"
-                                className={`w-full py-3 pl-11 pr-24 rounded-full border-2 text-gray-800 text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
+                                className={`w-full py-3 pl-11 pr-24 rounded-full border text-gray-800 text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/10 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
                                 placeholder="Search thesis titles, abstracts..."
                                 value={localSearchQuery}
                                 onChange={(e) => {

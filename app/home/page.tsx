@@ -299,18 +299,18 @@ const HomePage: React.FC = () => {
                                         {aiHistory.slice(0, 5).map((item) => {
                                             const isExpanded = !!expandedAiItems[item._id];
                                             return (
-                                                <div key={item._id} className="p-8 hover:bg-gray-50 transition-colors group relative">
+                                                <div key={item._id} className="p-8 hover:bg-white/10 transition-colors group relative">
                                                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                                         <div className="flex-1 w-full">
                                                             <div
                                                                 className="flex items-center gap-3 mb-2 cursor-pointer group/title"
                                                                 onClick={() => toggleAiItem(item._id)}
                                                             >
-                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover/title:bg-blue-50 group-hover/title:text-blue-500'}`}>
+                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isExpanded ? 'bg-white/20 text-blue-300' : 'bg-white/10 text-white/50 group-hover/title:bg-white/20 group-hover/title:text-blue-300'}`}>
                                                                     <FaRobot />
                                                                 </div>
                                                                 <div className="flex-1">
-                                                                    <h3 className="text-sm font-black text-gray-800 tracking-tight group-hover/title:text-blue-600 transition-colors flex items-center gap-2">
+                                                                    <h3 className="text-sm font-black text-white tracking-tight group-hover/title:text-blue-300 transition-colors flex items-center gap-2">
                                                                         {item.prompt.length > 50 ? item.prompt.substring(0, 50) + '...' : item.prompt}
                                                                         <span className="text-gray-400 text-[10px]">
                                                                             {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
@@ -323,7 +323,7 @@ const HomePage: React.FC = () => {
                                                             </div>
 
                                                             <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-[2000px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                                <div className="bg-white/5 border border-white/10 rounded-xl p-5 shadow-inner whitespace-pre-wrap text-[13px] text-white/80 font-medium leading-relaxed ml-11">
+                                                                <div className="bg-black/20 border border-white/5 rounded-xl p-5 shadow-inner whitespace-pre-wrap text-[13px] text-white/70 font-medium leading-relaxed ml-11">
                                                                     {item.recommendation}
                                                                 </div>
                                                             </div>
@@ -404,11 +404,11 @@ const HomePage: React.FC = () => {
                                         {deptCounts.slice(0, 5).map((dept, idx) => (
                                             <div
                                                 key={dept.category + idx}
-                                                className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group"
+                                                className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
                                                 onClick={() => router.push(`/search_result?category=${encodeURIComponent(dept.category)}`)}
                                             >
-                                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-[#8b0000] transition-colors">{dept.category}</span>
-                                                <span className="text-sm font-black text-gray-900">{dept.count}</span>
+                                                <span className="text-[10px] font-black text-white/50 uppercase tracking-widest group-hover:text-[#fecaca] transition-colors">{dept.category}</span>
+                                                <span className="text-sm font-black text-white">{dept.count}</span>
                                             </div>
                                         ))}
                                     </div>

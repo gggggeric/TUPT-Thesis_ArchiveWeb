@@ -133,6 +133,7 @@ const Login: React.FC = () => {
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e.target.value)}
                                     onKeyPress={handleKeyPress}
                                     maxLength={12}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
@@ -145,6 +146,7 @@ const Login: React.FC = () => {
                                     value={password}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                     onKeyPress={handleKeyPress}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
@@ -157,6 +159,7 @@ const Login: React.FC = () => {
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                                     onKeyPress={handleKeyPress}
                                     max={mounted ? new Date().toISOString().split('T')[0] : undefined}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
