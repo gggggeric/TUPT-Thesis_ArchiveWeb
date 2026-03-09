@@ -193,7 +193,7 @@ const LandingPage: React.FC = () => {
                     <span className={`inline-block ${feat.textColor} font-black uppercase tracking-widest text-[10px] mb-4 px-3 py-1 rounded-full border ${feat.borderLight}`}>
                       {feat.badge}
                     </span>
-                    <p className="text-lg text-white/90 leading-relaxed font-medium">
+                    <p className="text-lg text-gray-800 leading-relaxed font-medium">
                       {feat.desc}
                     </p>
                   </div>

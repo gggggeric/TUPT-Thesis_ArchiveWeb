@@ -130,6 +130,7 @@ const Register: React.FC = () => {
                                     value={formData.fullName}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('fullName', e.target.value)}
                                     onKeyPress={handleKeyPress}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
@@ -143,6 +144,7 @@ const Register: React.FC = () => {
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('idNumber', e.target.value)}
                                     onKeyPress={handleKeyPress}
                                     maxLength={12}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
@@ -154,6 +156,7 @@ const Register: React.FC = () => {
                                     value={formData.birthdate}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('birthdate', e.target.value)}
                                     max={mounted ? new Date().toISOString().split('T')[0] : undefined}
+                                    suppressHydrationWarning={true}
                                 />
                             </div>
 
@@ -167,6 +170,7 @@ const Register: React.FC = () => {
                                         value={formData.password}
                                         onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
                                         onKeyPress={handleKeyPress}
+                                        suppressHydrationWarning={true}
                                     />
                                 </div>
 
@@ -179,6 +183,7 @@ const Register: React.FC = () => {
                                         value={formData.confirmPassword}
                                         onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange('confirmPassword', e.target.value)}
                                         onKeyPress={handleKeyPress}
+                                        suppressHydrationWarning={true}
                                     />
                                 </div>
                             </div>
