@@ -29,6 +29,7 @@ interface UserData {
     birthdate: string;
     age: number;
     avatar?: string;
+    profilePhoto?: string;
     department?: string;
     student_id?: string;
     createdAt: string;
@@ -52,6 +53,11 @@ const EditProfilePage = () => {
         confirmNewPassword: ''
     });
 
+    const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+    const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+
     useEffect(() => {
         const userData = localStorage.getItem('userData');
         const token = localStorage.getItem('token');
@@ -67,7 +73,61 @@ const EditProfilePage = () => {
             name: user.name,
             birthdate: user.birthdate ? new Date(user.birthdate).toISOString().split('T')[0] : ''
         }));
+        setCurrentPhoto(user.profilePhoto || null);
     }, [router]);
+
+    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedPhoto(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPhotoPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handlePhotoUpload = async (isSubmitting = false) => {
+        if (!selectedPhoto) return true;
+
+        setIsUploadingPhoto(true);
+        try {
+            const token = localStorage.getItem('token');
+            const uploadFormData = new FormData();
+            uploadFormData.append('photo', selectedPhoto);
+
+            const response = await fetch(`${API_BASE_URL}/user/profile-photo`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: uploadFormData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                if (!isSubmitting) toast.success('Profile photo updated!');
+                setCurrentPhoto(data.data.profilePhoto);
+                setPhotoPreview(null);
+                setSelectedPhoto(null);
+                
+                // Update local storage
+                localStorage.setItem('userData', JSON.stringify(data.data.user));
+                return true;
+            } else {
+                toast.error(data.message || 'Photo upload failed');
+                return false;
+            }
+        } catch (err) {
+            console.error('Photo upload error:', err);
+            toast.error('Failed to upload photo');
+            return false;
+        } finally {
+            setIsUploadingPhoto(false);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,6 +153,15 @@ const EditProfilePage = () => {
         setIsLoading(true);
 
         try {
+            // Automatically upload photo if one is selected
+            if (selectedPhoto) {
+                const photoSuccess = await handlePhotoUpload(true);
+                if (!photoSuccess) {
+                    setIsLoading(false);
+                    return;
+                }
+            }
+
             const userData = JSON.parse(localStorage.getItem('userData') || '{}');
             const token = localStorage.getItem('token');
 
@@ -157,7 +226,48 @@ const EditProfilePage = () => {
 
                 <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
-                    <div className="p-10 space-y-10 relative z-10">
+                    <div className="p-10 space-y-12 relative z-10">
+                        {/* Section: Profile Photo */}
+                        <div className="flex flex-col items-center justify-center space-y-6 pb-6 border-b border-gray-100">
+                            <div className="relative group">
+                                <div className="w-32 h-32 rounded-full border-4 border-red-50 shadow-xl overflow-hidden bg-gray-50 flex items-center justify-center relative transition-all group-hover:border-red-100">
+                                    {photoPreview || currentPhoto ? (
+                                        <img 
+                                            src={photoPreview || (currentPhoto?.startsWith('http') ? currentPhoto : `${API_BASE_URL}${currentPhoto}`)} 
+                                            alt="Profile" 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <FaUser className="text-4xl text-gray-200" />
+                                    )}
+                                    
+                                    <label className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white">
+                                        <FaCamera className="text-xl mb-1" />
+                                        <span className="text-[8px] font-black uppercase tracking-widest">Change</span>
+                                        <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
+                                    </label>
+                                </div>
+                                
+                                {selectedPhoto && (
+                                    <div className="absolute -bottom-2 -right-2 flex gap-2">
+                                        <button 
+                                            type="button"
+                                            onClick={() => { setSelectedPhoto(null); setPhotoPreview(null); }}
+                                            className="p-2 bg-white rounded-full shadow-lg text-gray-400 hover:text-red-500 transition-colors border border-gray-100"
+                                        >
+                                            <FaTimes className="text-[10px]" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="text-center">
+                                <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em] mb-1">Profile Picture</h3>
+                                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed max-w-[200px]">
+                                    JPG, PNG up to 2MB recommended
+                                </p>
+                            </div>
+                        </div>
+
                         {/* Section: Basic Information */}
                         <div className="space-y-6">
                             <h3 className="text-[11px] font-black text-red-700 uppercase tracking-[0.2em] border-b border-gray-100 pb-4">Personal Information</h3>

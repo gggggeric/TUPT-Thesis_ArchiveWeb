@@ -16,6 +16,7 @@ import {
 import CustomHeader from '@/components/Navigation/CustomHeader';
 import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
 import Footer from '@/components/Navigation/Footer';
+import API_BASE_URL from '@/lib/api';
 
 interface UserData {
     _id: string;
@@ -26,6 +27,7 @@ interface UserData {
     birthdate: string;
     age: number;
     avatar?: string;
+    profilePhoto?: string;
     department?: string;
     student_id?: string;
     createdAt: string;
@@ -58,6 +60,18 @@ const ProfilePage = () => {
         });
     };
 
+    const calculateAge = (birthdate: string) => {
+        if (!birthdate) return 'N/A';
+        const today = new Date();
+        const birthDate = new Date(birthdate);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    };
+
     return (
         <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
             {/* Background Glows */}
@@ -84,9 +98,8 @@ const ProfilePage = () => {
 
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
                             <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-gray-100 shadow-xl group-hover:scale-105 transition-transform duration-700">
-                                <div className="absolute inset-0 bg-gray-50/10 backdrop-blur-sm" />
                                 <img
-                                    src={user?.avatar || "/default-avatar.png"}
+                                    src={user?.profilePhoto ? (user.profilePhoto.startsWith('http') ? user.profilePhoto : `${API_BASE_URL}${user.profilePhoto}`) : (user?.avatar || "/default-avatar.png")}
                                     alt="Profile"
                                     className="w-full h-full object-cover"
                                 />
@@ -136,7 +149,7 @@ const ProfilePage = () => {
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                     <FaClock className="text-[#8b0000] opacity-80" /> Current Age
                                 </p>
-                                <p className="text-lg font-bold text-gray-800 group-hover:text-[#8b0000] transition-colors">{user.age || 'N/A'} Years Old</p>
+                                <p className="text-lg font-bold text-gray-800 group-hover:text-[#8b0000] transition-colors">{calculateAge(user.birthdate)} Years Old</p>
                                 <div className="w-8 h-0.5 bg-gray-200 mt-2 group-hover:w-full group-hover:bg-red-200 transition-all duration-500" />
                             </div>
 
@@ -148,31 +161,6 @@ const ProfilePage = () => {
                                     {user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear()}
                                 </p>
                                 <div className="w-8 h-0.5 bg-gray-200 mt-2 group-hover:w-full group-hover:bg-red-200 transition-all duration-500" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Account Details */}
-                    <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-xl">
-                        <h2 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
-                            <span className="w-2 h-2 bg-red-400 rounded-full" />
-                            Account Details
-                            <span className="h-px flex-1 bg-gray-100" />
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Department</p>
-                                <p className="text-sm font-bold text-gray-800 uppercase tracking-tight">{user?.department || 'Not Assigned'}</p>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Student ID</p>
-                                <p className="text-sm font-bold text-gray-800 uppercase tracking-tight">{user?.student_id || 'N/A'}</p>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Member Since</p>
-                                <p className="text-sm font-bold text-gray-800 uppercase tracking-tight">
-                                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A'}
-                                </p>
                             </div>
                         </div>
                     </div>
