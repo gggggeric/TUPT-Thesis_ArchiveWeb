@@ -11,7 +11,9 @@ import Footer from '@/components/Navigation/Footer';
 
 import DocumentsHero from './components/DocumentsHero';
 import UploadSection from './components/UploadSection';
+import HowItWorks from './components/HowItWorks';
 import AnalysisWorkspace, { AnalysisResult } from './components/AnalysisWorkspace';
+import DraftsList from './components/DraftsList';
 
 const DocumentsPage: React.FC = () => {
     const router = useRouter();
@@ -22,10 +24,42 @@ const DocumentsPage: React.FC = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
     const [mounted, setMounted] = useState(false);
+    const [drafts, setDrafts] = useState<any[]>([]);
 
     useEffect(() => {
         setMounted(true);
+        fetchDrafts();
     }, []);
+
+    const fetchDrafts = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/analysis-drafts`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setDrafts(data.data || []);
+            }
+        } catch (err) {
+            console.error('Fetch drafts error:', err);
+        }
+    };
+
+    const handleResumeDraft = (draft: any) => {
+        // Construct a pseudo-file object for the workspace
+        const mockFile = { name: draft.fileName } as File;
+        
+        const resumedResult: AnalysisResult = {
+            ...draft.originalResults,
+            pagesText: draft.localPagesText,
+            appliedIssueIds: draft.appliedIssueIds
+        };
+
+        setSelectedFile(mockFile);
+        setAnalysisResult(resumedResult);
+        toast.success(`Resumed analysis for ${draft.fileName}`);
+    };
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -91,42 +125,24 @@ const DocumentsPage: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                const categoryColors: Record<string, string> = {
-                    'Structure': '#f59e0b',       // Amber
-                    'Writing Style': '#8b5cf6',   // Purple
-                    'Academic Style': '#3b82f6',  // Blue
-                    'Grammar & Style': '#ec4899', // Pink
-                };
-
-                // Group the raw recommendations into our categorized structure
-                const grouped: Record<string, any[]> = {};
-                (data.recommendations || []).forEach((rec: any) => {
-                    if (!grouped[rec.category]) grouped[rec.category] = [];
-                    grouped[rec.category].push({
-                        title: rec.title,
-                        description: rec.description,
-                        suggestion: rec.suggestion,
-                        severity: rec.severity,
-                        pages: rec.pages
-                    });
-                });
-
-                const categories = Object.entries(grouped).map(([name, issues]) => ({
-                    name,
-                    color: categoryColors[name] || '#3f2b2b',
-                    issues,
-                }));
-
-                const totalIssues = (data.recommendations || []).length;
+                // If the backend already returns categories, use them directly
+                // Otherwise fallback to the local grouping logic
+                const categories = data.categories || [];
+                const wordCount = data.statistics?.wordCount || 0;
+                const sentenceCount = data.statistics?.sentenceCount || 0;
+                const paragraphCount = data.statistics?.paragraphCount || 0;
 
                 const mapped: AnalysisResult = {
                     overallScore: data.overallScore,
-                    totalIssues,
-                    wordCount: data.statistics?.wordCount,
-                    sentenceCount: data.statistics?.sentenceCount,
-                    paragraphCount: data.statistics?.paragraphCount,
+                    totalIssues: data.totalIssues || (data.recommendations || []).length,
+                    statistics: {
+                        wordCount,
+                        sentenceCount,
+                        paragraphCount,
+                        readabilityIndex: data.statistics?.readabilityIndex || 0
+                    },
                     categories,
-                    pagesText: data.pagesText,
+                    pagesText: data.pagesText || [],
                 };
 
                 setAnalysisResult(mapped);
@@ -161,19 +177,28 @@ const DocumentsPage: React.FC = () => {
                     <>
                         <DocumentsHero />
 
-                        <UploadSection
-                            isDragging={isDragging}
-                            selectedFile={selectedFile}
-                            isUploading={isUploading}
-                            fileInputRef={fileInputRef}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                            onFileSelect={handleFileSelect}
-                            onClearFile={() => setSelectedFile(null)}
-                            onUpload={handleUpload}
-                            onOpenSubmitModal={() => router.push('/documents/create')}
-                        />
+                        <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-10 px-6">
+                            <div className="space-y-12">
+                                <UploadSection
+                                    isDragging={isDragging}
+                                    selectedFile={selectedFile}
+                                    isUploading={isUploading}
+                                    fileInputRef={fileInputRef}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={handleDrop}
+                                    onFileSelect={handleFileSelect}
+                                    onClearFile={() => setSelectedFile(null)}
+                                    onUpload={handleUpload}
+                                    onOpenSubmitModal={() => router.push('/documents/create')}
+                                />
+                                <HowItWorks />
+                            </div>
+
+                            <div className="lg:border-l lg:border-white/10 lg:pl-10">
+                                <DraftsList drafts={drafts} onResume={handleResumeDraft} />
+                            </div>
+                        </div>
                     </>
                 ) : (
                     <div className="pt-8">
