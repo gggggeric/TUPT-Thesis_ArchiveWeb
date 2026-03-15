@@ -33,24 +33,30 @@ const Register: React.FC = () => {
 
     const handleInputChange = (field: keyof FormData, value: string): void => {
         if (field === 'idNumber') {
-            let formattedValue = value.replace(/[^a-zA-Z0-9]/g, '');
-            formattedValue = formattedValue.toUpperCase();
-
-            if (!formattedValue.startsWith('TUPT') && formattedValue.length > 0) {
-                formattedValue = 'TUPT' + formattedValue;
+            const val = value.toUpperCase();
+            if (val.length < formData.idNumber.length) {
+                setFormData(prev => ({ ...prev, idNumber: val }));
+                return;
             }
 
-            if (formattedValue.length > 4) {
-                formattedValue = formattedValue.slice(0, 4) + '-' + formattedValue.slice(4);
+            let clean = val.replace(/[^A-Z0-9]/g, '');
+            if (clean.length > 0 && !clean.startsWith('TUPT')) {
+                if (!'TUPT'.startsWith(clean)) {
+                    clean = 'TUPT' + clean;
+                }
             }
-            if (formattedValue.length > 7) {
-                formattedValue = formattedValue.slice(0, 7) + '-' + formattedValue.slice(7, 11);
+
+            let result = clean;
+            if (clean.length > 4) {
+                result = clean.slice(0, 4) + '-' + clean.slice(4);
             }
-            formattedValue = formattedValue.slice(0, 12);
-            value = formattedValue;
+            if (result.length > 7) {
+                result = result.slice(0, 7) + '-' + result.slice(7, 11);
+            }
+            setFormData(prev => ({ ...prev, idNumber: result.slice(0, 12) }));
+        } else {
+            setFormData(prev => ({ ...prev, [field]: value }));
         }
-
-        setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const validateIDNumber = (idNumber: string): boolean => {
@@ -114,9 +120,9 @@ const Register: React.FC = () => {
     return (
         <div className="min-h-screen bg-transparent flex flex-col font-sans">
             <CustomHeader isLanding={false} />
-            <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
+            <div className="flex-1 flex items-center justify-center pt-28 pb-12 px-6 relative overflow-hidden">
                 <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden relative z-10">
-                    <div className="p-4 md:p-8 pb-2">
+                    <div className="p-6 md:p-8 pb-2">
                         <h3 className="text-gray-900 text-sm font-bold mb-2 uppercase tracking-widest">Create Account</h3>
                         <div className="h-[1px] bg-gray-200 w-full mb-6" />
 

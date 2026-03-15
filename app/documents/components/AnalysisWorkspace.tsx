@@ -374,10 +374,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 h-[85vh] min-h-[850px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 lg:h-[85vh] lg:min-h-[850px]">
                 {/* Left Panel - Native Text Editor View */}
-                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl shadow-black/20 flex flex-col relative">
-                    <div className="bg-white/5 px-8 py-5 border-b border-white/10 flex items-center justify-between z-10">
+                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl shadow-black/20 flex flex-col relative h-[600px] lg:h-auto">
+                    <div className="bg-white/5 px-6 md:px-8 py-5 border-b border-white/10 flex items-center justify-between z-10">
                         <div className="flex items-center gap-3">
                             <FaFileAlt className="text-white/60" />
                             <span className="text-xs font-black uppercase tracking-widest text-white line-clamp-1">{file.name}</span>
@@ -394,14 +394,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                         )}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto bg-black/20 p-10 md:p-20 custom-scrollbar relative">
+                    <div className="flex-1 overflow-y-auto bg-black/20 p-6 md:p-10 lg:p-20 custom-scrollbar relative">
                         {fixSuccess && (
                             <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-green-500 text-white px-8 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 animate-bounce-subtle font-black uppercase text-[10px] tracking-widest">
                                 <FaCheckCircle />
                                 {fixSuccess}
                             </div>
                         )}
-                        <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 min-h-full mb-[30vh]">
+                        <div className="max-w-4xl mx-auto bg-white p-6 md:p-12 lg:p-20 rounded shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 min-h-full mb-[30vh]">
                             {localPagesText.length > 0 ? (
                                 localPagesText.map((page, idx) => (
                                     <div
@@ -532,9 +532,9 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                 </div>
 
                 {/* Right Panel - Analysis Findings */}
-                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 flex flex-col overflow-hidden">
+                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 flex flex-col overflow-hidden h-[600px] lg:h-auto">
                     {/* Header Score */}
-                    <div className="px-10 py-8 border-b border-white/10 bg-white/5 flex flex-col gap-4">
+                    <div className="px-6 md:px-10 py-6 md:py-8 border-b border-white/10 bg-white/5 flex flex-col gap-4">
                         <div className="flex items-center gap-6">
                             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center shadow-lg border border-white/20 shrink-0">
                                 <span className="text-2xl font-black text-[#fecaca]">{result.overallScore}</span>
@@ -557,7 +557,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                         )}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-10 bg-transparent custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-6 md:p-10 bg-transparent custom-scrollbar">
                         {/* Highlights Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-6">
                             {[
@@ -733,7 +733,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                     </div>
 
                     {/* Download Action Footer */}
-                    <div className="px-10 py-6 border-t border-white/10 bg-white/5 backdrop-blur-md">
+                    <div className="px-6 md:px-10 py-6 border-t border-white/10 bg-white/5 backdrop-blur-md">
                         <button
                             onClick={handleDownloadRefined}
                             disabled={appliedIssueIds.length === 0}

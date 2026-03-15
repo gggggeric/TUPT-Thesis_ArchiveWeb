@@ -416,15 +416,15 @@ const CustomHeader = ({
                             className="w-full h-full object-contain"
                         />
                     </div>
-                    <span className={`text-lg font-black tracking-tighter uppercase leading-none transition-colors duration-500 ${textClass}`}>
-                        TUPT-Thesis Archive
+                    <span className={`text-base md:text-lg font-black tracking-tighter uppercase leading-none transition-colors duration-500 hidden sm:inline ${textClass}`}>
+                        TUPT<span className="hidden lg:inline">-Thesis Archive</span>
                     </span>
                 </div>
             </div>
 
             {/* Centered Search Bar (Only if logged in and NOT admin) */}
             {(mounted && isLoggedIn && !isAdmin) && (
-                <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
+                <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[200px] sm:max-w-md lg:max-w-2xl px-2 sm:px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
                     <div
                         ref={searchContainerRef}
                         className="relative flex items-center"
@@ -435,8 +435,8 @@ const CustomHeader = ({
                             </div>
                             <input
                                 type="text"
-                                className={`w-full py-3 pl-11 pr-24 rounded-full border text-gray-800 text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/10 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
-                                placeholder="Search thesis titles, abstracts..."
+                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-full border text-gray-800 text-[11px] sm:text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/10 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
+                                placeholder="Search..."
                                 value={localSearchQuery}
                                 onChange={(e) => {
                                     setLocalSearchQuery(e.target.value);
@@ -460,12 +460,19 @@ const CustomHeader = ({
                                     </button>
                                 </div>
                                 <button
-                                    className={`ml-1 px-4 py-1.5 rounded-full bg-[#8b0000] text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-md active:scale-95 ${localSearchQuery ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}`}
+                                    className={`ml-1 px-4 py-1.5 rounded-full bg-[#8b0000] text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-md active:scale-95 hidden sm:block ${localSearchQuery ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}`}
                                     onClick={triggerFullSearch}
                                 >
                                     Search
                                 </button>
                                 <button
+                                    className={`ml-1 p-2 rounded-full bg-[#8b0000] text-white hover:bg-red-700 transition-all shadow-md active:scale-95 sm:hidden ${localSearchQuery ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                                    onClick={triggerFullSearch}
+                                    aria-label="Search"
+                                >
+                                    <FaSearch size={10} />
+                                </button>
+                               <button
                                     className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#8b0000]'}`}
                                     onClick={() => setShowFilters(!showFilters)}
                                     aria-label="Search filters"
@@ -596,7 +603,7 @@ const CustomHeader = ({
                     <>
                         <button
                             onClick={() => router.push('/login')}
-                            className={`hidden sm:block text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg transition-all relative group ${isTransparentPage && !scrolled ? 'text-white hover:bg-white/10' : 'text-white hover:bg-white/10'} ${pathname === '/login' ? 'bg-white/20' : ''}`}
+                            className={`text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg transition-all relative group ${isTransparentPage && !scrolled ? 'text-white hover:bg-white/10' : 'text-white hover:bg-white/10'} ${pathname === '/login' ? 'bg-white/20' : ''}`}
                         >
                             Sign In
                             {pathname === '/login' && <div className="absolute bottom-1 left-6 right-6 h-[2.5px] bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]" />}

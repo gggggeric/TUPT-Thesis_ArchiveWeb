@@ -255,7 +255,7 @@ const HomePage: React.FC = () => {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                         {/* Archive Size Card */}
                         <motion.div
                             className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 flex items-center justify-between group hover:border-red-200 hover:shadow-2xl transition-all duration-500"
@@ -395,7 +395,7 @@ const HomePage: React.FC = () => {
                         </div>
 
                         {/* Secondary Stats Area */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Recently Viewed */}
                             <div>
                                 <div className="flex items-center justify-between mb-6">

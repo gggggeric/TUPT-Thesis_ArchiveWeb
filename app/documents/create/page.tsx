@@ -73,7 +73,7 @@ const CreateDocumentPage: React.FC = () => {
                     <FaArrowLeft /> Back to Documents
                 </button>
 
-                <div className="bg-white rounded-[3rem] p-12 shadow-xl border border-gray-100 relative overflow-hidden">
+                <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 shadow-xl border border-gray-100 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
 
                     <div className="relative z-10 mb-12 border-b border-gray-100 pb-8">
@@ -148,7 +148,7 @@ const CreateDocumentPage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="pt-8 border-t border-gray-100 flex justify-end gap-6 mt-12">
+                        <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-4 sm:gap-6 mt-12">
                             <button
                                 type="button"
                                 onClick={() => router.push('/documents')}
@@ -159,7 +159,7 @@ const CreateDocumentPage: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`px-12 py-5 rounded-[1.5rem] bg-[#8b0000] text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-red-800 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-3 ${isSubmitting ? 'opacity-70 cursor-not-allowed transform-none' : ''}`}
+                                className={`w-full sm:w-auto px-12 py-5 rounded-[1.5rem] bg-[#8b0000] text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-red-800 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${isSubmitting ? 'opacity-70 cursor-not-allowed transform-none' : ''}`}
                             >
                                 {isSubmitting ? (
                                     <>

@@ -20,22 +20,28 @@ const Login: React.FC = () => {
     }, []);
 
     const handleInputChange = (value: string): void => {
-        let formattedValue = value.replace(/[^a-zA-Z0-9]/g, '');
-        formattedValue = formattedValue.toUpperCase();
-
-        if (!formattedValue.startsWith('TUPT') && formattedValue.length > 0) {
-            formattedValue = 'TUPT' + formattedValue;
+        const val = value.toUpperCase();
+        // If deleting, don't re-format aggressively to allow backspacing
+        if (val.length < idNumber.length) {
+            setIdNumber(val);
+            return;
         }
 
-        if (formattedValue.length > 4) {
-            formattedValue = formattedValue.slice(0, 4) + '-' + formattedValue.slice(4);
+        let clean = val.replace(/[^A-Z0-9]/g, '');
+        if (clean.length > 0 && !clean.startsWith('TUPT')) {
+            if (!'TUPT'.startsWith(clean)) {
+                clean = 'TUPT' + clean;
+            }
         }
-        if (formattedValue.length > 7) {
-            formattedValue = formattedValue.slice(0, 7) + '-' + formattedValue.slice(7, 11);
-        }
-        formattedValue = formattedValue.slice(0, 12);
 
-        setIdNumber(formattedValue);
+        let result = clean;
+        if (clean.length > 4) {
+            result = clean.slice(0, 4) + '-' + clean.slice(4);
+        }
+        if (result.length > 7) {
+            result = result.slice(0, 7) + '-' + result.slice(7, 11);
+        }
+        setIdNumber(result.slice(0, 12));
     };
 
     const validateIDNumber = (id: string): boolean => {

@@ -226,7 +226,7 @@ const EditProfilePage = () => {
 
                 <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
-                    <div className="p-10 space-y-12 relative z-10">
+                    <div className="p-6 md:p-10 space-y-12 relative z-10">
                         {/* Section: Profile Photo */}
                         <div className="flex flex-col items-center justify-center space-y-6 pb-6 border-b border-gray-100">
                             <div className="relative group">

@@ -27,6 +27,31 @@ export default function AdminUsersPage() {
         isAdmin: false
     });
 
+    const handleIDNumberChange = (value: string) => {
+        const val = value.toUpperCase();
+        // If deleting, don't re-format aggressively to allow backspacing
+        if (val.length < formData.idNumber.length) {
+            setFormData(prev => ({ ...prev, idNumber: val }));
+            return;
+        }
+
+        let clean = val.replace(/[^A-Z0-9]/g, '');
+        if (clean.length > 0 && !clean.startsWith('TUPT')) {
+            if (!'TUPT'.startsWith(clean)) {
+                clean = 'TUPT' + clean;
+            }
+        }
+
+        let result = clean;
+        if (clean.length > 4) {
+            result = clean.slice(0, 4) + '-' + clean.slice(4);
+        }
+        if (result.length > 7) {
+            result = result.slice(0, 7) + '-' + result.slice(7, 11);
+        }
+        setFormData(prev => ({ ...prev, idNumber: result.slice(0, 12) }));
+    };
+
     const fetchUsers = async (page: number, search: string = searchQuery) => {
         setLoading(true);
         try {
@@ -303,7 +328,7 @@ export default function AdminUsersPage() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-8 text-right">
-                                            <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                            <div className="flex items-center justify-end gap-3 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-x-4 lg:group-hover:translate-x-0">
                                                 <button
                                                     onClick={() => openEditModal(user)}
                                                     className="p-3 bg-white text-gray-400 hover:text-blue-600 rounded-xl shadow-lg border border-gray-100 hover:border-blue-100 transition-all hover:-translate-y-1"
@@ -378,14 +403,14 @@ export default function AdminUsersPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
                     <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsAddModalOpen(false)}></div>
                     <div className="relative bg-white w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
-                        <div className="p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                        <div className="p-6 md:p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
                             <div>
                                 <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-1">New User Entry</h2>
                                 <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Register technical system access</p>
                             </div>
                             <button onClick={() => setIsAddModalOpen(false)} className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-600 transition-all"><FaTimes /></button>
                         </div>
-                        <form onSubmit={handleCreateUser} className="p-10 space-y-6">
+                        <form onSubmit={handleCreateUser} className="p-6 md:p-10 space-y-6">
                             <div>
                                 <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Legal Identity / Full Name</label>
                                 <input
@@ -401,9 +426,10 @@ export default function AdminUsersPage() {
                                 <input
                                     type="text" required
                                     value={formData.idNumber}
-                                    onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                                    onChange={(e) => handleIDNumberChange(e.target.value)}
+                                    maxLength={12}
                                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                    placeholder="Enter ID reference"
+                                    placeholder="TUPT-XX-XXXX"
                                 />
                             </div>
                             <div>
@@ -455,14 +481,14 @@ export default function AdminUsersPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
                     <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsEditModalOpen(false)}></div>
                     <div className="relative bg-white w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
-                        <div className="p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white">
+                        <div className="p-6 md:p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white">
                             <div>
                                 <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-1">Modify User Profile</h2>
                                 <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest">Administrative credential override</p>
                             </div>
                             <button onClick={() => setIsEditModalOpen(false)} className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-all"><FaTimes /></button>
                         </div>
-                        <form onSubmit={handleUpdateUser} className="p-10 space-y-6">
+                        <form onSubmit={handleUpdateUser} className="p-6 md:p-10 space-y-6">
                             <div>
                                 <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Account Identity</label>
                                 <input
@@ -478,9 +504,10 @@ export default function AdminUsersPage() {
                                 <input
                                     type="text" required
                                     value={formData.idNumber}
-                                    onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                                    onChange={(e) => handleIDNumberChange(e.target.value)}
+                                    maxLength={12}
                                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
-                                    placeholder="ID number"
+                                    placeholder="TUPT-XX-XXXX"
                                 />
                             </div>
                             <div>

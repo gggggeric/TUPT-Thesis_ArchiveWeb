@@ -118,10 +118,10 @@ const LandingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: smoothEase }}
         >
-          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8 uppercase">
+          <h1 className="text-4xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8 uppercase">
             The Digital Archive of TUP Excellence
           </h1>
-          <p className="text-xl md:text-2xl text-white/70 font-medium mb-12 tracking-wide max-w-2xl mx-auto">
+          <p className="text-lg md:text-2xl text-white/70 font-medium mb-12 tracking-wide max-w-2xl mx-auto">
             A centralized repository for future-ready engineers. Store, search, and verify your research with institutional precision.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -129,19 +129,11 @@ const LandingPage: React.FC = () => {
               onClick={handleGetStarted}
               className="group bg-white text-[#8b0000] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl hover:bg-[#fecaca] transition-all flex items-center gap-4"
             >
-              Start Your Journey <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+              Start Your Journey
             </button>
           </div>
         </motion.div>
 
-        <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-white/50 cursor-pointer"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-        >
-          <FaChevronDown size={30} />
-        </motion.div>
       </section>
 
       {/* ════════════════════════════════════════════
@@ -181,7 +173,7 @@ const LandingPage: React.FC = () => {
                   variants={isEven ? fadeRight : fadeLeft}
                   transition={{ duration: 0.8, ease: smoothEase, delay: 0.15 }}
                 >
-                  <div className={`${feat.bgLight} rounded-[2.5rem] p-10 md:p-14 border ${feat.borderLight} relative overflow-hidden group`}>
+                  <div className={`${feat.bgLight} rounded-[2.5rem] p-6 sm:p-10 md:p-14 border ${feat.borderLight} relative overflow-hidden group`}>
                     <motion.div
                       className="w-20 h-20 rounded-2xl flex items-center justify-center mb-8 border"
                       style={{ backgroundColor: `${feat.color}10`, borderColor: `${feat.color}20` }}
@@ -243,7 +235,7 @@ const LandingPage: React.FC = () => {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  className="bg-white shadow-xl p-10 rounded-[2.5rem] border border-gray-100 hover:bg-[#8b0000] group transition-all duration-500"
+                  className="bg-white shadow-xl p-6 md:p-10 rounded-[2.5rem] border border-gray-100 hover:bg-[#8b0000] group transition-all duration-500"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false }}
@@ -328,7 +320,7 @@ const LandingPage: React.FC = () => {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className="bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:translate-y-[-10px] transition-all duration-500 border border-gray-100 flex flex-col justify-between h-full"
+                className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:translate-y-[-10px] transition-all duration-500 border border-gray-100 flex flex-col justify-between h-full"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3 }}

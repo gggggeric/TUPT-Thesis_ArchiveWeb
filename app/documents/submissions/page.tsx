@@ -39,7 +39,7 @@ const SubmissionsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-white selection:bg-[#8b0000] selection:text-white">
             <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
             <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
 
@@ -52,7 +52,7 @@ const SubmissionsPage: React.FC = () => {
             <main className="relative z-10 flex-1 w-full pt-32 px-6 max-w-6xl mx-auto pb-16">
                 <button
                     onClick={() => router.push('/documents')}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-gray-800 transition-colors mb-[-40px] ml-6 relative z-20"
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-[-40px] ml-6 relative z-20"
                 >
                     <FaArrowLeft /> Back to Workspace
                 </button>

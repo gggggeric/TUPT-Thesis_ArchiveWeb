@@ -14,6 +14,7 @@ interface Thesis {
     title?: string;
     abstract?: string;
     author?: string;
+    category?: string;
     filename?: string;
     year_range?: string;
     [key: string]: unknown;
@@ -249,7 +250,7 @@ const SearchResultContent = () => {
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-50 to-red-100/50 rounded-bl-full pointer-events-none -z-0" />
 
                                 <div className="p-6 md:p-8 relative z-10">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
                                                 <FaRobot className="text-red-500 text-xl" />
@@ -263,7 +264,7 @@ const SearchResultContent = () => {
                                         <button
                                             onClick={aiRecommendation ? () => setIsAiModalOpen(true) : handleRecommendByAi}
                                             disabled={isLoadingAi}
-                                            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed ${aiRecommendation ? 'bg-red-50 text-[#8b0000] border border-red-200 hover:bg-red-100' : 'bg-[#8b0000] text-white hover:bg-red-800'}`}
+                                            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto ${aiRecommendation ? 'bg-red-50 text-[#8b0000] border border-red-200 hover:bg-red-100' : 'bg-[#8b0000] text-white hover:bg-red-800'}`}
                                         >
                                             <FaMagic className={isLoadingAi ? 'animate-spin' : ''} />
                                             {isLoadingAi ? 'Generating Idea...' : aiRecommendation ? 'View Recommendation' : 'Recommend by AI'}
@@ -274,50 +275,99 @@ const SearchResultContent = () => {
                         )}
 
                         {singleThesis ? (
-                            /* Detail View */
-                            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 animate-fade-in">
-                                <div className="bg-gradient-to-r from-[#8b0000] to-[#660000] p-8 md:p-12 text-white">
-                                    <div className="flex items-center gap-3 mb-4 opacity-90">
-                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
-                                            {singleThesis.year_range || 'N/A'}
-                                        </span>
-                                        <span className="text-white/60">•</span>
-                                        <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest">
-                                            <FaFileAlt className="text-white/70" /> {singleThesis.id}
-                                        </span>
-                                    </div>
-                                    <h1 className="text-3xl md:text-5xl font-black mb-6 leading-tight drop-shadow-md">
-                                        {singleThesis.title}
-                                    </h1>
-                                    <div className="flex flex-wrap items-center gap-6">
-                                        <div className="flex items-center gap-3 bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm">
-                                            <FaUserGraduate className="text-xl text-red-200" />
-                                            <div>
-                                                <p className="text-[10px] text-white/50 font-bold uppercase tracking-tighter leading-none mb-1">Lead Author / Researchers</p>
-                                                <p className="font-bold text-sm tracking-wide">{extractAuthors(singleThesis)}</p>
+                            /* Document-Style Detail View */
+                            <div className="max-w-3xl mx-auto animate-fade-in pb-16">
+                                {/* Paper Stack Effect */}
+                                <div className="relative group/paper">
+                                    <div className="absolute inset-0 bg-white/5 rounded-3xl translate-y-6 translate-x-3 -rotate-2 transition-transform group-hover/paper:translate-y-8 group-hover/paper:rotate-[-3deg] duration-700" />
+                                    <div className="absolute inset-0 bg-white/10 rounded-3xl translate-y-3 translate-x-1.5 rotate-1 transition-transform group-hover/paper:translate-y-4 group-hover/paper:rotate-[2deg] duration-700" />
+                                    
+                                    <div className="relative bg-white text-gray-900 rounded-sm shadow-[0_30px_70px_rgba(0,0,0,0.4)] min-h-[850px] flex flex-col p-8 md:p-16 overflow-hidden">
+                                        {/* Paper Texture Overlay */}
+                                        <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/notebook.png')]" />
+                                        
+                                        {/* TUP Watermark */}
+                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] select-none">
+                                            <img src="/assets/tup-logo.png" alt="" className="w-[500px] h-[500px] object-contain rotate-[-15deg]" />
+                                        </div>
+
+                                        {/* Corner Detail (Staple Mark) */}
+                                        <div className="absolute top-8 left-8 w-12 h-4 bg-gray-200/50 rounded-sm -rotate-45 border border-gray-300 shadow-sm opacity-60" />
+
+                                        {/* Institutional Letterhead */}
+                                        <div className="flex flex-col items-center text-center border-b-4 border-double border-gray-900 pb-8 mb-12 relative">
+                                            <img src="/assets/tup-logo.png" alt="TUP Logo" className="w-20 h-20 mb-4 grayscale contrast-125" />
+                                            <h4 className="text-[12px] font-black uppercase tracking-[0.5em] text-gray-900 mb-1">Technological University of the Philippines</h4>
+                                            <h5 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">Taguig City Campus</h5>
+                                            <div className="w-32 h-1 bg-gray-900 mt-6 mb-3" />
+                                            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400">Office of the University Registrar • Digital Research Repository</p>
+                                            
+                                            {/* Official Archive Stamp */}
+                                            <div className="absolute top-0 right-0 rotate-[15deg] opacity-20 border-4 border-red-700 px-4 py-2 rounded-xl text-red-700 font-black text-xl uppercase tracking-tighter select-none">
+                                                Archived
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div className="p-8 md:p-12">
-                                    <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                                        <FaBookOpen className="text-red-600" /> Abstract Summary
-                                    </h2>
-                                    <div className="prose prose-invert max-w-none text-gray-700 leading-relaxed text-lg">
-                                        {singleThesis.abstract?.split('\n').map((para, i) => (
-                                            <p key={i} className="mb-4">{para}</p>
-                                        ))}
-                                    </div>
+                                        {/* Document Content */}
+                                        <div className="flex-grow flex flex-col relative z-10">
+                                            <div className="flex justify-between items-center mb-16">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Accession Number</span>
+                                                    <span className="text-xs font-mono font-black border-b border-gray-200">{singleThesis.id}</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Certification Date</span>
+                                                    <span className="text-xs font-black border-b border-gray-200">{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                                                </div>
+                                            </div>
 
-                                    <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-8 items-center text-gray-500">
-                                        <div>
-                                            <p className="text-[10px] font-black uppercase tracking-widest mb-1">Filename</p>
-                                            <p className="text-sm font-semibold text-gray-800">{singleThesis.filename}</p>
+                                            <div className="text-center mb-16 px-4">
+                                                <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1] uppercase tracking-tight mb-8 font-serif drop-shadow-sm">
+                                                    {singleThesis.title}
+                                                </h1>
+                                                <div className="flex items-center justify-center gap-4 mb-4">
+                                                    <div className="h-px bg-gray-200 flex-1" />
+                                                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400">Formal Thesis Extract</p>
+                                                    <div className="h-px bg-gray-200 flex-1" />
+                                                </div>
+                                                <p className="text-[12px] font-black uppercase tracking-[0.2em] text-gray-900 bg-gray-50 inline-block px-6 py-2 rounded-lg border border-gray-100">
+                                                    {singleThesis.category || 'Information Technology Department'}
+                                                </p>
+                                            </div>
+
+                                            <div className="mb-16">
+                                                <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-400 mb-8 flex items-center gap-4">
+                                                    Investigative Council
+                                                    <div className="h-px bg-gray-100 flex-grow" />
+                                                </h3>
+                                                <div className="flex flex-col items-center">
+                                                    <p className="text-xl md:text-2xl font-bold text-gray-900 leading-relaxed font-serif italic text-center drop-shadow-sm">
+                                                        {extractAuthors(singleThesis)}
+                                                    </p>
+                                                    <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 italic">Faculty of Computing and Engineering</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="relative">
+                                                <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-400 mb-8 flex items-center gap-4">
+                                                    Executive Abstract
+                                                    <div className="h-px bg-gray-100 flex-grow" />
+                                                </h3>
+                                                <div className="text-gray-700 leading-[2] text-[16px] font-medium text-justify space-y-8 font-serif">
+                                                    {singleThesis.abstract?.split('\n').map((para, i) => (
+                                                        <p key={i} className={i === 0 ? "first-letter:text-6xl first-letter:font-black first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:leading-[0.8] text-gray-900" : "indent-16"}>
+                                                            {para}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] font-black uppercase tracking-widest mb-1">Source</p>
-                                            <p className="text-sm font-semibold text-gray-800">Digital Archive Module</p>
+
+                                        {/* Official Integrity Mark */}
+                                        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-20 flex flex-col items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                                            <p className="text-[8px] font-black uppercase tracking-[1em] text-gray-900 mr-[-1em]">Institutional Security</p>
                                         </div>
                                     </div>
                                 </div>
@@ -388,7 +438,7 @@ const SearchResultContent = () => {
                             </div>
                             <div>
                                 <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1">AI Title Recommendation</h3>
-                                <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">Tailored to: "{query}"</p>
+                                <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">Tailored to: &quot;{query}&quot;</p>
                             </div>
                         </div>
 

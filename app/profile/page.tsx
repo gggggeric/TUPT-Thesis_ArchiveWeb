@@ -113,20 +113,22 @@ const ProfilePage = () => {
                     </button>
 
                     {/* Hero Profile Section */}
-                    <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-xl overflow-hidden relative group">
+                    <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 border border-gray-100 shadow-xl overflow-hidden relative group">
                         <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
                         <div className="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-gray-100 shadow-xl group-hover:scale-105 transition-transform duration-700">
-                                <img
-                                    src={user?.profilePhoto ? (user.profilePhoto.startsWith('http') ? user.profilePhoto : `${API_BASE_URL}${user.profilePhoto}`) : (user?.avatar || "/default-avatar.png")}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                            <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-gray-100 text-[#8b0000]">
-                                <FaCamera className="text-lg" />
+                            <div className="relative">
+                                <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-gray-100 shadow-xl group-hover:scale-105 transition-transform duration-700">
+                                    <img
+                                        src={user?.profilePhoto ? (user.profilePhoto.startsWith('http') ? user.profilePhoto : `${API_BASE_URL}${user.profilePhoto}`) : (user?.avatar || "/default-avatar.png")}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="absolute -bottom-2 -right-2 w-10 h-10 md:w-12 md:h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-gray-100 text-[#8b0000]">
+                                    <FaCamera className="text-base md:text-lg" />
+                                </div>
                             </div>
                             <div className="text-center md:text-left">
                                 <h1 className="text-3xl font-black tracking-tight mb-2 text-gray-900">{user.name}</h1>

@@ -18,13 +18,13 @@ interface MySubmissionsProps {
 
 const MySubmissions: React.FC<MySubmissionsProps> = ({ myTheses, onViewThesis, hasAnalysisOrFile }) => {
     return (
-        <section className="max-w-6xl mx-auto px-6 py-20 relative z-10">
-            <div className="flex items-center justify-between mb-12">
+        <section className="max-w-6xl mx-auto px-6 py-10 md:py-20 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12">
                 <div className="flex items-center gap-6">
                     <span className="w-2 h-10 bg-[#8b0000] rounded-full" />
                     <div>
-                        <h2 className="text-sm font-black text-gray-500 tracking-[0.3em] uppercase">My Submissions</h2>
-                        <h3 className="text-3xl font-black text-gray-900 tracking-tighter uppercase mt-1">My Research Entries</h3>
+                        <h2 className="text-sm font-black text-white/50 tracking-[0.3em] uppercase">My Submissions</h2>
+                        <h3 className="text-3xl font-black text-white tracking-tighter uppercase mt-1">My Research Entries</h3>
                     </div>
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-red-700 bg-red-50 px-5 py-2 rounded-full border border-red-100">
@@ -78,7 +78,7 @@ const MySubmissions: React.FC<MySubmissionsProps> = ({ myTheses, onViewThesis, h
                     ))}
                 </div>
             ) : !hasAnalysisOrFile && (
-                <div className="bg-white rounded-[3rem] p-20 text-center border border-gray-100 shadow-xl">
+                <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] p-10 md:p-20 text-center border border-gray-100 shadow-xl">
                     <div className="w-20 h-20 bg-gray-50 rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 border border-gray-100">
                         <FaLightbulb className="text-3xl text-gray-400" />
                     </div>
