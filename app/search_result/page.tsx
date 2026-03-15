@@ -36,6 +36,7 @@ const SearchResultContent = () => {
     // AI Feature States
     const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
     const [isLoadingAi, setIsLoadingAi] = useState(false);
+    const [isAiModalOpen, setIsAiModalOpen] = useState(false);
     const [savedPromptSuccess, setSavedPromptSuccess] = useState(false); useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -141,6 +142,7 @@ const SearchResultContent = () => {
 
             const data = await response.json();
             setAiRecommendation(data.recommendation);
+            setIsAiModalOpen(true);
 
             // Save the history to the backend for the user
             if (token) {
@@ -210,26 +212,26 @@ const SearchResultContent = () => {
                             {singleThesis ? (
                                 <button
                                     onClick={() => router.back()}
-                                    className="flex items-center gap-2 text-[#8b0000] font-black uppercase tracking-widest hover:underline transition-all bg-transparent border-none cursor-pointer"
+                                    className="flex items-center gap-2 text-red-300 hover:text-red-200 font-black uppercase tracking-widest hover:underline transition-all bg-transparent border-none cursor-pointer"
                                 >
                                     <FaArrowLeft className="text-xs" /> Back to Results
                                 </button>
                             ) : (
                                 <Link
                                     href="/home"
-                                    className="flex items-center gap-2 text-[#8b0000] font-black uppercase tracking-widest hover:underline transition-all"
+                                    className="flex items-center gap-2 text-red-300 hover:text-red-200 font-black uppercase tracking-widest hover:underline transition-all"
                                 >
                                     <FaArrowLeft className="text-xs" /> Back to Portal
                                 </Link>
                             )}
                             <div className="flex flex-wrap gap-3">
                                 {year && (
-                                    <span className="bg-[#8b0000]/10 text-[#8b0000] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                    <span className="bg-red-900/40 text-red-200 border border-red-300/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                                         Year: {year}
                                     </span>
                                 )}
                                 {category && (
-                                    <span className="bg-[#8b0000]/20 text-[#8b0000] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                    <span className="bg-red-900/40 text-red-200 border border-red-300/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                                         Dept: {category}
                                     </span>
                                 )}
@@ -243,54 +245,37 @@ const SearchResultContent = () => {
 
                         {/* AI Recommendation Feature for Search Queries */}
                         {!singleThesis && query && (
-                            <div className="mb-8 bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden animate-fade-in relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-50 to-[#8b0000]/10 rounded-bl-full pointer-events-none -z-0" />
+                            <div className="mb-8 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-50 to-red-100/50 rounded-bl-full pointer-events-none -z-0" />
 
                                 <div className="p-6 md:p-8 relative z-10">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-[#8b0000]/10 rounded-xl flex items-center justify-center">
-                                                <FaRobot className="text-[#8b0000] text-xl" />
+                                            <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
+                                                <FaRobot className="text-red-500 text-xl" />
                                             </div>
                                             <div>
-                                                <h3 className="text-lg font-black text-gray-800 tracking-tight">AI Title Recommendation</h3>
+                                                <h3 className="text-lg font-black text-gray-900 tracking-tight">AI Title Recommendation</h3>
                                                 <p className="text-xs text-gray-500 font-medium tracking-wide">Get a professional thesis title tailored to your search</p>
                                             </div>
                                         </div>
 
                                         <button
-                                            onClick={handleRecommendByAi}
+                                            onClick={aiRecommendation ? () => setIsAiModalOpen(true) : handleRecommendByAi}
                                             disabled={isLoadingAi}
-                                            className="flex items-center justify-center gap-2 bg-[#8b0000] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md hover:bg-red-800 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
+                                            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed ${aiRecommendation ? 'bg-red-50 text-[#8b0000] border border-red-200 hover:bg-red-100' : 'bg-[#8b0000] text-white hover:bg-red-800'}`}
                                         >
                                             <FaMagic className={isLoadingAi ? 'animate-spin' : ''} />
-                                            {isLoadingAi ? 'Generating Idea...' : 'Recommend by AI'}
+                                            {isLoadingAi ? 'Generating Idea...' : aiRecommendation ? 'View Recommendation' : 'Recommend by AI'}
                                         </button>
                                     </div>
-
-                                    {aiRecommendation && (
-                                        <div className="mt-4 animate-fade-in">
-                                            <div className="bg-white/5 border border-white/10 rounded-xl p-5 md:p-6 shadow-inner whitespace-pre-wrap text-sm text-white/80 font-medium leading-relaxed">
-                                                {aiRecommendation}
-                                            </div>
-                                            <div className="mt-4 flex justify-end">
-                                                <button
-                                                    onClick={handleSavePrompt}
-                                                    className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${savedPromptSuccess ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}`}
-                                                >
-                                                    <FaSave className={savedPromptSuccess ? 'text-green-600' : 'text-gray-500'} />
-                                                    {savedPromptSuccess ? 'Saved Locally!' : 'Save Prompt'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         )}
 
                         {singleThesis ? (
                             /* Detail View */
-                            <div className="bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/10 animate-fade-in">
+                            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 animate-fade-in">
                                 <div className="bg-gradient-to-r from-[#8b0000] to-[#660000] p-8 md:p-12 text-white">
                                     <div className="flex items-center gap-3 mb-4 opacity-90">
                                         <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
@@ -316,23 +301,23 @@ const SearchResultContent = () => {
                                 </div>
 
                                 <div className="p-8 md:p-12">
-                                    <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-3">
-                                        <FaBookOpen className="text-[#8b0000]" /> Abstract Summary
+                                    <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                        <FaBookOpen className="text-red-600" /> Abstract Summary
                                     </h2>
-                                    <div className="prose prose-invert max-w-none text-white/70 leading-relaxed text-lg">
+                                    <div className="prose prose-invert max-w-none text-gray-700 leading-relaxed text-lg">
                                         {singleThesis.abstract?.split('\n').map((para, i) => (
                                             <p key={i} className="mb-4">{para}</p>
                                         ))}
                                     </div>
 
-                                    <div className="mt-12 pt-8 border-t border-white/10 flex flex-wrap gap-8 items-center text-white/40">
+                                    <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-8 items-center text-gray-500">
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest mb-1">Filename</p>
-                                            <p className="text-sm font-semibold text-white/70">{singleThesis.filename}</p>
+                                            <p className="text-sm font-semibold text-gray-800">{singleThesis.filename}</p>
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest mb-1">Source</p>
-                                            <p className="text-sm font-semibold text-white/70">Digital Archive Module</p>
+                                            <p className="text-sm font-semibold text-gray-800">Digital Archive Module</p>
                                         </div>
                                     </div>
                                 </div>
@@ -344,39 +329,39 @@ const SearchResultContent = () => {
                                     <Link
                                         key={thesis.id}
                                         href={`/search_result?id=${thesis.id}`}
-                                        className="group bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/10 hover:border-[#fecaca]/30 hover:shadow-2xl transition-all duration-300"
+                                        className="group bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hover:border-red-200 hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
                                     >
                                         <div className="flex items-center justify-between mb-4">
                                             {thesis.year_range && thesis.year_range.toLowerCase() !== 'unknown' ? (
-                                                <span className="text-[10px] font-black text-[#8b0000] border border-[#8b0000]/20 px-2 py-0.5 rounded uppercase tracking-wider">
+                                                <span className="text-[10px] font-black text-red-600 border border-red-200 bg-red-50 px-2 py-0.5 rounded uppercase tracking-wider">
                                                     {thesis.year_range}
                                                 </span>
                                             ) : (
-                                                <span className="text-[10px] font-black text-gray-400 border border-gray-100 px-2 py-0.5 rounded uppercase tracking-wider bg-gray-50">
+                                                <span className="text-[10px] font-black text-gray-500 border border-gray-200 bg-gray-50 px-2 py-0.5 rounded uppercase tracking-wider">
                                                     Unknown
                                                 </span>
                                             )}
-                                            <FaUserGraduate className="text-gray-200 group-hover:text-[#8b0000]/20 transition-colors" />
+                                            <FaUserGraduate className="text-gray-300 group-hover:text-red-400 transition-colors" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 leading-tight group-hover:text-[#fecaca] transition-colors">
+                                        <h3 className="text-lg font-black text-gray-900 mb-3 line-clamp-2 leading-tight group-hover:text-red-700 transition-colors">
                                             {thesis.title}
                                         </h3>
-                                        <p className="text-xs text-white/50 line-clamp-3 mb-4 leading-relaxed italic">
+                                        <p className="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed font-medium">
                                             {thesis.abstract?.substring(0, 150)}...
                                         </p>
-                                        <div className="flex items-center gap-2 text-[10px] font-bold text-white/30 uppercase tracking-widest mt-auto">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mt-auto">
                                             <FaFileAlt /> {thesis.id}
                                         </div>
                                     </Link>
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-20 text-center bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl border border-white/10">
-                                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <FaFileAlt className="text-4xl text-white/20" />
+                            <div className="py-20 text-center bg-white rounded-3xl shadow-xl border border-gray-100">
+                                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <FaFileAlt className="text-4xl text-gray-300" />
                                 </div>
-                                <h2 className="text-2xl font-black text-white/40">No results found</h2>
-                                <p className="text-white/40 mt-2">Try adjusting your search or filters in the header.</p>
+                                <h2 className="text-2xl font-black text-gray-800">No results found</h2>
+                                <p className="text-gray-500 mt-2">Try adjusting your search or filters in the header.</p>
                                 <Link href="/home" className="inline-block mt-8 bg-[#8b0000] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-all">
                                     Return Home
                                 </Link>
@@ -385,6 +370,55 @@ const SearchResultContent = () => {
                     </div>
                 </div>
             </main>
+
+            {/* AI Recommendation Modal */}
+            {isAiModalOpen && aiRecommendation && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl relative">
+                        <button
+                            onClick={() => setIsAiModalOpen(false)}
+                            className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-full transition-colors z-10"
+                        >
+                            <FaTimes className="text-xl" />
+                        </button>
+                        
+                        <div className="flex items-center gap-4 mb-8 flex-shrink-0 relative z-10">
+                            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+                                <FaRobot className="text-red-500 text-3xl" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1">AI Title Recommendation</h3>
+                                <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">Tailored to: "{query}"</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 md:p-8 shadow-inner overflow-y-auto flex-grow relative z-10 custom-scrollbar">
+                            <div className="text-[15px] text-gray-800 font-medium leading-[1.8]">
+                                {aiRecommendation.split('\n').map((line, lineIndex) => (
+                                    <div key={lineIndex} className="min-h-[1.5em] mb-1">
+                                        {line.replace(/^\s*\*\s/, '• ').replace(/^\s*-\s/, '• ').split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                                            if (part.startsWith('**') && part.endsWith('**')) {
+                                                return <strong key={i} className="font-black text-gray-900 text-[16px]">{part.slice(2, -2)}</strong>;
+                                            }
+                                            return <span key={i}>{part}</span>;
+                                        })}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8 flex justify-end flex-shrink-0 relative z-10">
+                            <button
+                                onClick={handleSavePrompt}
+                                className={`flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-black tracking-wide uppercase transition-all shadow-lg hover:shadow-xl active:scale-95 ${savedPromptSuccess ? 'bg-green-100 text-green-700 border border-green-200 shadow-none' : 'bg-[#8b0000] text-white hover:bg-red-800'}`}
+                            >
+                                <FaSave className={savedPromptSuccess ? 'text-green-600 text-lg' : 'text-white text-lg'} />
+                                {savedPromptSuccess ? 'Saved Locally!' : 'Save Prompt to File'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>

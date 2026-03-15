@@ -17,7 +17,8 @@ import {
     FaTimes,
     FaQuestionCircle,
     FaFileUpload,
-    FaChartLine
+    FaChartLine,
+    FaSave
 } from 'react-icons/fa';
 import CustomHeader from '@/components/Navigation/CustomHeader';
 import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
@@ -79,9 +80,10 @@ const HomePage: React.FC = () => {
     // AI History
     const [aiHistory, setAiHistory] = useState<AiHistoryItem[]>([]);
     const [loadingAi, setLoadingAi] = useState(false);
-    const [expandedAiItems, setExpandedAiItems] = useState<Record<string, boolean>>({});
+    const [selectedAiItem, setSelectedAiItem] = useState<AiHistoryItem | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [clearAllModalOpen, setClearAllModalOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -184,11 +186,39 @@ const HomePage: React.FC = () => {
         }
     };
 
-    const toggleAiItem = (id: string) => {
-        setExpandedAiItems(prev => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
+    const confirmClearAllAiHistory = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`${API_BASE_URL}/user/ai-history`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setAiHistory([]);
+            } else {
+                alert('Failed to clear history');
+            }
+        } catch (err) {
+            console.error('Error clearing AI history:', err);
+            alert('An error occurred while clearing history.');
+        } finally {
+            setClearAllModalOpen(false);
+        }
+    };
+
+    const handleSavePrompt = () => {
+        if (!selectedAiItem) return;
+
+        // Create a blob and download it as a .txt file
+        const blob = new Blob([`Original Search Query: ${selectedAiItem.prompt}\n\nAI Recommended Structure:\n\n${selectedAiItem.recommendation}`], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `AI_Thesis_Recommendation_${selectedAiItem.prompt.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     return (
@@ -228,103 +258,106 @@ const HomePage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                         {/* Archive Size Card */}
                         <motion.div
-                            className="bg-white/5 backdrop-blur-md rounded-[2rem] p-8 shadow-2xl shadow-black/20 border border-white/10 flex items-center justify-between group hover:border-[#fecaca]/30 transition-all duration-500"
+                            className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 flex items-center justify-between group hover:border-red-200 hover:shadow-2xl transition-all duration-500"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] mb-1">Archive Size</p>
-                                <p className="text-4xl font-black text-white leading-none tracking-tighter">{thesisCount.toLocaleString()}</p>
-                                <p className="text-[10px] text-[#fecaca] font-black uppercase tracking-[0.1em] mt-3">Theses Indexed</p>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Archive Size</p>
+                                <p className="text-4xl font-black text-gray-900 leading-none tracking-tighter">{thesisCount.toLocaleString()}</p>
+                                <p className="text-[10px] text-red-500 font-black uppercase tracking-[0.1em] mt-3">Theses Indexed</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-[#8b0000] group-hover:border-[#8b0000] transition-all duration-500">
-                                <FaSearch className="text-2xl text-white/80 group-hover:text-white transition-all duration-500" />
+                            <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center border border-red-100 group-hover:bg-[#8b0000] group-hover:border-[#8b0000] transition-all duration-500">
+                                <FaSearch className="text-2xl text-red-400 group-hover:text-white transition-all duration-500" />
                             </div>
                         </motion.div>
 
                         {/* AI History Count Card */}
                         <motion.div
-                            className="bg-white/5 backdrop-blur-md rounded-[2rem] p-8 shadow-2xl shadow-black/20 border border-white/10 flex items-center justify-between group hover:border-purple-300/30 transition-all duration-500"
+                            className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 flex items-center justify-between group hover:border-purple-200 hover:shadow-2xl transition-all duration-500"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] mb-1">AI History</p>
-                                <p className="text-4xl font-black text-white leading-none tracking-tighter">{aiHistory.length}</p>
-                                <p className="text-[10px] text-purple-300 font-black uppercase tracking-[0.1em] mt-3">Recommendations</p>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">AI History</p>
+                                <p className="text-4xl font-black text-gray-900 leading-none tracking-tighter">{aiHistory.length}</p>
+                                <p className="text-[10px] text-purple-500 font-black uppercase tracking-[0.1em] mt-3">Recommendations</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:bg-purple-600 group-hover:border-purple-600 transition-all duration-500">
-                                <FaRobot className="text-2xl text-purple-300 group-hover:text-white transition-all duration-500" />
+                            <div className="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center border border-purple-100 group-hover:bg-purple-600 group-hover:border-purple-600 transition-all duration-500">
+                                <FaRobot className="text-2xl text-purple-400 group-hover:text-white transition-all duration-500" />
                             </div>
                         </motion.div>
 
                         {/* Recent Activity Count Card */}
                         <motion.div
-                            className="bg-white/5 backdrop-blur-md rounded-[2rem] p-8 shadow-2xl shadow-black/20 border border-white/10 flex items-center justify-between group hover:border-orange-300/30 transition-all duration-500"
+                            className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 flex items-center justify-between group hover:border-orange-200 hover:shadow-2xl transition-all duration-500"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] mb-1">Recently Viewed</p>
-                                <p className="text-4xl font-black text-white leading-none tracking-tighter">{recentTheses.length}</p>
-                                <p className="text-[10px] text-orange-300 font-black uppercase tracking-[0.1em] mt-3">Active Items</p>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Recently Viewed</p>
+                                <p className="text-4xl font-black text-gray-900 leading-none tracking-tighter">{recentTheses.length}</p>
+                                <p className="text-[10px] text-orange-500 font-black uppercase tracking-[0.1em] mt-3">Active Items</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20 group-hover:bg-orange-600 group-hover:border-orange-600 transition-all duration-500">
-                                <FaHistory className="text-2xl text-orange-300 group-hover:text-white transition-all duration-500" />
+                            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center border border-orange-100 group-hover:bg-orange-500 group-hover:border-orange-500 transition-all duration-500">
+                                <FaHistory className="text-2xl text-orange-400 group-hover:text-white transition-all duration-500" />
                             </div>
                         </motion.div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-24">
+                    <div className="space-y-12 mb-24">
                         {/* Main History Area */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <div className="w-full space-y-8">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-sm font-black text-white tracking-[0.2em] uppercase flex items-center gap-4">
                                     <span className="w-2 h-7 bg-[#fecaca] rounded-full" />
                                     AI Recommendation Log
                                 </h2>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-blue-300 bg-blue-900/40 px-4 py-1.5 rounded-full border border-blue-800/50 flex items-center gap-2">
-                                    <FaBrain /> AI Powered
-                                </span>
+                                <div className="flex items-center gap-3">
+                                    {aiHistory.length > 0 && (
+                                        <button 
+                                            onClick={() => setClearAllModalOpen(true)}
+                                            className="text-[10px] font-black uppercase tracking-widest text-red-300 hover:text-white bg-red-900/40 hover:bg-red-900/60 px-4 py-1.5 rounded-full border border-red-800/50 transition-colors"
+                                        >
+                                            Clear History
+                                        </button>
+                                    )}
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-300 bg-blue-900/40 px-4 py-1.5 rounded-full border border-blue-800/50 flex items-center gap-2">
+                                        <FaBrain /> AI Powered
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 overflow-hidden">
+                            <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl overflow-hidden">
                                 {loadingAi ? (
                                     <div className="p-12 text-center text-gray-400 text-sm font-medium">Loading AI history...</div>
                                 ) : aiHistory.length > 0 ? (
                                     <div className="divide-y divide-gray-50">
                                         {aiHistory.slice(0, 5).map((item) => {
-                                            const isExpanded = !!expandedAiItems[item._id];
                                             return (
-                                                <div key={item._id} className="p-8 hover:bg-white/10 transition-colors group relative">
+                                                <div key={item._id} className="p-8 hover:bg-gray-50 transition-colors group relative">
                                                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                                         <div className="flex-1 w-full">
                                                             <div
                                                                 className="flex items-center gap-3 mb-2 cursor-pointer group/title"
-                                                                onClick={() => toggleAiItem(item._id)}
+                                                                onClick={() => setSelectedAiItem(item)}
                                                             >
-                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isExpanded ? 'bg-white/20 text-blue-300' : 'bg-white/10 text-white/50 group-hover/title:bg-white/20 group-hover/title:text-blue-300'}`}>
+                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors bg-gray-100 text-gray-400 group-hover/title:bg-blue-50 group-hover/title:text-blue-500`}>
                                                                     <FaRobot />
                                                                 </div>
                                                                 <div className="flex-1">
-                                                                    <h3 className="text-sm font-black text-white tracking-tight group-hover/title:text-blue-300 transition-colors flex items-center gap-2">
+                                                                    <h3 className="text-sm font-black text-gray-900 tracking-tight group-hover/title:text-blue-600 transition-colors flex items-center gap-2">
                                                                         {item.prompt.length > 50 ? item.prompt.substring(0, 50) + '...' : item.prompt}
-                                                                        <span className="text-gray-400 text-[10px]">
-                                                                            {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+                                                                        <span className="text-gray-400 text-[10px] ml-1">
+                                                                            <FaArrowRight className="opacity-0 group-hover/title:opacity-100 transition-opacity translate-x-0 group-hover/title:translate-x-1" />
                                                                         </span>
                                                                     </h3>
                                                                     <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                                                                         {new Date(item.createdAt).toLocaleDateString()}
                                                                     </span>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-[2000px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                                <div className="bg-black/20 border border-white/5 rounded-xl p-5 shadow-inner whitespace-pre-wrap text-[13px] text-white/70 font-medium leading-relaxed ml-11">
-                                                                    {item.recommendation}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -361,16 +394,26 @@ const HomePage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Sidebar */}
-                        <div className="space-y-8">
+                        {/* Secondary Stats Area */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/* Recently Viewed */}
                             <div>
-                                <h2 className="text-xs font-black text-white tracking-[0.2em] uppercase flex items-center gap-3 mb-6">
-                                    <span className="w-1.5 h-6 bg-orange-500 rounded-full" />
-                                    Recent Views
-                                </h2>
-                                <div className="bg-gradient-to-br from-[#8b0000] to-[#500000] rounded-[2rem] p-8 shadow-2xl border border-white/10 text-white relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-[30px] -translate-y-1/2 translate-x-1/2" />
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-xs font-black text-white tracking-[0.2em] uppercase flex items-center gap-3">
+                                        <span className="w-1.5 h-6 bg-orange-500 rounded-full" />
+                                        Recent Views
+                                    </h2>
+                                    {recentTheses.length > 0 && (
+                                        <button 
+                                            onClick={clearHistory}
+                                            className="text-[10px] font-black uppercase tracking-widest text-orange-300 hover:text-white bg-orange-900/40 hover:bg-orange-900/60 px-4 py-1.5 rounded-full border border-orange-800/50 transition-colors"
+                                        >
+                                            Clear All
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 text-gray-900 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-[30px] -translate-y-1/2 translate-x-1/2" />
                                     <div className="relative z-10 space-y-6">
                                         {recentTheses.length > 0 ? (
                                             recentTheses.slice(0, 3).map((thesis) => (
@@ -379,14 +422,14 @@ const HomePage: React.FC = () => {
                                                     className="group/item cursor-pointer"
                                                     onClick={() => router.push(`/search_result?id=${thesis.id}`)}
                                                 >
-                                                    <p className="text-[9px] text-[#fecaca] font-black uppercase tracking-widest mb-1">{thesis.year || 'No Year'}</p>
-                                                    <h3 className="text-[13px] font-bold leading-tight line-clamp-2 group-hover/item:text-[#fecaca] transition-colors">{thesis.title}</h3>
-                                                    <div className="w-6 h-0.5 bg-white/10 mt-3 group-hover/item:w-full transition-all duration-500" />
+                                                    <p className="text-[9px] text-red-500 font-black uppercase tracking-widest mb-1">{thesis.year || 'No Year'}</p>
+                                                    <h3 className="text-[13px] font-bold leading-tight line-clamp-2 group-hover/item:text-red-700 transition-colors">{thesis.title}</h3>
+                                                    <div className="w-6 h-0.5 bg-gray-200 mt-3 group-hover/item:w-full group-hover/item:bg-red-200 transition-all duration-500" />
                                                 </div>
                                             ))
                                         ) : (
                                             <div className="py-4 text-center">
-                                                <p className="text-[10px] font-bold text-white/30">No history found</p>
+                                                <p className="text-[10px] font-bold text-gray-400">No history found</p>
                                             </div>
                                         )}
                                     </div>
@@ -399,16 +442,16 @@ const HomePage: React.FC = () => {
                                     <span className="w-1.5 h-6 bg-[#fecaca] rounded-full" />
                                     Archive Stats
                                 </h2>
-                                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 p-6">
+                                <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl p-6">
                                     <div className="space-y-4">
                                         {deptCounts.slice(0, 5).map((dept, idx) => (
                                             <div
                                                 key={dept.category + idx}
-                                                className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group"
+                                                className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group"
                                                 onClick={() => router.push(`/search_result?category=${encodeURIComponent(dept.category)}`)}
                                             >
-                                                <span className="text-[10px] font-black text-white/50 uppercase tracking-widest group-hover:text-[#fecaca] transition-colors">{dept.category}</span>
-                                                <span className="text-sm font-black text-white">{dept.count}</span>
+                                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-red-500 transition-colors">{dept.category}</span>
+                                                <span className="text-sm font-black text-gray-900">{dept.count}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -466,6 +509,96 @@ const HomePage: React.FC = () => {
                     </div>
                 )
             }
+
+            {/* Clear All Confirmation Modal */}
+            {
+                clearAllModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+                        <motion.div
+                            className="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl relative overflow-hidden"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-full pointer-events-none -z-0" />
+
+                            <div className="relative z-10 flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                    <FaTrash className="text-red-500 text-2xl" />
+                                </div>
+                                <h3 className="text-xl font-black text-gray-900 mb-2">Clear All History?</h3>
+                                <p className="text-sm text-gray-500 font-medium mb-8">
+                                    Are you sure you want to permanently clear all your AI title recommendations? This action cannot be undone.
+                                </p>
+
+                                <div className="flex w-full gap-3">
+                                    <button
+                                        onClick={() => setClearAllModalOpen(false)}
+                                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded-xl transition-colors text-sm"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={confirmClearAllAiHistory}
+                                        className="flex-1 bg-[#8b0000] hover:bg-red-800 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm"
+                                    >
+                                        Clear All
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )
+            }
+
+            {/* AI Recommendation Modal */}
+            {selectedAiItem && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl relative">
+                        <button
+                            onClick={() => setSelectedAiItem(null)}
+                            className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-full transition-colors z-10"
+                        >
+                            <FaTimes className="text-xl" />
+                        </button>
+                        
+                        <div className="flex items-center gap-4 mb-8 flex-shrink-0 relative z-10">
+                            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+                                <FaRobot className="text-red-500 text-3xl" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1">AI Title Recommendation</h3>
+                                <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">Tailored to: "{selectedAiItem.prompt}"</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 md:p-8 shadow-inner overflow-y-auto flex-grow relative z-10 custom-scrollbar">
+                            <div className="text-[15px] text-gray-800 font-medium leading-[1.8]">
+                                {selectedAiItem.recommendation.split('\n').map((line, lineIndex) => (
+                                    <div key={lineIndex} className="min-h-[1.5em] mb-1">
+                                        {line.replace(/^\s*\*\s/, '• ').replace(/^\s*-\s/, '• ').split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                                            if (part.startsWith('**') && part.endsWith('**')) {
+                                                return <strong key={i} className="font-black text-gray-900 text-[16px]">{part.slice(2, -2)}</strong>;
+                                            }
+                                            return <span key={i}>{part}</span>;
+                                        })}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8 flex justify-end flex-shrink-0 relative z-10">
+                            <button
+                                onClick={handleSavePrompt}
+                                className="flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-black tracking-wide uppercase transition-all shadow-lg hover:shadow-xl active:scale-95 bg-[#8b0000] text-white hover:bg-red-800"
+                            >
+                                <FaSave className="text-white text-lg" />
+                                Save Prompt to File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 };

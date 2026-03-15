@@ -208,7 +208,7 @@ const LandingPage: React.FC = () => {
       {/* ════════════════════════════════════════════
           WHY CHOOSE SECTION
       ════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-transparent overflow-hidden">
+      <section className="py-32 px-6 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-20">
             <motion.div
@@ -219,11 +219,11 @@ const LandingPage: React.FC = () => {
               variants={fadeLeft}
               transition={{ duration: 0.8, ease: smoothEase }}
             >
-              <span className="text-[#8b0000] font-black uppercase tracking-[0.3em] text-xs">Innovation First</span>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-white">
+              <span className="text-red-700 font-black uppercase tracking-[0.3em] text-xs">Innovation First</span>
+              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-gray-900">
                 WHY CHOOSE TUP THESIS ARCHIVE?
               </h2>
-              <p className="text-xl text-white/80 leading-relaxed font-semibold transition-colors">
+              <p className="text-xl text-gray-600 leading-relaxed font-semibold transition-colors">
                 We&apos;ve built more than just a storage system. It&apos;s a high-performance environment designed to protect institutional knowledge while making it accessible for the next generation of researchers.
               </p>
             </motion.div>
@@ -243,15 +243,15 @@ const LandingPage: React.FC = () => {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  className="bg-white/5 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/10 hover:bg-[#8b0000] group transition-all duration-500"
+                  className="bg-white shadow-xl p-10 rounded-[2.5rem] border border-gray-100 hover:bg-[#8b0000] group transition-all duration-500"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false }}
                   transition={{ delay: i * 0.1, duration: 0.5, ease: smoothEase }}
                 >
-                  <item.icon className="text-3xl text-[#fecaca] mb-6 group-hover:text-white transition-colors" />
-                  <h3 className="text-xl font-black mb-3 text-white group-hover:text-white uppercase tracking-tight">{item.title}</h3>
-                  <p className="text-sm text-white/70 group-hover:text-white font-bold leading-relaxed">{item.desc}</p>
+                  <item.icon className="text-3xl text-red-500 mb-6 group-hover:text-white transition-colors" />
+                  <h3 className="text-xl font-black mb-3 text-gray-900 group-hover:text-white uppercase tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-gray-600 group-hover:text-white/90 font-bold leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -291,11 +291,11 @@ const LandingPage: React.FC = () => {
                 viewport={{ once: false, amount: 0.4 }}
                 transition={{ delay: i * 0.15, duration: 0.7, ease: smoothEase }}
               >
-                <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-[#b91c1c] transition-all">
-                  <item.icon className="text-4xl text-[#fecaca]" />
+                <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-white transition-all shadow-xl">
+                  <item.icon className="text-4xl text-[#fecaca] group-hover:text-[#8b0000]" />
                 </div>
                 <h3 className="text-2xl font-black uppercase tracking-tight">{item.title}</h3>
-                <p className="text-white/50 font-bold leading-relaxed">{item.desc}</p>
+                <p className="text-white/80 font-bold leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -305,7 +305,7 @@ const LandingPage: React.FC = () => {
       {/* ════════════════════════════════════════════
           HOW IT WORKS SECTION
       ════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-transparent overflow-hidden">
+      <section className="py-32 px-6 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-24"
@@ -316,7 +316,7 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.8, ease: smoothEase }}
           >
             <span className="text-[#8b0000] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">System Workflow</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase">HOW DOES IT WORK?</h2>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-gray-900 uppercase">HOW DOES IT WORK?</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
@@ -328,16 +328,16 @@ const LandingPage: React.FC = () => {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className="bg-white/5 backdrop-blur-md p-10 rounded-[2.5rem] shadow-2xl shadow-black/20 hover:translate-y-[-10px] transition-all duration-500 border border-white/10 flex flex-col justify-between h-full"
+                className="bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:translate-y-[-10px] transition-all duration-500 border border-gray-100 flex flex-col justify-between h-full"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: smoothEase }}
               >
                 <div>
-                  <span className="text-6xl font-black text-white/10 mb-8 block leading-none">{item.step}</span>
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-4">{item.title}</h3>
-                  <p className="text-sm text-white/50 font-bold leading-relaxed">{item.desc}</p>
+                  <span className="text-6xl font-black text-gray-100 mb-8 block leading-none">{item.step}</span>
+                  <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight mb-4">{item.title}</h3>
+                  <p className="text-sm text-gray-500 font-bold leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
             ))}

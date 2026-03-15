@@ -30,16 +30,16 @@ const UploadSection: React.FC<UploadSectionProps> = ({
 }) => {
     return (
         <section className="max-w-4xl mx-auto px-6 mb-12 relative z-10 animate-slide-up">
-            <div className="bg-white/5 backdrop-blur-md rounded-[3rem] p-4 shadow-2xl shadow-black/20 border border-white/10 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent pointer-events-none" />
+            <div className="bg-white rounded-[3rem] p-4 shadow-xl border border-gray-100 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
 
                 <div
                     className={`relative border-2 border-dashed rounded-[2.5rem] p-12 transition-all duration-500 flex flex-col items-center justify-center text-center overflow-hidden
                         ${isDragging
-                            ? 'border-white/40 bg-white/10 scale-[0.99] shadow-inner'
-                            : 'border-white/10 hover:border-white/20 hover:bg-white/[0.02]'
+                            ? 'border-red-300 bg-red-50 scale-[0.99] shadow-inner'
+                            : 'border-gray-200 hover:border-red-200 hover:bg-gray-50'
                         }
-                        ${selectedFile ? 'border-transparent bg-gradient-to-br from-[#8b0000] to-[#500000]' : ''}
+                        ${selectedFile ? 'border-transparent bg-white shadow-md' : ''}
                     `}
                     onDragOver={onDragOver}
                     onDragLeave={onDragLeave}
@@ -48,13 +48,13 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                     {!selectedFile ? (
                         <div className="relative z-10 w-full max-w-sm mx-auto transform transition-transform duration-500 group-hover:scale-105">
                             <div className="w-24 h-24 mx-auto mb-8 relative">
-                                <div className="absolute inset-0 bg-white/10 rounded-full blur-xl animate-pulse" />
-                                <div className="relative w-full h-full bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl shadow-black/20 border border-white/20">
-                                    <FaCloudUploadAlt className={`text-4xl text-white transition-transform duration-500 ${isDragging ? '-translate-y-2' : ''}`} />
+                                <div className="absolute inset-0 bg-red-100 rounded-full blur-xl animate-pulse" />
+                                <div className="relative w-full h-full bg-white rounded-full flex items-center justify-center shadow-lg border border-red-100">
+                                    <FaCloudUploadAlt className={`text-4xl text-red-500 transition-transform duration-500 ${isDragging ? '-translate-y-2' : ''}`} />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-black text-white mb-3 tracking-tight uppercase">Upload Document</h3>
-                            <p className="text-white/40 text-xs font-bold leading-relaxed mb-8">
+                            <h3 className="text-xl font-black text-gray-900 mb-3 tracking-tight uppercase">Upload Document</h3>
+                            <p className="text-gray-500 text-xs font-bold leading-relaxed mb-8">
                                 Drag and drop your file here, or click to browse local files.
                             </p>
                             <input
@@ -66,46 +66,46 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                             />
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="w-full py-4 px-8 rounded-2xl bg-white text-[#8b0000] font-black text-[10px] uppercase tracking-[0.2em] shadow-lg border border-white/20 hover:bg-[#fecaca] transition-all hover:shadow-xl active:scale-95 flex items-center justify-center gap-3"
+                                className="w-full py-4 px-8 rounded-2xl bg-[#8b0000] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow hover:bg-red-800 transition-all active:scale-95 flex items-center justify-center gap-3"
                             >
                                 <FaUpload className="text-[10px]" /> Select File
                             </button>
-                            <p className="mt-6 text-[9px] font-black uppercase tracking-widest text-[#fecaca] bg-white/5 py-2 px-4 rounded-full inline-block border border-white/10">
+                            <p className="mt-6 text-[9px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 py-2 px-4 rounded-full inline-block border border-gray-200">
                                 PDF, DOCX, TXT up to 10MB
                             </p>
                         </div>
                     ) : (
                         <div className="w-full max-w-sm mx-auto text-center relative z-10">
-                            <div className="w-24 h-24 mx-auto mb-8 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/20">
-                                <FaFileAlt className="text-4xl text-white" />
+                            <div className="w-24 h-24 mx-auto mb-8 bg-red-50 rounded-3xl flex items-center justify-center shadow-md border border-red-100">
+                                <FaFileAlt className="text-4xl text-red-500" />
                             </div>
-                            <h3 className="text-white font-black text-xl mb-3 uppercase tracking-tight line-clamp-1" title={selectedFile.name}>
+                            <h3 className="text-gray-900 font-black text-xl mb-3 uppercase tracking-tight line-clamp-1" title={selectedFile.name}>
                                 {selectedFile.name}
                             </h3>
                             <div className="flex items-center justify-center gap-4 mb-10">
-                                <p className="text-white/60 text-[10px] font-black uppercase tracking-widest bg-black/20 px-4 py-1.5 rounded-full border border-white/10">
+                                <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest bg-gray-100 px-4 py-1.5 rounded-full border border-gray-200">
                                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                                 </p>
-                                <p className="text-white/60 text-[10px] font-black uppercase tracking-widest bg-black/20 px-4 py-1.5 rounded-full border border-white/10">
+                                <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest bg-gray-100 px-4 py-1.5 rounded-full border border-gray-200">
                                     Ready
                                 </p>
                             </div>
                             <div className="flex items-center gap-4 relative z-10">
                                 <button
-                                    className="p-4 rounded-2xl bg-black/20 text-white/60 hover:text-white hover:bg-black/40 transition-all border border-white/10 backdrop-blur-sm"
+                                    className="p-4 rounded-2xl bg-gray-50 text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-all border border-gray-200"
                                     onClick={(e) => { e.stopPropagation(); onClearFile(); }}
                                     title="Cancel"
                                 >
                                     <FaTimes />
                                 </button>
                                 <button
-                                    className={`flex-1 py-4 rounded-2xl bg-white text-[#8b0000] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl hover:bg-gray-50 transition-all flex items-center justify-center gap-3 ${isUploading ? 'opacity-90 cursor-wait' : 'hover:scale-[1.02] active:scale-95'}`}
+                                    className={`flex-1 py-4 rounded-2xl bg-[#8b0000] text-white font-black text-[10px] uppercase tracking-[0.3em] shadow hover:bg-red-800 transition-all flex items-center justify-center gap-3 ${isUploading ? 'opacity-90 cursor-wait' : 'active:scale-95'}`}
                                     onClick={(e) => { e.stopPropagation(); onUpload(); }}
                                     disabled={isUploading}
                                 >
                                     {isUploading ? (
                                         <>
-                                            <div className="w-3 h-3 border-2 border-[#8b0000]/20 border-t-[#8b0000] rounded-full animate-spin" />
+                                            <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                             Analyzing...
                                         </>
                                     ) : (
@@ -120,13 +120,13 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-6 px-4 pb-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                    <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+                    <p className="text-gray-500 text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                         System Online
                     </p>
                     <button
                         onClick={onOpenSubmitModal}
-                        className="text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/5 px-5 py-3 rounded-xl transition-colors flex items-center gap-2 border border-white/10"
+                        className="text-gray-600 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-gray-50 px-5 py-3 rounded-xl transition-colors flex items-center gap-2 border border-gray-200"
                     >
                         <FaUpload className="text-[10px]" /> Submit Final Thesis
                     </button>

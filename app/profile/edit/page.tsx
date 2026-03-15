@@ -145,27 +145,27 @@ const EditProfilePage = () => {
                 <div className="flex items-center justify-between mb-8">
                     <button
                         onClick={() => router.push('/profile')}
-                        className="flex items-center gap-2 text-white/40 font-black uppercase tracking-widest text-[10px] hover:text-white transition-all"
+                        className="flex items-center gap-2 text-gray-400 font-black uppercase tracking-widest text-[10px] hover:text-gray-700 transition-all"
                     >
                         <FaArrowLeft className="text-[8px]" /> Cancel Edit
                     </button>
-                    <h2 className="text-sm font-black text-white tracking-[0.2em] uppercase flex items-center gap-4">
+                    <h2 className="text-sm font-black text-gray-900 tracking-[0.2em] uppercase flex items-center gap-4">
                         <span className="w-2 h-7 bg-[#8b0000] rounded-full" />
                         Edit Profile Details
                     </h2>
                 </div>
 
-                <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-md rounded-[2.5rem] shadow-2xl shadow-black/20 border border-white/10 overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
                     <div className="p-10 space-y-10 relative z-10">
                         {/* Section: Basic Information */}
                         <div className="space-y-6">
-                            <h3 className="text-[11px] font-black text-[#fecaca] uppercase tracking-[0.2em] border-b border-white/10 pb-4">Personal Information</h3>
+                            <h3 className="text-[11px] font-black text-red-700 uppercase tracking-[0.2em] border-b border-gray-100 pb-4">Personal Information</h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
-                                        <FaUser className="text-[#fecaca]" /> Full Name
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                        <FaUser className="text-red-500" /> Full Name
                                     </label>
                                     <input
                                         type="text"
@@ -173,13 +173,13 @@ const EditProfilePage = () => {
                                         value={formData.name}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 focus:bg-white/10 transition-all text-white placeholder:text-white/20"
+                                        className="w-full bg-gray-50 border border-gray-200 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-200 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                         placeholder="Enter full name"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
-                                        <FaCalendarAlt className="text-[#fecaca]" /> Birth Date
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                        <FaCalendarAlt className="text-red-500" /> Birth Date
                                     </label>
                                     <input
                                         type="date"
@@ -187,7 +187,7 @@ const EditProfilePage = () => {
                                         value={formData.birthdate}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 focus:bg-white/10 transition-all text-white [color-scheme:dark]"
+                                        className="w-full bg-gray-50 border border-gray-200 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-200 focus:bg-white transition-all text-gray-900"
                                         max={new Date().toISOString().split('T')[0]}
                                     />
                                 </div>
@@ -196,15 +196,15 @@ const EditProfilePage = () => {
 
                         {/* Section: Security */}
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between border-b border-white/10 pb-4 text-white">
-                                <h3 className="text-[11px] font-black text-[#fecaca] uppercase tracking-[0.2em]">Security & Password</h3>
-                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest italic">Leave blank to keep current password</span>
+                            <div className="flex items-center justify-between border-b border-gray-100 pb-4 text-gray-900">
+                                <h3 className="text-[11px] font-black text-red-700 uppercase tracking-[0.2em]">Security & Password</h3>
+                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Leave blank to keep current password</span>
                             </div>
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
-                                        <FaLock className="text-[#fecaca]" /> Current Password
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                        <FaLock className="text-red-500" /> Current Password
                                     </label>
                                     <div className="relative">
                                         <input
@@ -212,13 +212,13 @@ const EditProfilePage = () => {
                                             name="currentPassword"
                                             value={formData.currentPassword}
                                             onChange={handleChange}
-                                            className="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 focus:bg-white/10 transition-all text-white placeholder:text-white/20"
+                                            className="w-full bg-gray-50 border border-gray-200 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-200 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                             placeholder="Required only for password change"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => togglePasswordVisibility('current')}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#8b0000] transition-colors p-2"
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8b0000] transition-colors p-2"
                                         >
                                             {showPasswords.current ? <FaEyeSlash /> : <FaEye />}
                                         </button>
@@ -227,7 +227,7 @@ const EditProfilePage = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                                             New Password
                                         </label>
                                         <div className="relative">
@@ -236,21 +236,21 @@ const EditProfilePage = () => {
                                                 name="newPassword"
                                                 value={formData.newPassword}
                                                 onChange={handleChange}
-                                                className="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 focus:bg-white/10 transition-all text-white placeholder:text-white/20"
+                                                className="w-full bg-gray-50 border border-gray-200 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-200 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                                 placeholder="New password"
                                                 minLength={6}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => togglePasswordVisibility('new')}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#8b0000] transition-colors p-2"
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8b0000] transition-colors p-2"
                                             >
                                                 {showPasswords.new ? <FaEyeSlash /> : <FaEye />}
                                             </button>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                                             Confirm New Password
                                         </label>
                                         <div className="relative">
@@ -259,14 +259,14 @@ const EditProfilePage = () => {
                                                 name="confirmNewPassword"
                                                 value={formData.confirmNewPassword}
                                                 onChange={handleChange}
-                                                className="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 focus:bg-white/10 transition-all text-white placeholder:text-white/20"
+                                                className="w-full bg-gray-50 border border-gray-200 px-5 py-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-200 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                                 placeholder="Confirm new password"
                                                 minLength={6}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => togglePasswordVisibility('confirm')}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#8b0000] transition-colors p-2"
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8b0000] transition-colors p-2"
                                             >
                                                 {showPasswords.confirm ? <FaEyeSlash /> : <FaEye />}
                                             </button>
@@ -278,18 +278,18 @@ const EditProfilePage = () => {
                     </div>
 
                     {/* Action Footer */}
-                    <div className="bg-white/5 p-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-center gap-4 backdrop-blur-md">
+                    <div className="bg-gray-50 p-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-center gap-4">
                         <button
                             type="button"
                             onClick={() => router.push('/profile')}
-                            className="w-full md:w-auto px-10 py-5 rounded-2xl bg-white/5 text-white/40 font-black uppercase tracking-[0.2em] text-[10px] border border-white/10 hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-3"
+                            className="w-full md:w-auto px-10 py-5 rounded-2xl bg-white text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] border border-gray-200 hover:bg-gray-100 hover:text-gray-900 transition-all flex items-center justify-center gap-3"
                         >
                             <FaTimes /> Discard Changes
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full md:w-auto px-10 py-5 rounded-2xl bg-white text-[#8b0000] font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-[#fecaca] transition-all active:scale-95 flex items-center justify-center gap-3 border-none disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full md:w-auto px-10 py-5 rounded-2xl bg-[#8b0000] text-white font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-red-800 transition-all active:scale-95 flex items-center justify-center gap-3 border-none disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <>
