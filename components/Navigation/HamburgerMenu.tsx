@@ -17,12 +17,14 @@ import {
     FaUpload
 } from 'react-icons/fa';
 import { IconType } from 'react-icons';
+import API_BASE_URL from '@/lib/api';
 
 interface UserData {
     name?: string;
     idNumber?: string;
     age?: number;
     isAdmin?: boolean;
+    profilePhoto?: string;
     [key: string]: unknown;
 }
 
@@ -110,8 +112,16 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                         onClick={handleProfileClick}
                     >
                         <div className="relative mb-4">
-                            <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center border-2 border-white/20 shadow-xl">
-                                <FaUser className="text-3xl text-white" />
+                            <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center border-2 border-white/20 shadow-xl overflow-hidden">
+                                {user?.profilePhoto ? (
+                                    <img 
+                                        src={user.profilePhoto.startsWith('http') ? user.profilePhoto : `${API_BASE_URL}${user.profilePhoto}`} 
+                                        alt="Profile" 
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <FaUser className="text-3xl text-white" />
+                                )}
                             </div>
                             <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-[#8b0000] flex items-center justify-center shadow-lg border-2 border-[#3f2b2b]">
                                 <FaEdit className="text-[10px] text-white" />
