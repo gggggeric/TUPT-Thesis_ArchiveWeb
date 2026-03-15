@@ -21,6 +21,7 @@ export default function AdminThesesPage() {
     // Form State
     const [formData, setFormData] = useState({
         title: '',
+        abstract: '',
         author: '',
         year_range: '',
         category: '',
@@ -100,7 +101,7 @@ export default function AdminThesesPage() {
             if (res.ok) {
                 toast.success('Thesis created successfully');
                 setIsAddModalOpen(false);
-                setFormData({ title: '', author: '', year_range: '', category: '', isApproved: true });
+                setFormData({ title: '', abstract: '', author: '', year_range: '', category: '', isApproved: true });
                 fetchTheses(1);
             } else {
                 const error = await res.json();
@@ -146,6 +147,7 @@ export default function AdminThesesPage() {
         setEditingThesis(thesis);
         setFormData({
             title: thesis.title,
+            abstract: thesis.abstract || '',
             author: thesis.author || '',
             year_range: thesis.year_range || '',
             category: thesis.category || '',
@@ -204,122 +206,129 @@ export default function AdminThesesPage() {
 
     if (loading && theses.length === 0 && !searchQuery) {
         return (
-            <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8b0000]"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#f8f9fa] flex flex-col">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white relative overflow-x-hidden">
+            {/* Background Glows */}
+            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#8b0000]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+
             <CustomHeader isLanding={false} />
 
-            <main className="flex-1 pt-24 pb-12 px-6 max-w-7xl mx-auto w-full">
+            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                    <div className="flex items-center gap-6">
                         <button
                             onClick={() => router.push('/admin')}
-                            className="p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
+                            className="p-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 text-white hover:bg-white/20 transition-all group"
                         >
-                            <FaArrowLeft className="text-gray-600" />
+                            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                         </button>
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Thesis Management</h1>
-                            <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Review and moderate archive entries</p>
+                            <h1 className="text-3xl font-black text-white tracking-tight mb-1">Thesis Moderation</h1>
+                            <p className="text-[11px] text-white/60 font-black uppercase tracking-[0.2em]">Manage and review platform archives</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="relative flex-1 md:w-64">
-                            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                        <div className="relative w-full sm:w-80">
+                            <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 text-sm" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search title or author..."
-                                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/10 focus:border-[#8b0000] shadow-sm font-bold text-sm transition-all"
+                                placeholder="Search by title or author..."
+                                className="w-full pl-12 pr-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-white/5 focus:border-white/20 shadow-xl font-bold text-sm transition-all placeholder:text-white/40 text-white"
                             />
                         </div>
                         <button
                             onClick={() => {
-                                setFormData({ title: '', author: '', year_range: '', category: '', isApproved: true });
+                                setFormData({ title: '', abstract: '', author: '', year_range: '', category: '', isApproved: true });
                                 setIsAddModalOpen(true);
                             }}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-[#8b0000] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#a00000] transition-colors shadow-lg shadow-red-900/20 whitespace-nowrap"
+                            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#8b0000] text-white rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-900/40 active:scale-95"
                         >
-                            <FaPlus /> Add New Thesis
+                            <FaPlus className="text-sm" /> Add New Entry
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+                <div className="bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden mb-10">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50/50">
-                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100">Thesis Title</th>
-                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100">Department</th>
-                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100">Status</th>
-                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100">Created</th>
-                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100 text-right">Actions</th>
+                                    <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100">Project Identification</th>
+                                    <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100">Category</th>
+                                    <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100">Status</th>
+                                    <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100">Date Logged</th>
+                                    <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100 text-right">Moderation</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {theses.length > 0 ? theses.map((thesis) => (
-                                    <tr key={thesis._id} className="hover:bg-gray-50/50 transition-colors group">
-                                        <td className="px-6 py-5 max-w-md">
-                                            <div className="flex items-start gap-3">
-                                                <div className={`mt-1 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${thesis.isApproved ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                                    <tr key={thesis._id} className="hover:bg-gray-50/30 transition-all group">
+                                        <td className="px-8 py-8 max-w-xl">
+                                            <div className="flex items-start gap-5">
+                                                <div className={`mt-1 w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm border ${thesis.isApproved ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                                                     <FaFileAlt />
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="font-bold text-gray-900 text-sm line-clamp-1">{thesis.title}</p>
-                                                    <div className="flex items-center gap-3 mt-1">
-                                                        <span className="text-[10px] text-gray-400 font-bold flex items-center gap-1 uppercase tracking-wider">
-                                                            <FaUserGraduate className="text-[8px]" /> {thesis.author || 'N/A'}
+                                                    <p className="font-black text-gray-900 text-sm mb-2 leading-tight group-hover:text-[#8b0000] transition-colors">{thesis.title}</p>
+                                                    <div className="flex flex-wrap items-center gap-4">
+                                                        <span className="text-[10px] text-gray-500 font-black flex items-center gap-2 uppercase tracking-widest">
+                                                            <FaUserGraduate className="text-[#8b0000]" /> {thesis.author || 'Anonymous'}
                                                         </span>
-                                                        <span className="text-[10px] text-gray-400 font-bold flex items-center gap-1 uppercase tracking-wider">
-                                                            <FaCalendarAlt className="text-[8px]" /> {thesis.year_range || 'N/A'}
+                                                        <span className="text-[10px] text-gray-500 font-black flex items-center gap-2 uppercase tracking-widest">
+                                                            <FaCalendarAlt className="text-[#8b0000]" /> {thesis.year_range || 'N/A'}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <span className="px-2 py-1 bg-gray-100 text-gray-500 font-black uppercase tracking-widest text-[9px] rounded-md">
-                                                {thesis.category || 'General'}
+                                        <td className="px-8 py-8">
+                                            <span className="px-4 py-1.5 bg-gray-100/50 text-gray-600 font-black uppercase tracking-widest text-[9px] rounded-full border border-gray-200 shadow-sm">
+                                                {thesis.category || 'Standard'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <span className={`px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit ${thesis.isApproved ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
-                                                {thesis.isApproved ? <FaCheckCircle /> : <FaTimesCircle />}
+                                        <td className="px-8 py-8">
+                                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${thesis.isApproved ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${thesis.isApproved ? 'bg-green-500' : 'bg-amber-500 animate-pulse'}`} />
                                                 {thesis.isApproved ? 'Approved' : 'Pending'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-5 text-xs font-bold text-gray-400">
-                                            {new Date(thesis.createdAt).toLocaleDateString()}
+                                        <td className="px-8 py-8">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-black text-gray-700">{new Date(thesis.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Automated Log</span>
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-5 text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <td className="px-8 py-8 text-right">
+                                            <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                                                 <button
                                                     onClick={() => openEditModal(thesis)}
-                                                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                    title="Edit Thesis"
+                                                    className="p-3 bg-white text-gray-400 hover:text-blue-600 rounded-xl shadow-lg border border-gray-100 hover:border-blue-100 transition-all hover:-translate-y-1"
+                                                    title="Edit Technical Details"
                                                 >
                                                     <FaEdit className="text-sm" />
                                                 </button>
                                                 <button
                                                     onClick={() => toggleApprovalStatus(thesis)}
-                                                    className={`p-2 rounded-lg transition-colors ${thesis.isApproved ? 'text-amber-600 hover:bg-amber-50' : 'text-green-600 hover:bg-green-50'}`}
-                                                    title={thesis.isApproved ? "Unapprove" : "Approve"}
+                                                    className={`p-3 bg-white rounded-xl shadow-lg border border-gray-100 transition-all hover:-translate-y-1 ${thesis.isApproved ? 'text-amber-600 hover:border-amber-100' : 'text-green-600 hover:border-green-100'}`}
+                                                    title={thesis.isApproved ? "Revoke Approval" : "Grant Approval"}
                                                 >
                                                     {thesis.isApproved ? <FaTimesCircle className="text-sm" /> : <FaCheckCircle className="text-sm" />}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteThesis(thesis._id)}
-                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                    title="Delete Thesis"
+                                                    className="p-3 bg-white text-gray-400 hover:text-red-700 rounded-xl shadow-lg border border-gray-100 hover:border-red-100 transition-all hover:-translate-y-1"
+                                                    title="Purge Entry"
                                                 >
                                                     <FaTrash className="text-sm" />
                                                 </button>
@@ -328,10 +337,12 @@ export default function AdminThesesPage() {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={5} className="px-6 py-20 text-center">
-                                            <div className="flex flex-col items-center gap-2 opacity-20">
-                                                <FaFileAlt className="text-4xl" />
-                                                <p className="font-black uppercase tracking-[0.2em] text-xs">No theses found</p>
+                                        <td colSpan={5} className="px-8 py-32 text-center">
+                                            <div className="flex flex-col items-center gap-4 opacity-20">
+                                                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    <FaFileAlt className="text-4xl" />
+                                                </div>
+                                                <p className="font-black uppercase tracking-[0.3em] text-[11px]">Archive is currently empty</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -343,22 +354,24 @@ export default function AdminThesesPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                            Page {currentPage} of {totalPages}
-                        </p>
-                        <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between bg-white/50 backdrop-blur-sm p-6 rounded-[2rem] border border-white/20">
+                        <div className="flex items-center gap-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                            <span className="px-3 py-1 bg-white rounded-full border border-gray-100 shadow-sm text-gray-900">Page {currentPage}</span>
+                            <span>of</span>
+                            <span>{totalPages} Total</span>
+                        </div>
+                        <div className="flex items-center gap-4">
                             <button
                                 disabled={currentPage === 1 || loading}
                                 onClick={() => fetchTheses(currentPage - 1)}
-                                className="p-2.5 bg-white rounded-xl border border-gray-100 shadow-sm text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                className="p-4 bg-white rounded-2xl border border-gray-100 shadow-xl text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-red-50 hover:text-[#8b0000] transition-all active:scale-90"
                             >
                                 <FaChevronLeft className="text-xs" />
                             </button>
                             <button
                                 disabled={currentPage === totalPages || loading}
                                 onClick={() => fetchTheses(currentPage + 1)}
-                                className="p-2.5 bg-white rounded-xl border border-gray-100 shadow-sm text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                className="p-4 bg-white rounded-2xl border border-gray-100 shadow-xl text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-red-50 hover:text-[#8b0000] transition-all active:scale-90"
                             >
                                 <FaChevronRight className="text-xs" />
                             </button>
@@ -369,77 +382,109 @@ export default function AdminThesesPage() {
 
             {/* Create Thesis Modal */}
             {isAddModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 pb-24">
-                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !isSubmitting && setIsAddModalOpen(false)}></div>
-                    <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                            <h2 className="text-lg font-black text-gray-900 tracking-tight">Add New Thesis</h2>
-                            <button onClick={() => setIsAddModalOpen(false)} className="text-gray-400 hover:text-gray-600"><FaTimes /></button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
+                    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsAddModalOpen(false)}></div>
+                    <div className="relative bg-white w-full max-w-2xl rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
+                        <div className="p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-1">New Thesis Log</h2>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Add technical documentation entry</p>
+                            </div>
+                            <button onClick={() => setIsAddModalOpen(false)} className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-600 transition-all"><FaTimes /></button>
                         </div>
-                        <form onSubmit={handleCreateThesis} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Thesis Title</label>
-                                <textarea
-                                    required
-                                    rows={2}
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm resize-none"
-                                    placeholder="Enter thesis title"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                        <form onSubmit={handleCreateThesis} className="p-10 space-y-8">
+                            <div className="space-y-6">
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Author</label>
+                                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Project Title</label>
                                     <input
-                                        type="text" required
-                                        value={formData.author}
-                                        onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="Author name"
+                                        required
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm shadow-sm"
+                                        placeholder="Electronic Thesis and Dissertation Archive..."
                                     />
                                 </div>
+                                
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Year Range</label>
-                                    <input
-                                        type="text" required
-                                        value={formData.year_range}
-                                        onChange={(e) => setFormData({ ...formData, year_range: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="e.g. 2023-2024"
+                                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Thesis Abstract</label>
+                                    <textarea
+                                        required
+                                        rows={8}
+                                        value={formData.abstract}
+                                        onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
+                                        className="w-full px-6 py-6 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm shadow-sm leading-relaxed resize-none"
+                                        placeholder="Detailed technical abstract goes here..."
                                     />
                                 </div>
-                            </div>
-                            <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Category / Department</label>
-                                <div className="relative">
-                                    <FaLayerGroup className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Lead Author</label>
+                                        <div className="relative">
+                                            <FaUserGraduate className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8b0000] opacity-50 text-sm" />
+                                            <input
+                                                type="text" required
+                                                value={formData.author}
+                                                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                                                className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm shadow-sm"
+                                                placeholder="Researcher name"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Academic Year</label>
+                                        <div className="relative">
+                                            <FaCalendarAlt className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8b0000] opacity-50 text-sm" />
+                                            <input
+                                                type="text" required
+                                                value={formData.year_range}
+                                                onChange={(e) => setFormData({ ...formData, year_range: e.target.value })}
+                                                className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm shadow-sm"
+                                                placeholder="e.g. 2024-2025"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Area of Study / Department</label>
+                                    <div className="relative">
+                                        <FaLayerGroup className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8b0000] opacity-50 text-sm" />
+                                        <input
+                                            type="text" required
+                                            value={formData.category}
+                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#8b0000]/5 focus:border-[#8b0000] transition-all font-bold text-sm shadow-sm"
+                                            placeholder="e.g. Mechanical Engineering"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-6 p-6 bg-[#8b0000]/5 rounded-[1.5rem] border border-red-900/10">
                                     <input
-                                        type="text" required
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="e.g. Computer Science"
+                                        type="checkbox"
+                                        id="isApproved"
+                                        checked={formData.isApproved}
+                                        onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
+                                        className="w-6 h-6 text-[#8b0000] rounded-[0.5rem] focus:ring-[#8b0000] border-gray-300"
                                     />
+                                    <div>
+                                        <label htmlFor="isApproved" className="block text-[11px] font-black text-red-900 uppercase tracking-widest mb-0.5">Automated Approval</label>
+                                        <p className="text-[9px] text-red-700/60 font-bold uppercase tracking-wider">Bypass moderation queue on creation</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <input
-                                    type="checkbox"
-                                    id="isApproved"
-                                    checked={formData.isApproved}
-                                    onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
-                                    className="w-4 h-4 text-[#8b0000] rounded focus:ring-[#8b0000]"
-                                />
-                                <label htmlFor="isApproved" className="text-xs font-black text-gray-700 uppercase tracking-widest">Mark as Approved</label>
+
+                            <div className="flex gap-4">
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex-1 py-5 bg-[#8b0000] text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-red-800 transition-all shadow-2xl shadow-red-900/30 disabled:opacity-50 active:scale-95"
+                                >
+                                    {isSubmitting ? 'Processing Submission...' : 'Publish Entry to Archive'}
+                                </button>
                             </div>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full py-4 bg-[#8b0000] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#a00000] transition-colors shadow-lg shadow-red-900/20 disabled:opacity-50"
-                            >
-                                {isSubmitting ? 'Creating...' : 'Create Thesis Entry'}
-                            </button>
                         </form>
                     </div>
                 </div>
@@ -447,77 +492,108 @@ export default function AdminThesesPage() {
 
             {/* Edit Thesis Modal */}
             {isEditModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 pb-24">
-                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !isSubmitting && setIsEditModalOpen(false)}></div>
-                    <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                            <h2 className="text-lg font-black text-gray-900 tracking-tight">Edit Thesis Entry</h2>
-                            <button onClick={() => setIsEditModalOpen(false)} className="text-gray-400 hover:text-gray-600"><FaTimes /></button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
+                    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsEditModalOpen(false)}></div>
+                    <div className="relative bg-white w-full max-w-3xl rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
+                        <div className="p-10 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white">
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-1">Update Technical Entry</h2>
+                                <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest">Administrative modification mode</p>
+                            </div>
+                            <button onClick={() => setIsEditModalOpen(false)} className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-all"><FaTimes /></button>
                         </div>
-                        <form onSubmit={handleUpdateThesis} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Thesis Title</label>
-                                <textarea
-                                    required
-                                    rows={2}
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm resize-none"
-                                    placeholder="Enter thesis title"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Author</label>
-                                    <input
-                                        type="text" required
-                                        value={formData.author}
-                                        onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="Author name"
-                                    />
+                        <form onSubmit={handleUpdateThesis} className="p-10 space-y-10">
+                            <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+                                <div className="lg:col-span-3 space-y-8">
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Project Title</label>
+                                        <textarea
+                                            required
+                                            rows={2}
+                                            value={formData.title}
+                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                            className="w-full px-6 py-5 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm shadow-sm leading-tight resize-none"
+                                            placeholder="Revised Project Title..."
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Detailed Abstract</label>
+                                        <textarea
+                                            required
+                                            rows={12}
+                                            value={formData.abstract}
+                                            onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
+                                            className="w-full px-6 py-6 bg-gray-50 border border-gray-100 rounded-[2.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm shadow-sm leading-relaxed resize-none"
+                                            placeholder="Modified abstract content..."
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Year Range</label>
-                                    <input
-                                        type="text" required
-                                        value={formData.year_range}
-                                        onChange={(e) => setFormData({ ...formData, year_range: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="e.g. 2023-2024"
-                                    />
+
+                                <div className="lg:col-span-2 space-y-8">
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">Technical Metadata</label>
+                                        <div className="space-y-6">
+                                            <div className="relative">
+                                                <FaUserGraduate className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-600 opacity-50 text-sm" />
+                                                <input
+                                                    type="text" required
+                                                    value={formData.author}
+                                                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                                                    className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
+                                                    placeholder="Author"
+                                                />
+                                            </div>
+                                            <div className="relative">
+                                                <FaCalendarAlt className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-600 opacity-50 text-sm" />
+                                                <input
+                                                    type="text" required
+                                                    value={formData.year_range}
+                                                    onChange={(e) => setFormData({ ...formData, year_range: e.target.value })}
+                                                    className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
+                                                    placeholder="Year"
+                                                />
+                                            </div>
+                                            <div className="relative">
+                                                <FaLayerGroup className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-600 opacity-50 text-sm" />
+                                                <input
+                                                    type="text" required
+                                                    value={formData.category}
+                                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                                    className="w-full pl-14 pr-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
+                                                    placeholder="Category"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-6 bg-blue-50 rounded-[2rem] border border-blue-100">
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <input
+                                                type="checkbox"
+                                                id="isApprovedEdit"
+                                                checked={formData.isApproved}
+                                                onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
+                                                className="w-5 h-5 text-blue-600 rounded-[0.4rem] focus:ring-blue-500"
+                                            />
+                                            <label htmlFor="isApprovedEdit" className="text-[11px] font-black text-blue-800 uppercase tracking-widest">Verified Status</label>
+                                        </div>
+                                        <p className="text-[9px] text-blue-600/70 font-bold uppercase tracking-wider leading-relaxed">
+                                            Manually override the verification status of this archival entry.
+                                        </p>
+                                    </div>
+
+                                    <div className="pt-4">
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-2xl shadow-blue-900/30 disabled:opacity-50 active:scale-95"
+                                        >
+                                            {isSubmitting ? 'Saving...' : 'Update Archive'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Category / Department</label>
-                                <div className="relative">
-                                    <FaLayerGroup className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
-                                    <input
-                                        type="text" required
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b0000]/20 focus:border-[#8b0000] transition-all font-bold text-sm"
-                                        placeholder="e.g. Computer Science"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <input
-                                    type="checkbox"
-                                    id="isApprovedEdit"
-                                    checked={formData.isApproved}
-                                    onChange={(e) => setFormData({ ...formData, isApproved: e.target.checked })}
-                                    className="w-4 h-4 text-[#8b0000] rounded focus:ring-[#8b0000]"
-                                />
-                                <label htmlFor="isApprovedEdit" className="text-xs font-black text-gray-700 uppercase tracking-widest">Mark as Approved</label>
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-colors shadow-lg shadow-blue-900/20 disabled:opacity-50"
-                            >
-                                {isSubmitting ? 'Updating...' : 'Save Changes'}
-                            </button>
                         </form>
                     </div>
                 </div>

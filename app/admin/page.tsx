@@ -90,69 +90,83 @@ export default function AdminPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#f8f9fa] flex flex-col">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
+            {/* Background Glows */}
+            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#8b0000]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#8b0000]/5 rounded-full blur-[100px] pointer-events-none" />
+
             <CustomHeader isLanding={false} />
 
-            <main className="flex-1 pt-24 pb-12 px-6 max-w-7xl mx-auto w-full">
+            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
-                <div className="bg-white rounded-2xl shadow-sm p-8 mb-8 border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-[#8b0000]/10 rounded-2xl flex items-center justify-center">
-                            <FaUserShield className="text-3xl text-[#8b0000]" />
+                <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-10 mb-10 border border-gray-100 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50" />
+                    
+                    <div className="relative z-10 flex items-center gap-6">
+                        <div className="w-20 h-20 bg-[#8b0000] rounded-[1.5rem] flex items-center justify-center shadow-lg shadow-red-900/20 group-hover:scale-105 transition-transform duration-500">
+                            <FaUserShield className="text-3xl text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Admin Dashboard</h1>
-                            <p className="text-gray-500 font-medium">Welcome back, <span className="text-[#8b0000]">{adminData?.name}</span></p>
+                            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-1">Admin Dashboard</h1>
+                            <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">
+                                Welcome back, <span className="text-[#8b0000]">{adminData?.name}</span>
+                            </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="px-4 py-2 bg-green-50 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider border border-green-100">
+                    <div className="relative z-10 flex items-center gap-3">
+                        <div className="flex items-center gap-2 px-6 py-3 bg-green-50 text-green-700 text-[10px] font-black rounded-full uppercase tracking-widest border border-green-100 shadow-sm">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             System Online
-                        </span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
                     {statsCards.map((stat, idx) => (
                         <div
                             key={idx}
                             onClick={() => router.push(stat.label === 'Total Users' ? '/admin/users' : '/admin/theses')}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer hover:-translate-y-1 active:scale-[0.98]"
+                            className="bg-white/90 backdrop-blur-md rounded-[2rem] p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all cursor-pointer hover:-translate-y-2 active:scale-[0.98] group relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-gray-50 rounded-xl">
-                                    {stat.icon}
+                            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-gray-50/30 pointer-events-none" />
+                            <div className="relative z-10 flex items-center justify-between mb-6">
+                                <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-red-50 transition-colors">
+                                    <span className="text-2xl">{stat.icon}</span>
                                 </div>
-                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${stat.label === 'Pending Approvals' && stats.pending > 0 ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
-                                    {stat.label === 'Pending Approvals' && stats.pending > 0 ? 'Attention' : 'Optimal'}
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${stat.label === 'Pending Approvals' && stats.pending > 0 
+                                    ? 'bg-amber-50 text-amber-700 border-amber-100' 
+                                    : 'bg-green-50 text-green-700 border-green-100'}`}>
+                                    {stat.label === 'Pending Approvals' && stats.pending > 0 ? 'Action Required' : 'Optimal'}
                                 </span>
                             </div>
-                            <h3 className="text-3xl font-black text-gray-900 mb-1">{stat.value}</h3>
-                            <p className="text-sm font-black text-gray-500 uppercase tracking-widest">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">{stat.value}</h3>
+                            <p className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">{stat.label}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Analytics Chart */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
-                    <div className="flex items-center justify-between mb-8">
+                <div className="bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-xl border border-gray-100 p-10 mb-10 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent to-gray-50/20 pointer-events-none" />
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
                         <div>
-                            <h2 className="text-lg font-black text-gray-900 tracking-tight">Growth Analytics</h2>
-                            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">Last 6 Months Activity</p>
+                            <h2 className="text-xl font-black text-gray-900 tracking-tight mb-2">Growth Analytics</h2>
+                            <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em]">Platform activity metrics</p>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-[#8b0000]"></span>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Theses</span>
+                                <span className="w-2 h-2 rounded-full bg-[#8b0000]"></span>
+                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Theses</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Users</span>
+                                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Users</span>
                             </div>
                         </div>
                     </div>
-                    <div className="h-[300px] w-full">
+                    <div className="h-[350px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={chartData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
@@ -160,21 +174,23 @@ export default function AdminPage() {
                                     dataKey="name"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#9ca3af' }}
-                                    dy={10}
+                                    tick={{ fontSize: 10, fontWeight: 800, fill: '#adb5bd' }}
+                                    dy={15}
                                 />
                                 <YAxis
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#9ca3af' }}
+                                    tick={{ fontSize: 10, fontWeight: 800, fill: '#adb5bd' }}
                                 />
                                 <Tooltip
                                     contentStyle={{
-                                        borderRadius: '12px',
-                                        border: 'none',
-                                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                                        fontSize: '12px',
-                                        fontWeight: 'bold'
+                                        borderRadius: '1.5rem',
+                                        border: '1px solid #f1f3f5',
+                                        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+                                        fontSize: '11px',
+                                        fontWeight: '800',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em'
                                     }}
                                 />
                                 <Line
@@ -182,16 +198,16 @@ export default function AdminPage() {
                                     dataKey="theses"
                                     stroke="#8b0000"
                                     strokeWidth={4}
-                                    dot={{ r: 4, fill: '#8b0000', strokeWidth: 2, stroke: '#fff' }}
-                                    activeDot={{ r: 6, strokeWidth: 0 }}
+                                    dot={{ r: 5, fill: '#8b0000', strokeWidth: 3, stroke: '#fff' }}
+                                    activeDot={{ r: 7, strokeWidth: 0 }}
                                 />
                                 <Line
                                     type="monotone"
                                     dataKey="users"
                                     stroke="#3b82f6"
                                     strokeWidth={4}
-                                    dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }}
-                                    activeDot={{ r: 6, strokeWidth: 0 }}
+                                    dot={{ r: 5, fill: '#3b82f6', strokeWidth: 3, stroke: '#fff' }}
+                                    activeDot={{ r: 7, strokeWidth: 0 }}
                                 />
                             </LineChart>
                         </ResponsiveContainer>
@@ -199,61 +215,71 @@ export default function AdminPage() {
                 </div>
 
                 {/* Quick Actions / Content Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div className="bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden min-h-[500px] flex flex-col">
+                        <div className="p-8 border-b border-gray-100 flex items-center justify-between">
                             <h2 className="font-black text-gray-900 tracking-tight">Recent Activity</h2>
-                            <button className="text-[#8b0000] text-xs font-bold flex items-center gap-1 hover:underline">
-                                View All <FaArrowRight className="text-[10px]" />
+                            <button className="text-[#8b0000] text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:translate-x-1 transition-transform">
+                                Full View <FaArrowRight className="text-[10px]" />
                             </button>
                         </div>
-                        <div className="p-6 space-y-4">
+                        <div className="p-8 space-y-6 flex-1">
                             {recentActivity.length > 0 ? (
                                 recentActivity.map((thesis: any) => (
-                                    <div key={thesis._id} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-gray-100">
-                                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-[#8b0000]/10 transition-colors">
-                                            <FaFileAlt className="text-gray-400 group-hover:text-[#8b0000]" />
+                                    <div key={thesis._id} className="flex items-center gap-5 p-4 hover:bg-gray-50/80 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-gray-100 hover:shadow-sm">
+                                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center group-hover:bg-[#8b0000] transition-all duration-300">
+                                            <FaFileAlt className="text-gray-400 group-hover:text-white transition-colors" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-bold text-gray-800 line-clamp-1">{thesis.title}</p>
-                                            <div className="flex items-center gap-2 mt-0.5">
-                                                <span className={`text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded ${thesis.isApproved ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                                            <p className="text-sm font-black text-gray-800 line-clamp-1 group-hover:text-[#8b0000] transition-colors">{thesis.title}</p>
+                                            <div className="flex items-center gap-3 mt-1.5">
+                                                <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${thesis.isApproved ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
                                                     {thesis.isApproved ? 'Approved' : 'Pending'}
                                                 </span>
-                                                <p className="text-[10px] text-gray-500 font-bold flex items-center gap-1">
-                                                    <FaClock className="text-[9px]" /> {new Date(thesis.createdAt).toLocaleDateString()}
+                                                <p className="text-[9px] text-gray-400 font-bold flex items-center gap-1.5 uppercase tracking-widest">
+                                                    <FaClock className="text-[8px]" /> {new Date(thesis.createdAt).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div className="py-12 flex flex-col items-center justify-center text-gray-400">
-                                    <FaFileAlt className="text-4xl mb-3 opacity-20" />
-                                    <p className="text-sm font-bold">No recent thesis uploads found</p>
+                                <div className="h-full flex flex-col items-center justify-center text-gray-300 py-12">
+                                    <FaFileAlt className="text-5xl mb-4 opacity-10" />
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em]">Queue is empty</p>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-6 border-b border-gray-100">
-                            <h2 className="font-black text-gray-900 tracking-tight">Admin Controls</h2>
+                    <div className="bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col">
+                        <div className="p-8 border-b border-gray-100">
+                            <h2 className="font-black text-gray-900 tracking-tight">Governance</h2>
                         </div>
-                        <div className="p-6 grid grid-cols-2 gap-4">
+                        <div className="p-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <button
                                 onClick={() => router.push('/admin/users')}
-                                className="p-4 bg-gray-50 hover:bg-[#8b0000]/5 rounded-xl border border-gray-100 transition-all text-left flex flex-col gap-2 group"
+                                className="p-8 bg-gray-50 hover:bg-[#8b0000] rounded-[2rem] border border-gray-100 transition-all text-left flex flex-col gap-4 group hover:shadow-2xl hover:-translate-y-1 shadow-red-900/20"
                             >
-                                <FaUsers className="text-gray-400 group-hover:text-[#8b0000]" />
-                                <span className="text-sm font-bold text-gray-800">Manage Users</span>
+                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:bg-white/20 transition-all">
+                                    <FaUsers className="text-xl text-gray-400 group-hover:text-white" />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-black text-gray-800 group-hover:text-white transition-colors">Users</span>
+                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-white/60 transition-colors">Access Control</span>
+                                </div>
                             </button>
                             <button
                                 onClick={() => router.push('/admin/theses')}
-                                className="p-4 bg-gray-50 hover:bg-[#8b0000]/5 rounded-xl border border-gray-100 transition-all text-left flex flex-col gap-2 group"
+                                className="p-8 bg-gray-50 hover:bg-[#3b82f6] rounded-[2rem] border border-gray-100 transition-all text-left flex flex-col gap-4 group hover:shadow-2xl hover:-translate-y-1 shadow-blue-900/20"
                             >
-                                <FaFileAlt className="text-gray-400 group-hover:text-[#8b0000]" />
-                                <span className="text-sm font-bold text-gray-800">Manage Theses</span>
+                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:bg-white/20 transition-all">
+                                    <FaFileAlt className="text-xl text-gray-400 group-hover:text-white" />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-black text-gray-800 group-hover:text-white transition-colors">Archives</span>
+                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-white/60 transition-colors">Thesis Moderation</span>
+                                </div>
                             </button>
                         </div>
                     </div>
