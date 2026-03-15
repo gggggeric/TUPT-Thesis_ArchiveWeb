@@ -3,6 +3,8 @@
 The official web platform for the Technological University of the Philippines Taguig Thesis Archive. A centralized digital repository designed to preserve, manage, and explore years of institutional research excellence.
 
 **🌐 Live Site:** [https://tupt-thesis-archive.vercel.app](https://tupt-thesis-archive.vercel.app)
+**🔗 Repository:** [https://github.com/gericandmorty/TUPT-Thesis_ArchiveWeb](https://github.com/gericandmorty/TUPT-Thesis_ArchiveWeb)
+
 
 ---
 
@@ -32,7 +34,7 @@ The official web platform for the Technological University of the Philippines Ta
 ## 📋 Prerequisites
 
 - **Node.js**: v18.x or later recommended.
-- **Backend API**: The [TUPT-Thesis Backend](https://github.com/gericandmorty/TUPT-Thesis) must be running for data fetching.
+- **Backend API**: The [TUPT-Thesis Backend](https://github.com/gericandmorty/TUPT-Thesis_ArchiveNodeBackend) must be running for data fetching.
 
 ---
 
@@ -40,7 +42,7 @@ The official web platform for the Technological University of the Philippines Ta
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/gericandmorty/TUPT-Thesis.git
+git clone https://github.com/gericandmorty/TUPT-Thesis_ArchiveWeb.git
 cd web
 ```
 
