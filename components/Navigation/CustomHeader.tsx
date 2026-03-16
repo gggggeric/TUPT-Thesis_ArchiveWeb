@@ -6,7 +6,6 @@ import {
     FaBars,
     FaSearch,
     FaTimes,
-    FaBell,
     FaFilter,
     FaFolder,
     FaCalendarAlt,
@@ -626,12 +625,7 @@ const CustomHeader = ({
                             Sign Out
                         </button>
                     ) : (
-                        <button
-                            className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
-                            aria-label="Notifications"
-                        >
-                            <FaBell />
-                        </button>
+                        null
                     )
                 )}
             </div>
