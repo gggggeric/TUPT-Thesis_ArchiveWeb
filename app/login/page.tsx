@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import API_BASE_URL from '@/lib/api';
 import CustomHeader from '@/components/Navigation/CustomHeader';
+import LottieLoader from '@/components/UI/LottieLoader';
 
 const Login: React.FC = () => {
     const router = useRouter();
@@ -60,6 +61,7 @@ const Login: React.FC = () => {
             return;
         }
 
+        const startTime = Date.now();
         setIsLoading(true);
 
         try {
@@ -75,6 +77,12 @@ const Login: React.FC = () => {
             });
 
             const data = await response.json();
+
+            // Ensure minimum 3s delay
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 3000) {
+                await new Promise(resolve => setTimeout(resolve, 3000 - elapsed));
+            }
 
             if (response.ok) {
                 const userData = data.user;
@@ -93,6 +101,11 @@ const Login: React.FC = () => {
             }
         } catch (error) {
             console.error('Login error:', error);
+            // Even on error, ensure minimum delay if needed
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 3000) {
+                await new Promise(resolve => setTimeout(resolve, 3000 - elapsed));
+            }
             toast.error('Cannot connect to server. Please try again.');
         } finally {
             setIsLoading(false);
@@ -115,17 +128,17 @@ const Login: React.FC = () => {
         <div className="min-h-screen bg-transparent flex flex-col font-sans">
             <CustomHeader isLanding={false} />
             <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
-                <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden relative z-10">
+                <div className="w-full max-w-lg bg-card rounded-xl shadow-2xl border border-border-custom overflow-hidden relative z-10">
                     <div className="p-4 md:p-8 pb-2">
-                        <h3 className="text-gray-900 text-sm font-bold mb-2 uppercase tracking-widest">Sign In</h3>
-                        <div className="h-[1px] bg-gray-200 w-full mb-6" />
+                        <h3 className="text-foreground text-sm font-bold mb-2 uppercase tracking-widest">Sign In</h3>
+                        <div className="h-[1px] bg-border-custom w-full mb-6" />
 
                         <div className="space-y-5">
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">ID Number:</label>
+                                <label className="text-[13px] font-bold text-text-dim">ID Number:</label>
                                 <input
                                     type="text"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     placeholder="TUPT-XX-XXXX"
                                     value={idNumber}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e.target.value)}
@@ -136,10 +149,10 @@ const Login: React.FC = () => {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">Password:</label>
+                                <label className="text-[13px] font-bold text-text-dim">Password:</label>
                                 <input
                                     type="password"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
@@ -149,10 +162,10 @@ const Login: React.FC = () => {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">Birthdate:</label>
+                                <label className="text-[13px] font-bold text-text-dim">Birthdate:</label>
                                 <input
                                     type="date"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     value={birthdate}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                                     onKeyPress={handleKeyPress}
@@ -164,28 +177,30 @@ const Login: React.FC = () => {
                             <div className="flex items-center justify-between pt-4 pb-4">
                                 <button
                                     onClick={handleClear}
-                                    className="bg-white text-gray-500 text-[11px] font-bold px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                                    className="bg-card text-text-dim text-[11px] font-bold px-4 py-2 border-2 border-border-custom rounded-lg hover:bg-surface hover:text-foreground transition-colors"
                                 >
                                     Clear
                                 </button>
-
+                                
+                                {isLoading && <LottieLoader isModal type="general" text="Signing in..." />}
+                                
                                 <button
                                     onClick={handleLogin}
                                     disabled={isLoading}
-                                    className="bg-[#8b0000] text-white text-[11px] font-black px-8 py-2 border-2 border-transparent rounded-lg hover:bg-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+                                    className="bg-primary/5 border border-primary/30 text-primary font-black text-[11px] uppercase tracking-[0.2em] px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(45,212,191,0.15)] active:scale-95 active:bg-primary/30"
                                 >
-                                    {isLoading ? 'Wait...' : 'Sign In'}
+                                    Sign In
                                 </button>
                             </div>
 
-                            <div className="pb-4 text-center border-t border-gray-200 pt-6">
-                                <p className="text-gray-600 text-[13px] font-medium mb-3">
+                            <div className="pb-4 text-center border-t border-border-custom pt-6">
+                                <p className="text-text-dim text-[13px] font-medium mb-3">
                                     Don't have an account?{' '}
-                                    <Link href="/register" className="text-red-700 font-black hover:underline underline-offset-4 decoration-2">
+                                    <Link href="/register" className="text-teal-700 font-black hover:underline underline-offset-4 decoration-2">
                                         Register here
                                     </Link>
                                 </p>
-                                <Link href="/forgot-password" title="Forgot Password" className="text-gray-400 text-[11px] font-bold hover:text-gray-700 transition-colors uppercase tracking-widest">
+                                <Link href="/forgot-password" title="Forgot Password" className="text-gray-400 text-[11px] font-bold hover:text-text-dim transition-colors uppercase tracking-widest">
                                     Forgot Password?
                                 </Link>
                             </div>

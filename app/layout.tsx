@@ -29,9 +29,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <img
             src="/assets/TupForLanding.jpg"
             alt="Background"
-            className="w-full h-full object-cover blur-[8px] scale-110"
+            className="w-full h-full object-cover blur-[15px] scale-110 opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#8b0000]/95 via-[#450a0a]/90 to-black/95" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1E1E2E]/95 via-[#262637]/90 to-black/95" />
         </div>
         <div className="min-h-screen flex flex-col relative">
           <main className="flex-grow">

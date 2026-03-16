@@ -49,9 +49,9 @@ const features = [
     desc: 'Our advanced semantic search engine indexes thousands of institutional papers. Search by title, abstract, author, or keywords — results are ranked by relevance in milliseconds.',
     icon: FaSearch,
     color: '#3B82F6',       // blue
-    bgLight: 'bg-blue-50',
-    borderLight: 'border-blue-100',
-    textColor: 'text-blue-500',
+    bgLight: 'bg-card/40',
+    borderLight: 'border-border-custom',
+    textColor: 'text-primary',
   },
   {
     number: '02',
@@ -60,9 +60,9 @@ const features = [
     desc: 'Stuck on a thesis topic? Use our AI recommendation engine to generate title ideas, structural suggestions, and research directions — all tailored to your department and interests.',
     icon: FaRobot,
     color: '#8B5CF6',       // purple
-    bgLight: 'bg-purple-50',
-    borderLight: 'border-purple-100',
-    textColor: 'text-purple-500',
+    bgLight: 'bg-card/40',
+    borderLight: 'border-border-custom',
+    textColor: 'text-primary',
   },
   {
     number: '03',
@@ -71,9 +71,9 @@ const features = [
     desc: 'Filter search results by department, publication year, author, or category. Combine multiple filters to pinpoint exactly the research you need from the entire archive.',
     icon: FaChartLine,
     color: '#F97316',       // orange
-    bgLight: 'bg-orange-50',
-    borderLight: 'border-orange-100',
-    textColor: 'text-orange-500',
+    bgLight: 'bg-card/40',
+    borderLight: 'border-border-custom',
+    textColor: 'text-primary',
   },
   {
     number: '04',
@@ -82,18 +82,16 @@ const features = [
     desc: 'Upload your thesis PDF and let our system automatically extract the title, authors, abstract, and key metadata. No manual entry needed — everything is processed in seconds.',
     icon: FaFileUpload,
     color: '#22C55E',       // green
-    bgLight: 'bg-green-50',
-    borderLight: 'border-green-100',
-    textColor: 'text-green-500',
+    bgLight: 'bg-card/40',
+    borderLight: 'border-border-custom',
+    textColor: 'text-primary',
   },
 ];
 
 const LandingPage: React.FC = () => {
   const router = useRouter();
 
-  const handleGetStarted = (): void => {
-    router.push('/register');
-  };
+
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-white scroll-smooth">
@@ -109,7 +107,7 @@ const LandingPage: React.FC = () => {
             alt="TUP Campus"
             className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#8b0000]/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#1E1E2E]/90" />
         </div>
 
         <motion.div
@@ -118,20 +116,13 @@ const LandingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: smoothEase }}
         >
-          <h1 className="text-4xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8 uppercase">
+          <h1 className="text-4xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8 uppercase drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
             The Digital Archive of TUP Excellence
           </h1>
-          <p className="text-lg md:text-2xl text-white/70 font-medium mb-12 tracking-wide max-w-2xl mx-auto">
+          <p className="text-lg md:text-2xl text-white/90 font-medium mb-12 tracking-wide max-w-2xl mx-auto drop-shadow-lg">
             A centralized repository for future-ready engineers. Store, search, and verify your research with institutional precision.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <button
-              onClick={handleGetStarted}
-              className="group bg-white text-[#8b0000] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl hover:bg-[#fecaca] transition-all flex items-center gap-4"
-            >
-              Start Your Journey
-            </button>
-          </div>
+
         </motion.div>
 
       </section>
@@ -185,7 +176,7 @@ const LandingPage: React.FC = () => {
                     <span className={`inline-block ${feat.textColor} font-black uppercase tracking-widest text-[10px] mb-4 px-3 py-1 rounded-full border ${feat.borderLight}`}>
                       {feat.badge}
                     </span>
-                    <p className="text-lg text-gray-800 leading-relaxed font-medium">
+                    <p className="text-lg text-foreground leading-relaxed font-medium">
                       {feat.desc}
                     </p>
                   </div>
@@ -200,7 +191,7 @@ const LandingPage: React.FC = () => {
       {/* ════════════════════════════════════════════
           WHY CHOOSE SECTION
       ════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-gray-50 overflow-hidden">
+      <section className="py-32 px-6 bg-surface overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-20">
             <motion.div
@@ -211,11 +202,12 @@ const LandingPage: React.FC = () => {
               variants={fadeLeft}
               transition={{ duration: 0.8, ease: smoothEase }}
             >
-              <span className="text-red-700 font-black uppercase tracking-[0.3em] text-xs">Innovation First</span>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight text-gray-900">
-                WHY CHOOSE TUP THESIS ARCHIVE?
-              </h2>
-              <p className="text-xl text-gray-600 leading-relaxed font-semibold transition-colors">
+              <span className="text-primary font-semibold uppercase tracking-[0.3em] text-xs">Innovation First</span>
+              <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter text-white mb-6 leading-[0.9] drop-shadow-2xl">
+                  Archive of <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary animate-gradient">Knowledge</span>
+              </h1>
+              <p className="text-xl text-text-dim leading-relaxed font-normal transition-colors text-subtle">
                 We&apos;ve built more than just a storage system. It&apos;s a high-performance environment designed to protect institutional knowledge while making it accessible for the next generation of researchers.
               </p>
             </motion.div>
@@ -235,15 +227,15 @@ const LandingPage: React.FC = () => {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  className="bg-white shadow-xl p-6 md:p-10 rounded-[2.5rem] border border-gray-100 hover:bg-[#8b0000] group transition-all duration-500"
+                  className="bg-card shadow-xl p-6 md:p-10 rounded-[2.5rem] border border-border-custom hover:bg-[#2DD4BF] group transition-all duration-500"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false }}
                   transition={{ delay: i * 0.1, duration: 0.5, ease: smoothEase }}
                 >
-                  <item.icon className="text-3xl text-red-500 mb-6 group-hover:text-white transition-colors" />
-                  <h3 className="text-xl font-black mb-3 text-gray-900 group-hover:text-white uppercase tracking-tight">{item.title}</h3>
-                  <p className="text-sm text-gray-600 group-hover:text-white/90 font-bold leading-relaxed">{item.desc}</p>
+                  <item.icon className="text-3xl text-primary mb-6 group-hover:text-background transition-colors" />
+                  <h3 className="text-xl font-semibold mb-3 text-foreground group-hover:text-background uppercase tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-text-dim group-hover:text-background/90 font-normal leading-relaxed text-subtle">{item.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -254,8 +246,7 @@ const LandingPage: React.FC = () => {
       {/* ════════════════════════════════════════════
           WHAT IT DOES SECTION
       ════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-gradient-to-br from-[#8b0000] to-[#500000] text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+      <section className="py-32 px-6 bg-gradient-to-br from-card to-background text-white overflow-hidden relative border-y border-white/5">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             className="text-center mb-24"
@@ -265,8 +256,8 @@ const LandingPage: React.FC = () => {
             variants={fadeUp}
             transition={{ duration: 0.8, ease: smoothEase }}
           >
-            <span className="text-[#fecaca] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">Core Functions</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase">WHAT DOES IT DO?</h2>
+            <span className="text-secondary font-semibold uppercase tracking-[0.3em] text-xs mb-4 block text-center">Core Functions</span>
+            <h2 className="text-5xl md:text-7xl font-semibold tracking-tighter uppercase">WHAT DOES IT DO?</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
@@ -283,11 +274,11 @@ const LandingPage: React.FC = () => {
                 viewport={{ once: false, amount: 0.4 }}
                 transition={{ delay: i * 0.15, duration: 0.7, ease: smoothEase }}
               >
-                <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/10 group-hover:bg-white transition-all shadow-xl">
-                  <item.icon className="text-4xl text-[#fecaca] group-hover:text-[#8b0000]" />
+                <div className="w-24 h-24 bg-card/40 rounded-3xl flex items-center justify-center mx-auto border-4 border-white/5 group-hover:bg-primary/10 group-hover:border-primary/50 transition-all shadow-xl">
+                  <item.icon className="text-4xl text-secondary group-hover:text-primary" />
                 </div>
-                <h3 className="text-2xl font-black uppercase tracking-tight">{item.title}</h3>
-                <p className="text-white/80 font-bold leading-relaxed">{item.desc}</p>
+                <h3 className="text-2xl font-semibold uppercase tracking-tight">{item.title}</h3>
+                <p className="text-white/80 font-normal leading-relaxed text-subtle">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -297,7 +288,7 @@ const LandingPage: React.FC = () => {
       {/* ════════════════════════════════════════════
           HOW IT WORKS SECTION
       ════════════════════════════════════════════ */}
-      <section className="py-32 px-6 bg-gray-50 overflow-hidden">
+      <section className="py-32 px-6 bg-surface overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-24"
@@ -307,8 +298,8 @@ const LandingPage: React.FC = () => {
             variants={fadeUp}
             transition={{ duration: 0.8, ease: smoothEase }}
           >
-            <span className="text-[#8b0000] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">System Workflow</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-gray-900 uppercase">HOW DOES IT WORK?</h2>
+            <span className="text-[#2DD4BF] font-black uppercase tracking-[0.3em] text-xs mb-4 block text-center">System Workflow</span>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground uppercase">HOW DOES IT WORK?</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
@@ -320,35 +311,22 @@ const LandingPage: React.FC = () => {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:translate-y-[-10px] transition-all duration-500 border border-gray-100 flex flex-col justify-between h-full"
+                className="bg-card p-6 md:p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:translate-y-[-10px] transition-all duration-500 border border-border-custom flex flex-col justify-between h-full"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: smoothEase }}
               >
                 <div>
-                  <span className="text-6xl font-black text-gray-100 mb-8 block leading-none">{item.step}</span>
-                  <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight mb-4">{item.title}</h3>
-                  <p className="text-sm text-gray-500 font-bold leading-relaxed">{item.desc}</p>
+                  <span className="text-6xl font-black text-white/5 mb-8 block leading-none">{item.step}</span>
+                  <h3 className="text-2xl font-black text-foreground uppercase tracking-tight mb-4">{item.title}</h3>
+                  <p className="text-sm text-text-dim font-bold leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          <motion.div
-            className="mt-24 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.6, ease: smoothEase }}
-          >
-            <button
-              onClick={handleGetStarted}
-              className="bg-[#8b0000] text-white px-12 py-6 rounded-2xl font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-2xl transform hover:scale-105"
-            >
-              Get Started Now
-            </button>
-          </motion.div>
+
         </div>
       </section>
 

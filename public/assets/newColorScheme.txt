@@ -1,0 +1,11 @@
+| Role           | Color       | Hex       |
+| -------------- | ----------- | --------- |
+| Background     | Deep Slate  | `#1E1E2E` |
+| Surface        | Soft Dark   | `#262637` |
+| Card           | Muted Gray  | `#2F2F42` |
+| Primary        | Modern Teal | `#2DD4BF` |
+| Secondary      | Soft Cyan   | `#67E8F9` |
+| Accent         | Muted Coral | `#F38BA8` |
+| Border         | Subtle Gray | `#3A3A4F` |
+| Text Primary   | Soft White  | `#E6E6EB` |
+| Text Secondary | Cool Gray   | `#A1A1AA` |

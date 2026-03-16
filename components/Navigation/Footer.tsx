@@ -4,9 +4,9 @@ import React from 'react';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="py-16 bg-white/5 backdrop-blur-md border-t border-white/10 relative z-10 w-full overflow-hidden">
+        <footer className="py-16 bg-card/5 backdrop-blur-md border-t border-white/10 relative z-10 w-full overflow-hidden">
             {/* Background Accent */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-[#8b0000]/40 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-[#2DD4BF]/40 to-transparent" />
 
             <div className="max-w-7xl mx-auto px-8 relative z-10">
                 <div className="flex flex-col items-center gap-8">
@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-8">
-                        <div className="h-px w-12 bg-white/10" />
+                        <div className="h-px w-12 bg-card/10" />
                         <div className="flex gap-6">
                             <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em] hover:text-white/40 transition-colors cursor-default">
                                 Build v1.2.0
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
                                 SECURE PORTAL
                             </span>
                         </div>
-                        <div className="h-px w-12 bg-white/10" />
+                        <div className="h-px w-12 bg-card/10" />
                     </div>
                 </div>
             </div>

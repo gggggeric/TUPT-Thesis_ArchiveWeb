@@ -107,6 +107,7 @@ const DocumentsPage: React.FC = () => {
             return;
         }
 
+        const startTime = Date.now();
         setIsUploading(true);
 
         try {
@@ -123,6 +124,12 @@ const DocumentsPage: React.FC = () => {
             });
 
             const data = await response.json();
+
+            // Ensure minimum 3s delay
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 3000) {
+                await new Promise(resolve => setTimeout(resolve, 3000 - elapsed));
+            }
 
             if (response.ok) {
                 // If the backend already returns categories, use them directly
@@ -153,6 +160,12 @@ const DocumentsPage: React.FC = () => {
         } catch (error) {
             console.error('Upload error:', error);
 
+            // Even on error, ensure minimum delay if needed
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 3000) {
+                await new Promise(resolve => setTimeout(resolve, 3000 - elapsed));
+            }
+
             // Re-throw demo error context in case the server fails
             toast.info('Could not analyze file (server error)');
         } finally {
@@ -161,14 +174,14 @@ const DocumentsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-gray-900 selection:bg-[#8b0000] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white">
             <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
             <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
 
             {mounted && (
                 <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#8b0000]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
-                    <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#8b0000]/10 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse-slow" />
+                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#2DD4BF]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
+                    <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#2DD4BF]/10 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse-slow" />
                 </div>
             )}
 

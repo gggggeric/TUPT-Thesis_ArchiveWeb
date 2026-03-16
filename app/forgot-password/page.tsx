@@ -112,25 +112,25 @@ const ForgotPassword: React.FC = () => {
         }
     };
 
-    const inputInnerClasses = "w-full h-10 bg-white border border-gray-300 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-red-500";
-    const labelClasses = "text-[13px] font-bold text-[#fecaca]";
+    const inputInnerClasses = "w-full h-10 bg-card border border-gray-300 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-teal-500";
+    const labelClasses = "text-[13px] font-bold text-[#2DD4BF]";
 
     return (
         <div className="min-h-screen bg-transparent flex flex-col font-sans">
             <CustomHeader isLanding={false} />
             <div className="flex-1 flex items-center justify-center pt-24 pb-12 px-6 relative overflow-hidden">
-                <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden relative z-10">
+                <div className="w-full max-w-lg bg-card rounded-xl shadow-2xl border border-border-custom overflow-hidden relative z-10">
                     <div className="p-4 md:p-8 pb-2">
-                        <h3 className="text-gray-900 text-sm font-bold mb-2 uppercase tracking-widest">Reset Password</h3>
-                        <div className="h-[1px] bg-gray-200 w-full mb-6" />
+                        <h3 className="text-foreground text-sm font-bold mb-2 uppercase tracking-widest">Reset Password</h3>
+                        <div className="h-[1px] bg-border-custom w-full mb-6" />
 
                         <div className="space-y-5">
                             {/* ID Number Field */}
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">ID Number:</label>
+                                <label className="text-[13px] font-bold text-text-dim">ID Number:</label>
                                 <input
                                     type="text"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     placeholder="TUPT-XX-XXXX"
                                     value={idNumber}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleIdInputChange(e.target.value)}
@@ -141,10 +141,10 @@ const ForgotPassword: React.FC = () => {
 
                             {/* Birthdate Field */}
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">Birthdate:</label>
+                                <label className="text-[13px] font-bold text-text-dim">Birthdate:</label>
                                 <input
                                     type="date"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     value={birthdate}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                                     onKeyPress={handleKeyPress}
@@ -154,10 +154,10 @@ const ForgotPassword: React.FC = () => {
 
                             {/* New Password Field */}
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">New Password:</label>
+                                <label className="text-[13px] font-bold text-text-dim">New Password:</label>
                                 <input
                                     type="password"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     placeholder="New Password"
                                     value={newPassword}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
@@ -167,10 +167,10 @@ const ForgotPassword: React.FC = () => {
 
                             {/* Confirm Password Field */}
                             <div className="space-y-1">
-                                <label className="text-[13px] font-bold text-gray-600">Repeat Password:</label>
+                                <label className="text-[13px] font-bold text-text-dim">Repeat Password:</label>
                                 <input
                                     type="password"
-                                    className="w-full h-12 bg-gray-50 border border-gray-200 px-4 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 focus:bg-white transition-all font-bold"
+                                    className="w-full h-12 bg-surface border border-border-custom px-4 rounded-xl text-sm text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-card transition-all font-bold"
                                     placeholder="Confirm New Password"
                                     value={confirmPassword}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
@@ -181,7 +181,7 @@ const ForgotPassword: React.FC = () => {
                             <div className="flex items-center justify-between pt-4 pb-4">
                                 <button
                                     onClick={handleClear}
-                                    className="bg-white text-gray-500 text-[11px] font-bold px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                                    className="bg-card text-text-dim text-[11px] font-bold px-4 py-2 border-2 border-border-custom rounded-lg hover:bg-surface hover:text-foreground transition-colors"
                                 >
                                     Clear
                                 </button>
@@ -189,16 +189,16 @@ const ForgotPassword: React.FC = () => {
                                 <button
                                     onClick={handleResetPassword}
                                     disabled={isLoading}
-                                    className="bg-[#8b0000] text-white text-[11px] font-black px-8 py-2 border-2 border-transparent rounded-lg hover:bg-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+                                    className="bg-[#2DD4BF] text-white text-[11px] font-black px-8 py-2 border-2 border-transparent rounded-lg hover:bg-primary transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
                                 >
                                     {isLoading ? 'Wait...' : 'Reset'}
                                 </button>
                             </div>
 
-                            <div className="pb-4 text-center border-t border-gray-200 pt-6">
-                                <p className="text-gray-600 text-[13px] font-medium mb-3">
+                            <div className="pb-4 text-center border-t border-border-custom pt-6">
+                                <p className="text-text-dim text-[13px] font-medium mb-3">
                                     Remembered your password?{' '}
-                                    <Link href="/login" className="text-red-700 font-black hover:underline underline-offset-4 decoration-2">
+                                    <Link href="/login" className="text-teal-700 font-black hover:underline underline-offset-4 decoration-2">
                                         Back to Login
                                     </Link>
                                 </p>

@@ -178,7 +178,7 @@ const CustomHeader = ({
         return (
             <>
                 {parts.map((part, index) =>
-                    regex.test(part) ? <span key={index} className="text-[#8b0000] font-black">{part}</span> : part
+                    regex.test(part) ? <span key={index} className="text-[#2DD4BF] font-black">{part}</span> : part
                 )}
             </>
         );
@@ -389,7 +389,7 @@ const CustomHeader = ({
             <div className="flex items-center gap-3 md:gap-4 z-10">
                 {(mounted && !isLanding && isLoggedIn && !isAdmin) && (
                     <button
-                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-white/10 text-white hover:bg-white/20`}
+                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-card/10 text-white hover:bg-card/20`}
                         onClick={onMenuPress}
                         aria-label="Menu"
                     >
@@ -408,11 +408,11 @@ const CustomHeader = ({
                     role="button"
                     aria-label="Go to Dashboard"
                 >
-                    <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1.5 shadow-sm overflow-hidden">
+                    <div className="w-12 h-12 flex items-center justify-center transition-transform duration-300">
                         <img
                             src="/assets/tup-logo.png"
                             alt="TUP Logo"
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-contain drop-shadow-md"
                         />
                     </div>
                     <span className={`text-base md:text-lg font-black tracking-tighter uppercase leading-none transition-colors duration-500 hidden sm:inline ${textClass}`}>
@@ -426,15 +426,14 @@ const CustomHeader = ({
                 <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[200px] sm:max-w-md lg:max-w-2xl px-2 sm:px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
                     <div
                         ref={searchContainerRef}
-                        className="relative flex items-center"
                     >
                         <div className="relative flex items-center w-full">
-                            <div className={`absolute left-4 text-gray-400 z-10 pointer-events-none transition-colors ${localSearchQuery ? 'text-[#8b0000]' : ''}`}>
+                            <div className={`absolute left-4 text-gray-400 z-10 pointer-events-none transition-colors ${localSearchQuery ? 'text-[#2DD4BF]' : ''}`}>
                                 <FaSearch className="text-sm" />
                             </div>
                             <input
                                 type="text"
-                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-full border text-gray-800 text-[11px] sm:text-sm font-bold shadow-sm outline-none transition-all duration-300 focus:bg-white focus:ring-4 focus:ring-[#8b0000]/10 ${isRedHeader ? 'bg-white/10 border-white/10 text-white placeholder:text-white/50 focus:bg-white focus:border-white focus:text-gray-900' : 'bg-gray-50 border-gray-100 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#8b0000]/30'}`}
+                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-full border text-foreground text-[11px] sm:text-sm font-medium shadow-sm outline-none transition-all duration-300 focus:bg-card focus:ring-4 focus:ring-[#2DD4BF]/10 ${isRedHeader ? 'bg-card/10 border-white/10 text-white placeholder:text-white/50 focus:bg-card focus:border-white focus:text-foreground' : 'bg-surface border-border-custom text-foreground placeholder:text-gray-400 focus:bg-card focus:border-[#2DD4BF]/30'}`}
                                 placeholder="Search..."
                                 value={localSearchQuery}
                                 onChange={(e) => {
@@ -451,7 +450,7 @@ const CustomHeader = ({
                             <div className="absolute right-3 flex items-center gap-1">
                                 <div className={`flex items-center justify-center transition-all duration-300 overflow-hidden ${localSearchQuery ? 'w-9 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
                                     <button
-                                        className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#8b0000]'}`}
+                                        className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#2DD4BF]'}`}
                                         onClick={clearSearch}
                                         aria-label="Clear search"
                                     >
@@ -459,20 +458,7 @@ const CustomHeader = ({
                                     </button>
                                 </div>
                                 <button
-                                    className={`ml-1 px-4 py-1.5 rounded-full bg-[#8b0000] text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-md active:scale-95 hidden sm:block ${localSearchQuery ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}`}
-                                    onClick={triggerFullSearch}
-                                >
-                                    Search
-                                </button>
-                                <button
-                                    className={`ml-1 p-2 rounded-full bg-[#8b0000] text-white hover:bg-red-700 transition-all shadow-md active:scale-95 sm:hidden ${localSearchQuery ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                                    onClick={triggerFullSearch}
-                                    aria-label="Search"
-                                >
-                                    <FaSearch size={10} />
-                                </button>
-                               <button
-                                    className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#8b0000]'}`}
+                                    className={`p-2 rounded-full transition-all duration-300 hover:bg-black/5 flex items-center justify-center border-none cursor-pointer ${isRedHeader ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#2DD4BF]'}`}
                                     onClick={() => setShowFilters(!showFilters)}
                                     aria-label="Search filters"
                                 >
@@ -484,19 +470,19 @@ const CustomHeader = ({
 
                     {/* Filters Dropdown */}
                     {showFilters && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl p-4 z-50 border border-gray-100 animate-fade-in">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-card rounded-2xl shadow-xl p-4 z-50 border border-border-custom animate-fade-in">
                             <div className="flex flex-col gap-3">
                                 {[
-                                    { icon: <FaCalendarAlt className="text-[#8b0000]" />, label: 'Year:', value: filters.year, options: years, field: 'year' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Years' : v },
-                                    { icon: <FaFolder className="text-[#8b0000]" />, label: 'Department:', value: filters.category, options: categories, field: 'category' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Departments' : v },
-                                    { icon: <FaFileAlt className="text-[#8b0000]" />, label: 'Search in:', value: filters.searchType, options: ['all', 'title', 'abstract'], field: 'searchType' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Fields' : v === 'title' ? 'Title Only' : 'Abstract Only' },
+                                    { icon: <FaCalendarAlt className="text-[#2DD4BF]" />, label: 'Year:', value: filters.year, options: years, field: 'year' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Years' : v },
+                                    { icon: <FaFolder className="text-[#2DD4BF]" />, label: 'Department:', value: filters.category, options: categories, field: 'category' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Departments' : v },
+                                    { icon: <FaFileAlt className="text-[#2DD4BF]" />, label: 'Search in:', value: filters.searchType, options: ['all', 'title', 'abstract'], field: 'searchType' as keyof Filters, labelFn: (v: string) => v === 'all' ? 'All Fields' : v === 'title' ? 'Title Only' : 'Abstract Only' },
                                 ].map(({ icon, label, value, options, field, labelFn }) => (
                                     <div key={field} className="flex items-center gap-2">
-                                        <label className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 min-w-[100px]">
+                                        <label className="flex items-center gap-1.5 text-sm font-semibold text-text-dim min-w-[100px]">
                                             {icon} {label}
                                         </label>
                                         <select
-                                            className="flex-1 py-2 px-3 rounded-lg border border-gray-200 text-sm text-gray-700 bg-gray-50 outline-none focus:border-[#8b0000] focus:ring-1 focus:ring-[#8b0000]/20 transition-all"
+                                            className="flex-1 py-2 px-3 rounded-lg border border-border-custom text-sm text-text-dim bg-surface outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/20 transition-all"
                                             value={value}
                                             onChange={(e) => handleFilterChange(field, e.target.value)}
                                         >
@@ -512,22 +498,22 @@ const CustomHeader = ({
 
                     {/* Search Results Dropdown */}
                     {showSearchResults && searchResults.length > 0 && (
-                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl z-50 border border-gray-100 max-h-[70vh] overflow-hidden flex flex-col animate-fade-in">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/80">
-                                <span className="text-sm font-semibold text-gray-600">
+                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-card rounded-2xl shadow-2xl z-50 border border-border-custom max-h-[70vh] overflow-hidden flex flex-col animate-fade-in">
+                            <div className="flex items-center justify-between px-4 py-3 border-b border-border-custom bg-surface/80">
+                                <span className="text-sm font-semibold text-text-dim">
                                     {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
                                 </span>
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={handleRecommendByAi}
                                         disabled={isLoadingAi}
-                                        className="flex items-center gap-1.5 text-xs font-bold text-[#8b0000] bg-red-50 px-2 py-1 rounded-md hover:bg-red-100 transition-colors disabled:opacity-50"
+                                        className="flex items-center gap-1.5 text-xs font-bold text-[#2DD4BF] bg-teal-50 px-2 py-1 rounded-md hover:bg-teal-100 transition-colors disabled:opacity-50"
                                     >
                                         <FaMagic className="text-[10px]" />
                                         {isLoadingAi ? 'Generating...' : 'Recommend via AI'}
                                     </button>
                                     <button
-                                        className="text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-gray-600 p-1"
+                                        className="text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-text-dim p-1"
                                         onClick={() => setShowSearchResults(false)}
                                         aria-label="Close results"
                                     >
@@ -541,7 +527,7 @@ const CustomHeader = ({
                                 <div className="px-4 py-3 bg-blue-50/50 border-b border-blue-100">
                                     <div className="flex items-start gap-2">
                                         <FaRobot className="text-blue-500 mt-0.5 shrink-0" />
-                                        <div className="flex-1 whitespace-pre-wrap text-xs text-gray-700 font-medium">
+                                        <div className="flex-1 whitespace-pre-wrap text-xs text-text-dim font-medium">
                                             {aiRecommendation}
                                         </div>
                                     </div>
@@ -552,21 +538,21 @@ const CustomHeader = ({
                                 {searchResults.map((result, index) => (
                                     <div
                                         key={`${result.id}-${index}`}
-                                        className="px-4 py-3.5 border-b border-gray-50 hover:bg-gray-50/80 transition-colors cursor-pointer"
+                                        className="px-4 py-3.5 border-b border-gray-50 hover:bg-surface/80 transition-colors cursor-pointer"
                                         onClick={() => {
                                             router.push(`/search_result?id=${result.id}`);
                                             setShowSearchResults(false);
                                         }}
                                     >
                                         <div className="flex items-center justify-end mb-2">
-                                            <span className="flex items-center gap-1 text-xs text-gray-500 font-semibold">
-                                                <FaCalendarAlt className="text-[10px] text-[#8b0000]" /> {String(result.year_range && result.year_range !== 'unknown' ? result.year_range : 'N/A')}
+                                            <span className="flex items-center gap-1 text-xs text-text-dim font-semibold">
+                                                <FaCalendarAlt className="text-[10px] text-[#2DD4BF]" /> {String(result.year_range && result.year_range !== 'unknown' ? result.year_range : 'N/A')}
                                             </span>
                                         </div>
-                                        <h4 className="text-sm font-bold text-gray-800 mb-1.5 leading-snug">
+                                        <h4 className="text-sm font-bold text-foreground mb-1.5 leading-snug">
                                             {highlightText(result.title, localSearchQuery)}
                                         </h4>
-                                        <p className="text-xs text-gray-500 leading-relaxed mb-2 line-clamp-2">
+                                        <p className="text-xs text-text-dim leading-relaxed mb-2 line-clamp-2">
                                             {highlightText(
                                                 result.abstract && result.abstract.length > 120
                                                     ? `${result.abstract.substring(0, 120)}...`
@@ -577,14 +563,14 @@ const CustomHeader = ({
                                         <div className="flex items-center gap-3 text-xs text-gray-400 font-semibold">
                                             {/* Date info already shown in header badge area */}
                                             <span className="flex items-center gap-1">
-                                                <FaFileAlt className="text-[10px] text-[#8b0000]" /> {result.filename}
+                                                <FaFileAlt className="text-[10px] text-[#2DD4BF]" /> {result.filename}
                                             </span>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="px-4 py-2.5 bg-gray-50/80 border-t border-gray-100 text-center">
+                            <div className="px-4 py-2.5 bg-surface/80 border-t border-border-custom text-center">
                                 <span className="text-xs text-gray-400 font-medium">
                                     {loading ? 'Searching...' : 'API Powered Search Engine'}
                                 </span>
@@ -602,24 +588,22 @@ const CustomHeader = ({
                     <>
                         <button
                             onClick={() => router.push('/login')}
-                            className={`text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg transition-all relative group ${isTransparentPage && !scrolled ? 'text-white hover:bg-white/10' : 'text-white hover:bg-white/10'} ${pathname === '/login' ? 'bg-white/20' : ''}`}
+                            className={`text-[11px] font-medium uppercase tracking-widest px-6 py-2.5 rounded-lg transition-all relative group ${isTransparentPage && !scrolled ? 'text-white hover:bg-card/10' : 'text-white hover:bg-card/10'} ${pathname === '/login' ? 'bg-card/20' : ''}`}
                         >
                             Sign In
-                            {pathname === '/login' && <div className="absolute bottom-1 left-6 right-6 h-[2.5px] bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]" />}
                         </button>
                         <button
                             onClick={() => router.push('/register')}
-                            className={`text-[11px] font-black uppercase tracking-widest px-6 py-2.5 rounded-lg shadow-lg transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-white text-[#8b0000] scale-105 ring-4 ring-white/20' : (isRedHeader ? 'bg-white text-[#8b0000] hover:bg-gray-100' : 'bg-[#8b0000] text-white hover:bg-red-700')}`}
+                            className={`text-[11px] font-black uppercase tracking-[0.2em] px-6 py-2.5 rounded-lg transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-card text-primary scale-105 ring-4 ring-primary/20' : (isRedHeader ? 'text-white hover:bg-white/10' : 'bg-primary/5 text-primary border border-primary/30 hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(45,212,191,0.1)]')}`}
                         >
                             Register
-                            {pathname === '/register' && <div className="absolute bottom-1 left-6 right-6 h-[2px] bg-[#8b0000]/50 rounded-full" />}
                         </button>
                     </>
                 ) : (
                     isAdmin ? (
                         <button
                             onClick={handleLogout}
-                            className="bg-white/15 text-white text-[11px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all flex items-center gap-2 active:scale-95 border border-white/20 shadow-lg"
+                            className="bg-card/15 text-white text-[11px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl hover:bg-card/25 transition-all flex items-center gap-2 active:scale-95 border border-white/20 shadow-lg"
                         >
                             <FaSignOutAlt className="text-sm" />
                             Sign Out

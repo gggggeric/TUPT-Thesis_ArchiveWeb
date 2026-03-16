@@ -165,7 +165,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
             case 'Writing Style': return '#3b82f6'; // Blue
             case 'Academic Style': return '#8b5cf6'; // Purple
             case 'Grammar & Style': return '#ef4444'; // Red
-            default: return '#8b0000';
+            default: return '#2DD4BF';
         }
     };
 
@@ -185,20 +185,20 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
             return isSelected ? 'bg-amber-100 border-amber-600 ring-2 ring-amber-500/20' : 'border-amber-400/60 hover:bg-amber-50';
         }
         if (color === 'blue') {
-            return isSelected ? 'bg-blue-100 border-blue-600 ring-2 ring-blue-500/20' : 'border-blue-400/60 hover:bg-blue-50';
+            return isSelected ? 'bg-blue-100 border-blue-600 ring-2 ring-blue-500/20' : 'border-blue-400/60 hover:bg-card/40';
         }
         if (color === 'purple') {
-            return isSelected ? 'bg-purple-100 border-purple-600 ring-2 ring-purple-500/20' : 'border-purple-400/60 hover:bg-purple-50';
+            return isSelected ? 'bg-purple-100 border-purple-600 ring-2 ring-purple-500/20' : 'border-purple-400/60 hover:bg-card/40';
         }
-        return isSelected ? 'bg-red-100 border-red-600 ring-2 ring-red-500/20' : 'border-red-400/60 hover:bg-red-50';
+        return isSelected ? 'bg-teal-100 border-teal-600 ring-2 ring-teal-500/20' : 'border-teal-400/60 hover:bg-teal-50';
     };
 
     const getIssueCardIconBg = (categoryName: string) => {
         const color = getIssueTailwindColor(categoryName);
         if (color === 'amber') return 'bg-amber-50 text-amber-600';
-        if (color === 'blue') return 'bg-blue-50 text-blue-600';
-        if (color === 'purple') return 'bg-purple-50 text-purple-600';
-        return 'bg-red-50 text-red-600';
+        if (color === 'blue') return 'bg-card/40 text-blue-600';
+        if (color === 'purple') return 'bg-card/40 text-purple-600';
+        return 'bg-teal-50 text-primary';
     };
 
     const getIssueBadgeStyles = (categoryName: string) => {
@@ -206,7 +206,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
         if (color === 'amber') return 'bg-amber-600';
         if (color === 'blue') return 'bg-blue-600';
         if (color === 'purple') return 'bg-purple-600';
-        return 'bg-red-600';
+        return 'bg-primary';
     };
 
     const getCategoryIcon = (categoryName: string) => {
@@ -350,24 +350,24 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-1">Analysis Workspace</h2>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#fecaca]">Analysis View</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2DD4BF]">Analysis View</p>
                 </div>
                 <div className="flex items-center gap-4">
                     {isSaving && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/5 backdrop-blur-sm animate-fade-in">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-card/5 rounded-full border border-white/5 backdrop-blur-sm animate-fade-in">
                             <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" />
                             <span className="text-[9px] font-black uppercase tracking-widest text-amber-400/80">Saving progress...</span>
                         </div>
                     )}
                     {saveError && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 rounded-full border border-red-500/20 backdrop-blur-sm animate-fade-in">
-                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
-                            <span className="text-[9px] font-black uppercase tracking-widest text-red-400">{saveError}</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-teal-500/10 rounded-full border border-teal-500/20 backdrop-blur-sm animate-fade-in">
+                            <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
+                            <span className="text-[9px] font-black uppercase tracking-widest text-secondary">{saveError}</span>
                         </div>
                     )}
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 rounded-full bg-white/10 text-white font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-white/20 border border-white/10 flex items-center gap-2 transition-all backdrop-blur-md"
+                        className="px-6 py-3 rounded-full bg-card/10 text-white font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-card/20 border border-white/10 flex items-center gap-2 transition-all backdrop-blur-md"
                     >
                         <FaTimes /> Close Workspace
                     </button>
@@ -376,8 +376,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 lg:h-[85vh] lg:min-h-[850px]">
                 {/* Left Panel - Native Text Editor View */}
-                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl shadow-black/20 flex flex-col relative h-[600px] lg:h-auto">
-                    <div className="bg-white/5 px-6 md:px-8 py-5 border-b border-white/10 flex items-center justify-between z-10">
+                <div className="bg-card/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl shadow-black/20 flex flex-col relative h-[600px] lg:h-auto">
+                    <div className="bg-card/5 px-6 md:px-8 py-5 border-b border-white/10 flex items-center justify-between z-10">
                         <div className="flex items-center gap-3">
                             <FaFileAlt className="text-white/60" />
                             <span className="text-xs font-black uppercase tracking-widest text-white line-clamp-1">{file.name}</span>
@@ -386,7 +386,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                             <a
                                 href={fileUrl}
                                 download={file.name}
-                                className="bg-white/10 border border-white/10 text-white/60 hover:text-white px-4 py-2 rounded-lg transition-colors text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
+                                className="bg-card/10 border border-white/10 text-white/60 hover:text-white px-4 py-2 rounded-lg transition-colors text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
                                 title="Download Original PDF"
                             >
                                 <FaDownload className="text-[10px]" /> Original
@@ -396,30 +396,30 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
 
                     <div className="flex-1 overflow-y-auto bg-black/20 p-6 md:p-10 lg:p-20 custom-scrollbar relative">
                         {fixSuccess && (
-                            <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-green-500 text-white px-8 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 animate-bounce-subtle font-black uppercase text-[10px] tracking-widest">
+                            <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-card/400 text-white px-8 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 animate-bounce-subtle font-black uppercase text-[10px] tracking-widest">
                                 <FaCheckCircle />
                                 {fixSuccess}
                             </div>
                         )}
-                        <div className="max-w-4xl mx-auto bg-white p-6 md:p-12 lg:p-20 rounded shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 min-h-full mb-[30vh]">
+                        <div className="max-w-4xl mx-auto bg-white p-6 md:p-12 lg:p-20 rounded shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-stone-200 min-h-full mb-[30vh]">
                             {localPagesText.length > 0 ? (
                                 localPagesText.map((page, idx) => (
                                     <div
                                         key={idx}
                                         id={`page-${page.pageNumber}`}
-                                        className={`mb-32 relative transition-all duration-700 ${activePage === page.pageNumber ? 'border-l-4 border-[#8b0000] pl-6 -ml-6' : ''}`}
+                                        className={`mb-32 relative transition-all duration-700 ${activePage === page.pageNumber ? 'border-l-4 border-[#2DD4BF] pl-6 -ml-6' : ''}`}
                                     >
                                         {/* Page Header Indicator */}
-                                        <div className="flex items-center gap-4 mb-10 opacity-40 select-none">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Page {page.pageNumber}</span>
-                                            <div className="h-px flex-1 bg-gray-100" />
+                                        <div className="flex items-center gap-4 mb-10 opacity-60 select-none">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-stone-400">Page {page.pageNumber}</span>
+                                            <div className="h-px flex-1 bg-stone-100" />
                                         </div>
 
-                                        <div className="absolute -left-12 top-12 text-[9px] font-black text-gray-300 select-none hidden md:block border-b border-gray-200 w-8 text-right pr-2">
+                                        <div className="absolute -left-12 top-12 text-[9px] font-black text-stone-300 select-none hidden md:block border-b border-stone-200 w-8 text-right pr-2">
                                             {page.pageNumber}
                                         </div>
                                         {/* Render paragraph chunks */}
-                                        <div className="font-serif text-gray-800 text-lg leading-[1.8] text-justify whitespace-pre-wrap">
+                                        <div className="font-serif text-stone-800 text-lg leading-[1.8] text-justify whitespace-pre-wrap">
                                             {(() => {
                                                 let parts: (string | React.ReactNode)[] = [page.text];
 
@@ -509,7 +509,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                             )}
 
                             {result.pagesText && result.pagesText.length > 0 && (
-                                <div className="mt-32 pt-12 border-t border-gray-100 flex flex-col items-center opacity-30 select-none">
+                                <div className="mt-32 pt-12 border-t border-border-custom flex flex-col items-center opacity-30 select-none">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="h-px w-12 bg-gray-300" />
                                         <span className="text-[10px] font-black uppercase tracking-[0.3em]">End of Analysis</span>
@@ -532,23 +532,23 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                 </div>
 
                 {/* Right Panel - Analysis Findings */}
-                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 flex flex-col overflow-hidden h-[600px] lg:h-auto">
+                <div className="bg-card/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl shadow-black/20 flex flex-col overflow-hidden h-[600px] lg:h-auto">
                     {/* Header Score */}
-                    <div className="px-6 md:px-10 py-6 md:py-8 border-b border-white/10 bg-white/5 flex flex-col gap-4">
+                    <div className="px-6 md:px-10 py-6 md:py-8 border-b border-white/10 bg-card/5 flex flex-col gap-4">
                         <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center shadow-lg border border-white/20 shrink-0">
-                                <span className="text-2xl font-black text-[#fecaca]">{result.overallScore}</span>
+                            <div className="w-16 h-16 rounded-2xl bg-card/10 flex items-center justify-center shadow-lg border border-white/20 shrink-0">
+                                <span className="text-2xl font-black text-[#2DD4BF]">{result.overallScore}</span>
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-white tracking-tight uppercase">Overall Assessment</h3>
                                 <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">
-                                    Status: <span className="text-[#fecaca]">{getScoreLabel(result.overallScore || 0)}</span>
+                                    Status: <span className="text-[#2DD4BF]">{getScoreLabel(result.overallScore || 0)}</span>
                                 </p>
                             </div>
                         </div>
 
                         {allIssues.length > 0 && (
-                            <div className="bg-[#8b0000]/20 border border-[#8b0000]/40 rounded-xl px-4 py-3 flex items-center gap-3 animate-pulse">
+                            <div className="bg-[#2DD4BF]/20 border border-[#2DD4BF]/40 rounded-xl px-4 py-3 flex items-center gap-3 animate-pulse">
                                 <FaLightbulb className="text-amber-400 animate-bounce" />
                                 <span className="text-[9px] font-black text-white uppercase tracking-widest leading-none">
                                     {allIssues.length} Recommendations Found – See Below
@@ -561,10 +561,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                         {/* Highlights Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-6">
                             {[
-                                { label: 'Active Issues', value: allIssues.length, color: 'text-[#fecaca]' },
+                                { label: 'Active Issues', value: allIssues.length, color: 'text-[#2DD4BF]' },
                                 { label: 'Fixes Applied', value: totalFixesApplied, color: 'text-white' },
                             ].map((stat, i) => (
-                                <div key={i} className="bg-white/5 rounded-2xl p-5 border border-white/10">
+                                <div key={i} className="bg-card/5 rounded-2xl p-5 border border-white/10">
                                     <p className="text-[9px] text-white/40 font-black uppercase tracking-widest mb-1">{stat.label}</p>
                                     <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
                                 </div>
@@ -572,14 +572,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                         </div>
 
                         {/* Progress Bar */}
-                        <div className="mb-10 bg-white/5 rounded-2xl p-5 border border-white/10">
+                        <div className="mb-10 bg-card/5 rounded-2xl p-5 border border-white/10">
                             <div className="flex justify-between items-center mb-3">
                                 <p className="text-[9px] text-white/40 font-black uppercase tracking-widest">Resolution Progress</p>
                                 <p className="text-[10px] text-white font-black">{progressPercentage}%</p>
                             </div>
-                            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="w-full h-2 bg-card/5 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-[#8b0000] to-[#af1a1a] transition-all duration-1000 ease-out"
+                                    className="h-full bg-gradient-to-r from-[#2DD4BF] to-[#af1a1a] transition-all duration-1000 ease-out"
                                     style={{ width: `${progressPercentage}%` }}
                                 />
                             </div>
@@ -588,15 +588,15 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                         {/* Detailed Findings */}
                         <div className="space-y-6">
                             <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-4">
-                                <span className="h-px flex-1 bg-white/10" />
+                                <span className="h-px flex-1 bg-card/10" />
                                 Feedback
-                                <span className="h-px flex-1 bg-white/10" />
+                                <span className="h-px flex-1 bg-card/10" />
                             </h4>
 
                             {activeCategories.map((category: any, idx: number) => (
                                 <div key={idx} className="border border-white/10 rounded-[1.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                     <button
-                                        className="w-full px-8 py-5 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors border-b border-white/5"
+                                        className="w-full px-8 py-5 flex items-center justify-between bg-card/5 hover:bg-card/10 transition-colors border-b border-white/5"
                                         onClick={() => toggleCategory(idx)}
                                     >
                                         <div className="flex items-center gap-4">
@@ -605,7 +605,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                 style={{ backgroundColor: category.color }}
                                             />
                                             <h4 className="font-black text-xs text-white uppercase tracking-widest">{category.name}</h4>
-                                            <span className="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white/60 px-3 py-1 rounded-full border border-white/10">
+                                            <span className="text-[9px] font-black uppercase tracking-widest bg-card/10 text-white/60 px-3 py-1 rounded-full border border-white/10">
                                                 {category.issues.length} {category.issues.length === 1 ? 'Issue' : 'Issues'}
                                             </span>
                                         </div>
@@ -624,7 +624,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                     <div
                                                         key={i}
                                                         id={`issue-card-${issueId}`}
-                                                        className={`bg-white rounded-[1.5rem] p-6 border-2 transition-all duration-500 relative overflow-hidden cursor-pointer group ${isSelected ? 'border-[#8b0000] shadow-xl shadow-black/10 scale-[1.02] z-10' : 'border-transparent shadow-sm hover:shadow-md'}`}
+                                                        className={`bg-card rounded-[1.5rem] p-6 border-2 transition-all duration-500 relative overflow-hidden cursor-pointer group ${isSelected ? 'border-[#2DD4BF] shadow-xl shadow-black/10 scale-[1.02] z-10' : 'border-transparent shadow-sm hover:shadow-md'}`}
                                                         onClick={() => {
                                                             if (issue.pages && issue.pages.length > 0) {
                                                                 jumpToPage(issue.pages[0], issue.context, issueId);
@@ -633,16 +633,16 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                         onMouseEnter={() => setHoveredIssueId(issueId)}
                                                         onMouseLeave={() => setHoveredIssueId(null)}
                                                     >
-                                                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 transition-all ${issue.severity === 'high' ? 'bg-[#8b0000]'
+                                                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 transition-all ${issue.severity === 'high' ? 'bg-[#2DD4BF]'
                                                             : issue.severity === 'medium' ? 'bg-amber-500'
-                                                                : 'bg-blue-500'
+                                                                : 'bg-card/400'
                                                             }`} />
                                                         <div className="flex items-start justify-between mb-4">
                                                             <div className="flex items-center gap-3">
                                                                 <div className={`p-2 rounded-xl scale-75 ${getIssueCardIconBg(category.name)}`}>
                                                                     {getCategoryIcon(category.name)}
                                                                 </div>
-                                                                <h4 className="text-gray-900 font-black text-xs uppercase tracking-tight">{issue.title}</h4>
+                                                                <h4 className="text-foreground font-black text-xs uppercase tracking-tight">{issue.title}</h4>
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 <button
@@ -650,16 +650,16 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                                         e.stopPropagation();
                                                                         dismissIssue(issueId);
                                                                     }}
-                                                                    className="p-1.5 text-gray-400 hover:text-[#8b0000] hover:bg-red-50 rounded-lg transition-all"
+                                                                    className="p-1.5 text-gray-400 hover:text-[#2DD4BF] hover:bg-teal-50 rounded-lg transition-all"
                                                                     title="Dismiss Suggestion"
                                                                 >
                                                                     <FaTimes className="w-2.5 h-2.5" />
                                                                 </button>
                                                                 <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shrink-0 ${issue.severity === 'high'
-                                                                    ? 'bg-red-50 text-red-600 border-red-100'
+                                                                    ? 'bg-teal-50 text-primary border-teal-100'
                                                                     : issue.severity === 'medium'
                                                                         ? 'bg-amber-50 text-amber-600 border-amber-100'
-                                                                        : 'bg-blue-50 text-blue-600 border-blue-100'
+                                                                        : 'bg-card/40 text-blue-600 border-border-custom'
                                                                     }`}>
                                                                     {issue.severity}
                                                                 </span>
@@ -667,16 +667,16 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                         </div>
 
                                                         <div className="space-y-4">
-                                                            <p className="text-xs text-gray-500 font-medium leading-relaxed">{issue.description}</p>
+                                                            <p className="text-xs text-text-dim font-medium leading-relaxed">{issue.description}</p>
 
-                                                            <div className={`bg-gray-50 rounded-2xl p-5 border border-gray-100 transition-colors ${isSelected ? 'bg-amber-50/50 border-amber-100' : ''}`}>
+                                                            <div className={`bg-surface rounded-2xl p-5 border border-border-custom transition-colors ${isSelected ? 'bg-amber-50/50 border-amber-100' : ''}`}>
                                                                 <div className="flex items-center gap-2 mb-3">
                                                                     <div className="p-1 px-2 rounded-md bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5">
                                                                         <FaLightbulb className="w-2.5 h-2.5" />
                                                                         Grammarly Recommendation
                                                                     </div>
                                                                 </div>
-                                                                <p className="text-xs text-gray-800 leading-relaxed font-semibold mb-4 italic">
+                                                                <p className="text-xs text-foreground leading-relaxed font-semibold mb-4 italic">
                                                                     "{issue.suggestion}"
                                                                 </p>
                                                                 <div className="flex flex-wrap gap-2">
@@ -686,7 +686,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                                                 e.stopPropagation();
                                                                                 applySuggestion(issue);
                                                                             }}
-                                                                            className="flex items-center gap-2 bg-[#8b0000] text-white text-[9px] font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#8b0000]/20"
+                                                                            className="flex items-center gap-2 bg-[#2DD4BF] text-white text-[9px] font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#2DD4BF]/20"
                                                                         >
                                                                             <FaCheckCircle className="w-3 h-3" />
                                                                             Apply Academic Fix
@@ -697,7 +697,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                                                 e.stopPropagation();
                                                                                 dismissIssue(issueId);
                                                                             }}
-                                                                            className="flex items-center gap-2 bg-gray-900 text-white text-[9px] font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black/20"
+                                                                            className="flex items-center gap-2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black/20"
                                                                         >
                                                                             <FaCheckCircle className="w-3 h-3 text-green-400" />
                                                                             Mark as Resolved
@@ -710,7 +710,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                                                                 e.stopPropagation();
                                                                                 jumpToPage(page, issue.context, issueId);
                                                                             }}
-                                                                            className={`group flex items-center gap-2 text-[8px] font-black uppercase tracking-widest transition-all px-4 py-2 rounded-xl border active:scale-95 ${activePage === page && selectedIssueContext === issue.context ? 'bg-gray-900 text-white border-gray-900' : 'bg-white hover:bg-gray-50 text-gray-400 hover:text-gray-900 border-gray-200'}`}
+                                                                            className={`group flex items-center gap-2 text-[8px] font-black uppercase tracking-widest transition-all px-4 py-2 rounded-xl border active:scale-95 ${activePage === page && selectedIssueContext === issue.context ? 'bg-primary text-white border-primary' : 'bg-card hover:bg-surface text-gray-400 hover:text-foreground border-border-custom'}`}
                                                                         >
                                                                             Go to p{page}
                                                                         </button>
@@ -733,11 +733,11 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                     </div>
 
                     {/* Download Action Footer */}
-                    <div className="px-6 md:px-10 py-6 border-t border-white/10 bg-white/5 backdrop-blur-md">
+                    <div className="px-6 md:px-10 py-6 border-t border-white/10 bg-card/5 backdrop-blur-md">
                         <button
                             onClick={handleDownloadRefined}
                             disabled={appliedIssueIds.length === 0}
-                            className={`w-full flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] ${appliedIssueIds.length > 0 ? 'bg-[#8b0000] text-white hover:bg-red-800 shadow-[#8b0000]/20' : 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed'}`}
+                            className={`w-full flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] ${appliedIssueIds.length > 0 ? 'bg-[#2DD4BF] text-white hover:bg-primary shadow-[#2DD4BF]/20' : 'bg-card/5 text-white/20 border border-white/5 cursor-not-allowed'}`}
                         >
                             <FaDownload className={appliedIssueIds.length > 0 ? 'animate-bounce' : ''} />
                             Download Refined Manuscript
