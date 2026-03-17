@@ -94,7 +94,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white overflow-x-hidden">
             {/* Background Glows */}
             <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#2DD4BF]/5 rounded-full blur-[100px] pointer-events-none" />
@@ -114,9 +114,6 @@ const ProfilePage = () => {
 
                     {/* Hero Profile Section */}
                     <div className="bg-card rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 border border-border-custom shadow-xl overflow-hidden relative group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
                             <div className="relative">
                                 <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-border-custom shadow-xl group-hover:scale-105 transition-transform duration-700">

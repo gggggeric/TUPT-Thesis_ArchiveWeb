@@ -201,7 +201,7 @@ const EditProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white">
+        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white overflow-x-hidden">
             {/* Background Glows */}
             <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2DD4BF]/10 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#2DD4BF]/10 rounded-full blur-[100px] pointer-events-none" />
@@ -225,7 +225,6 @@ const EditProfilePage = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="bg-card rounded-[2.5rem] shadow-xl border border-border-custom overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
                     <div className="p-6 md:p-10 space-y-12 relative z-10">
                         {/* Section: Profile Photo */}
                         <div className="flex flex-col items-center justify-center space-y-6 pb-6 border-b border-border-custom">
