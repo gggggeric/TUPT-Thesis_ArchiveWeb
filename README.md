@@ -22,20 +22,10 @@ The official web platform for the Technological University of the Philippines Ta
 ## 📸 Previews
 
 ### 🏛️ Institutional Dashboard
-The central hub for research analytics and repository navigation.
 ![Home Screen](readme-assets/home.png)
 
 ### 🤖 Research Insights & AI Log
-Track semantic searches and AI-generated thesis recommendations.
 ![Analytics Screen](readme-assets/home1.png)
-
-### 📤 Thesis Submission Portal
-A streamlined, premium interface for academic document uploads.
-![Submit Thesis](readme-assets/home.png) <!-- Note: Replace with actual submit screenshot if available -->
-
-### 📂 Personal Research Archive
-Manage and monitor the status of all your submitted institutional research.
-![My Submissions](readme-assets/home1.png) <!-- Note: Replace with actual submissions screenshot if available -->
 
 ---
 
