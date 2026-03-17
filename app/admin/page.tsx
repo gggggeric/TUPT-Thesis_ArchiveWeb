@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomHeader from '@/components/Navigation/CustomHeader';
+import Sidebar from '@/components/Navigation/Sidebar';
 import { FaUserShield, FaChartBar, FaFileAlt, FaUsers, FaArrowRight, FaClock, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -11,6 +12,7 @@ export default function AdminPage() {
     const router = useRouter();
     const [adminData, setAdminData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
     const [stats, setStats] = useState({
         theses: 0,
         users: 0,
@@ -77,8 +79,8 @@ export default function AdminPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-surface flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2DD4BF]"></div>
+            <div className="min-h-screen bg-[#0F0F1A] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
         );
     }
@@ -90,14 +92,16 @@ export default function AdminPage() {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white">
-            {/* Background Glows */}
-            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#2DD4BF]/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="min-h-screen bg-transparent flex font-sans text-white">
+            <Sidebar 
+                isExpanded={sidebarExpanded} 
+                onToggle={() => setSidebarExpanded(!sidebarExpanded)} 
+            />
 
-            <CustomHeader isLanding={false} />
+            <div className={`flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${sidebarExpanded ? 'pl-[280px]' : 'pl-[80px]'}`}>
+                <CustomHeader onMenuPress={() => setSidebarExpanded(!sidebarExpanded)} />
 
-            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
+                <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div className="bg-card/80 backdrop-blur-xl rounded-[2.5rem] p-10 mb-10 border border-border-custom shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none" />
@@ -286,5 +290,6 @@ export default function AdminPage() {
                 </div>
             </main>
         </div>
+    </div>
     );
 }

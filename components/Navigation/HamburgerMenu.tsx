@@ -136,15 +136,15 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                                 <FaEdit className="text-[10px] text-white" />
                             </div>
                         </div>
-                        <div className="text-xl font-black text-white mb-1 text-center truncate w-full">
+                        <div className="text-xl font-bold text-white mb-1 text-center truncate w-full">
                             {user?.name || 'Guest User'}
                         </div>
                         <div className="bg-card/10 rounded-lg px-3 py-1 mb-1">
-                            <span className="text-xs font-black text-secondary uppercase tracking-widest">
+                            <span className="text-xs font-bold text-secondary uppercase tracking-widest">
                                 {user?.idNumber || 'TUPT-00-0000'}
                             </span>
                         </div>
-                        <div className="text-[10px] text-white/60 mt-2 font-black tracking-[0.2em] uppercase">
+                        <div className="text-[10px] text-white/60 mt-2 font-bold tracking-[0.2em] uppercase">
                             University Archive Portal
                         </div>
                     </div>
@@ -159,14 +159,14 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                             return (
                                 <button
                                     key={index}
-                                    className="w-full flex items-center justify-between py-4 px-4 rounded-2xl bg-transparent border-none cursor-pointer transition-all duration-300 hover:bg-card/10 group"
+                                    className="w-full flex items-center justify-between py-4 px-4 rounded-xl bg-transparent border-none cursor-pointer transition-all duration-300 hover:bg-card/10 group"
                                     onClick={() => handleMenuItemPress(item.path)}
                                 >
                                     <div className="flex items-center gap-4 flex-1 pr-4">
-                                        <div className="w-10 h-10 shrink-0 rounded-xl bg-card/5 flex items-center justify-center transition-all duration-300 group-hover:bg-card/20 group-hover:shadow-lg">
+                                        <div className="w-10 h-10 shrink-0 rounded-lg bg-card/5 flex items-center justify-center transition-all duration-300 group-hover:bg-card/20 group-hover:shadow-lg">
                                             <IconComponent className="text-lg text-white/70 transition-colors duration-300 group-hover:text-white" />
                                         </div>
-                                        <span className="text-sm font-medium text-left leading-tight text-white/80 uppercase tracking-wider group-hover:text-white transition-colors duration-300">
+                                        <span className="text-[13px] font-semibold text-left leading-tight text-white/80 uppercase tracking-wider group-hover:text-white transition-colors duration-300">
                                             {item.label}
                                         </span>
                                     </div>
@@ -182,11 +182,11 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                     {/* Logout Button */}
                     {user && (
                         <button
-                            className="w-full py-4 px-4 rounded-2xl bg-card/5 text-white/80 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-xl group border border-white/10"
+                            className="w-full py-4 px-4 rounded-xl bg-card/5 text-white/80 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-xl group border border-white/10"
                             onClick={handleLogout}
                         >
                             <FaSignOutAlt className="text-base transition-transform group-hover:translate-x-[-2px]" />
-                            <span className="text-xs font-black uppercase tracking-widest">Logout</span>
+                            <span className="text-xs font-bold uppercase tracking-widest">Logout</span>
                         </button>
                     )}
 
@@ -204,7 +204,7 @@ const HamburgerMenu = ({ isVisible, onClose }: HamburgerMenuProps) => {
                     {/* App Info Footer */}
                     <div className="text-center">
                         <div className="w-12 h-1 bg-card/20 mx-auto rounded-full mb-4 opacity-50" />
-                        <span className="text-[9px] text-white/40 font-black uppercase tracking-[0.3em]">
+                        <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em]">
                             TUPT Thesis Archive
                         </span>
                     </div>

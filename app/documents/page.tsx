@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { FaArrowLeft } from 'react-icons/fa';
 
 import CustomHeader from '@/components/Navigation/CustomHeader';
-import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
+import Sidebar from '@/components/Navigation/Sidebar';
 import Footer from '@/components/Navigation/Footer';
 
 import DocumentsHero from './components/DocumentsHero';
@@ -18,7 +18,7 @@ import DraftsList from './components/DraftsList';
 const DocumentsPage: React.FC = () => {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [menuVisible, setMenuVisible] = useState(false);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -174,57 +174,63 @@ const DocumentsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white">
-            <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
-            <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
+        <div className="min-h-screen bg-transparent flex font-sans text-white">
+            <Sidebar 
+                isExpanded={sidebarExpanded} 
+                onToggle={() => setSidebarExpanded(!sidebarExpanded)} 
+            />
 
-            {mounted && (
-                <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#2DD4BF]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
-                    <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#2DD4BF]/10 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse-slow" />
-                </div>
-            )}
+            <div className={`flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${sidebarExpanded ? 'pl-[280px]' : 'pl-[80px]'}`}>
+                <CustomHeader onMenuPress={() => setSidebarExpanded(!sidebarExpanded)} />
 
-            <main className="relative z-10 flex-1 pt-16 pb-16">
-                {!analysisResult ? (
-                    <>
-                        <DocumentsHero />
-
-                        <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-10 px-6">
-                            <div className="space-y-12">
-                                <UploadSection
-                                    isDragging={isDragging}
-                                    selectedFile={selectedFile}
-                                    isUploading={isUploading}
-                                    fileInputRef={fileInputRef}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={handleDrop}
-                                    onFileSelect={handleFileSelect}
-                                    onClearFile={() => setSelectedFile(null)}
-                                    onUpload={handleUpload}
-                                    onOpenSubmitModal={() => router.push('/documents/create')}
-                                />
-                                <HowItWorks />
-                            </div>
-
-                            <div className="lg:border-l lg:border-white/10 lg:pl-10">
-                                <DraftsList drafts={drafts} onResume={handleResumeDraft} />
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <div className="pt-8">
-                        <AnalysisWorkspace
-                            result={analysisResult}
-                            file={selectedFile}
-                            onClose={() => setAnalysisResult(null)}
-                        />
+                {mounted && (
+                    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+                        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#2DD4BF]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
+                        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[#2DD4BF]/10 rounded-full blur-[150px] translate-y-1/3 -translate-x-1/4 animate-pulse-slow" />
                     </div>
                 )}
-            </main>
 
-            <Footer />
+                <main className="relative z-10 flex-1 pt-32 pb-16">
+                    {!analysisResult ? (
+                        <>
+                            <DocumentsHero />
+
+                            <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-10 px-6">
+                                <div className="space-y-12">
+                                    <UploadSection
+                                        isDragging={isDragging}
+                                        selectedFile={selectedFile}
+                                        isUploading={isUploading}
+                                        fileInputRef={fileInputRef}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        onFileSelect={handleFileSelect}
+                                        onClearFile={() => setSelectedFile(null)}
+                                        onUpload={handleUpload}
+                                        onOpenSubmitModal={() => router.push('/documents/create')}
+                                    />
+                                    <HowItWorks />
+                                </div>
+
+                                <div className="lg:border-l lg:border-white/10 lg:pl-10">
+                                    <DraftsList drafts={drafts} onResume={handleResumeDraft} />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="pt-8 px-4 md:px-8">
+                            <AnalysisWorkspace
+                                result={analysisResult}
+                                file={selectedFile}
+                                onClose={() => setAnalysisResult(null)}
+                            />
+                        </div>
+                    )}
+                </main>
+
+                <Footer />
+            </div>
         </div>
     );
 };

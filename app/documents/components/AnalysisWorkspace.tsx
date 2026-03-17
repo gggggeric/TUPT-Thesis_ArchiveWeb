@@ -36,6 +36,13 @@ export interface AnalysisResult {
     recommendations?: AnalysisIssue[];
     pagesText: { pageNumber: number; text: string }[];
     appliedIssueIds?: string[];
+    similarity?: {
+        percentage: number;
+        matches: {
+            id: string;
+            title: string;
+        } | null;
+    };
 }
 
 interface AnalysisWorkspaceProps {
@@ -219,14 +226,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
         }
     };
 
-    useEffect(() => {
-        if (result?.categories) {
-            console.log('--- ANALYSIS RESULTS ---');
-            console.log('Total Issues:', result.totalIssues);
-            console.log('Category Count:', result.categories.length);
-            console.log('--- END ANALYSIS LOG ---');
-        }
-    }, [result]);
 
     const toggleCategory = (index: number) => {
         setExpandedCategories(prev => ({
@@ -582,6 +581,47 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({ result, file, onC
                                     className="h-full bg-gradient-to-r from-[#2DD4BF] to-[#af1a1a] transition-all duration-1000 ease-out"
                                     style={{ width: `${progressPercentage}%` }}
                                 />
+                            </div>
+                        </div>
+
+                        {/* Similarity Analysis */}
+                        <div className="mb-10 bg-card/5 rounded-[1.5rem] p-6 border border-white/10 relative overflow-hidden group">
+                            <div className={`absolute inset-0 opacity-5 pointer-events-none transition-opacity group-hover:opacity-10 ${
+                                (result.similarity?.percentage || 0) > 40 ? 'bg-red-500' : 'bg-[#2DD4BF]'
+                            }`} />
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-4">
+                                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Similarity Check</p>
+                                    <div className={`px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-tighter ${
+                                        (result.similarity?.percentage || 0) > 40 
+                                        ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+                                        : 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2DD4BF]/20'
+                                    }`}>
+                                        {(result.similarity?.percentage || 0) > 40 ? 'High Similarity' : 'Original Content'}
+                                    </div>
+                                </div>
+                                <div className="flex items-end gap-3 mb-4">
+                                    <h4 className={`text-4xl font-black tracking-tighter ${
+                                        (result.similarity?.percentage || 0) > 40 ? 'text-red-400' : 'text-white'
+                                    }`}>
+                                        {result.similarity?.percentage || 0}%
+                                    </h4>
+                                    <p className="text-[10px] text-white/40 font-bold mb-1.5 uppercase tracking-widest">matched in archive</p>
+                                </div>
+                                {result.similarity?.matches && (
+                                    <div className="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-white/10 transition-all">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <FaSearch className="text-[#2DD4BF] text-[10px]" />
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#2DD4BF]">Potential Match Found</p>
+                                        </div>
+                                        <p className="text-[11px] text-white/80 font-medium leading-relaxed italic line-clamp-2">
+                                            "{result.similarity.matches.title}"
+                                        </p>
+                                        <p className="text-[9px] text-white/40 font-black uppercase tracking-widest mt-3 flex items-center gap-2">
+                                            <FaInfoCircle className="text-[10px]" /> REF: {result.similarity.matches.id}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

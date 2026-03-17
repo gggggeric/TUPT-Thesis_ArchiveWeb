@@ -19,6 +19,16 @@ The official web platform for the Technological University of the Philippines Ta
 
 ---
 
+## 📸 Previews
+
+### 🏛️ Institutional Dashboard
+![Home Screen](readme-assets/home.png)
+
+### 🤖 Research Insights & AI Log
+![Analytics Screen](readme-assets/home1.png)
+
+---
+
 ## 🛠️ Technical Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
