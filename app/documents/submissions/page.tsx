@@ -6,14 +6,14 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import CustomHeader from '@/components/Navigation/CustomHeader';
-import HamburgerMenu from '@/components/Navigation/HamburgerMenu';
+import Sidebar from '@/components/Navigation/Sidebar';
 import Footer from '@/components/Navigation/Footer';
 import MySubmissions from '../components/MySubmissions';
 import EditThesisModal from '../components/EditThesisModal';
 
 const SubmissionsPage: React.FC = () => {
     const router = useRouter();
-    const [menuVisible, setMenuVisible] = useState(false);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [myTheses, setMyTheses] = useState<any[]>([]);
     
@@ -94,45 +94,53 @@ const SubmissionsPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-white selection:bg-[#2DD4BF] selection:text-white">
-            <CustomHeader onMenuPress={() => setMenuVisible(!menuVisible)} />
-            <HamburgerMenu isVisible={menuVisible} onClose={() => setMenuVisible(false)} />
+        <div className="min-h-screen bg-transparent flex font-sans text-white">
+            <Sidebar 
+                isExpanded={sidebarExpanded} 
+                onToggle={() => setSidebarExpanded(!sidebarExpanded)} 
+            />
 
-            {mounted && (
-                <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#2DD4BF]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
-                </div>
-            )}
-
-            <main className="relative z-10 flex-1 w-full pt-32 px-6 max-w-6xl mx-auto pb-16">
-                <button
-                    onClick={() => router.push('/documents')}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-[-40px] ml-6 relative z-20"
-                >
-                    <FaArrowLeft /> Back to Workspace
-                </button>
+            <div className={`flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${sidebarExpanded ? 'pl-[280px]' : 'pl-[80px]'}`}>
+                <CustomHeader onMenuPress={() => setSidebarExpanded(!sidebarExpanded)} />
 
                 {mounted && (
-                    <MySubmissions
-                        myTheses={myTheses}
-                        onViewThesis={(id) => router.push(`/search_result?id=${id}`)}
-                        onEditThesis={handleEdit}
-                        onDeleteThesis={handleDelete}
-                        hasAnalysisOrFile={false}
+                    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+                        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-[#2DD4BF]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 animate-pulse-slow" />
+                    </div>
+                )}
+
+                <main className="relative z-10 flex-1 w-full pt-32 px-6 pb-16">
+                    <div className="max-w-6xl mx-auto">
+                        <button
+                            onClick={() => router.push('/documents')}
+                            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-[-40px] ml-6 relative z-20"
+                        >
+                            <FaArrowLeft /> Back to Workspace
+                        </button>
+
+                        {mounted && (
+                            <MySubmissions
+                                myTheses={myTheses}
+                                onViewThesis={(id) => router.push(`/search_result?id=${id}`)}
+                                onEditThesis={handleEdit}
+                                onDeleteThesis={handleDelete}
+                                hasAnalysisOrFile={false}
+                            />
+                        )}
+                    </div>
+                </main>
+
+                {mounted && (
+                    <EditThesisModal 
+                        isOpen={isEditModalOpen}
+                        onClose={() => setIsEditModalOpen(false)}
+                        thesis={selectedThesis}
+                        onSave={handleSaveEdit}
                     />
                 )}
-            </main>
 
-            {mounted && (
-                <EditThesisModal 
-                    isOpen={isEditModalOpen}
-                    onClose={() => setIsEditModalOpen(false)}
-                    thesis={selectedThesis}
-                    onSave={handleSaveEdit}
-                />
-            )}
-
-            <Footer />
+                <Footer />
+            </div>
         </div>
     );
 };

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomHeader from '@/components/Navigation/CustomHeader';
+import Sidebar from '@/components/Navigation/Sidebar';
 import { FaUsers, FaArrowLeft, FaUserShield, FaUser, FaTrash, FaCheckCircle, FaExclamationCircle, FaPlus, FaChevronLeft, FaChevronRight, FaTimes, FaSearch, FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -10,6 +11,7 @@ export default function AdminUsersPage() {
     const router = useRouter();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
@@ -228,21 +230,23 @@ export default function AdminUsersPage() {
 
     if (loading && users.length === 0 && !searchQuery) {
         return (
-            <div className="min-h-screen bg-transparent flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2DD4BF]"></div>
+            <div className="min-h-screen bg-[#0F0F1A] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-transparent font-sans text-foreground selection:bg-[#2DD4BF] selection:text-white relative overflow-x-hidden">
-            {/* Background Glows */}
-            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-card/400/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="min-h-screen bg-transparent flex font-sans text-white">
+            <Sidebar 
+                isExpanded={sidebarExpanded} 
+                onToggle={() => setSidebarExpanded(!sidebarExpanded)} 
+            />
 
-            <CustomHeader isLanding={false} />
+            <div className={`flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${sidebarExpanded ? 'pl-[280px]' : 'pl-[80px]'}`}>
+                <CustomHeader onMenuPress={() => setSidebarExpanded(!sidebarExpanded)} />
 
-            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
+                <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                     <div className="flex items-center gap-6">
@@ -546,5 +550,6 @@ export default function AdminUsersPage() {
                 </div>
             )}
         </div>
+    </div>
     );
 }

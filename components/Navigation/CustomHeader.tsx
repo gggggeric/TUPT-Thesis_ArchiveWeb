@@ -224,21 +224,8 @@ const CustomHeader = ({
             const currentScrollY = window.scrollY;
             setScrolled(currentScrollY > 50);
 
-            // Search Bar Visibility Logic
-            if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-                // Scrolling down - Hide search
-                setShowSearch(false);
-            } else {
-                // Scrolling up - Show search
-                setShowSearch(true);
-            }
-            lastScrollY.current = currentScrollY;
-
-            // Show search when scrolling stops
-            if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-            scrollTimeout.current = setTimeout(() => {
-                setShowSearch(true);
-            }, 800);
+            // Search Bar is now always visible based on user request
+            setShowSearch(true);
         };
 
         const checkAuth = () => {
@@ -385,17 +372,8 @@ const CustomHeader = ({
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-6 ${headerBgClass}`}>
-            {/* Left Section: Menu + Branding */}
+            {/* Left Section: Branding */}
             <div className="flex items-center gap-3 md:gap-4 z-10">
-                {(mounted && !isLanding && isLoggedIn && !isAdmin) && (
-                    <button
-                        className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 border-none cursor-pointer bg-card/10 text-white hover:bg-card/20`}
-                        onClick={onMenuPress}
-                        aria-label="Menu"
-                    >
-                        <FaBars />
-                    </button>
-                )}
                 <div
                     className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition-opacity active:scale-95 transform duration-200"
                     onClick={() => {
@@ -415,15 +393,12 @@ const CustomHeader = ({
                             className="w-full h-full object-contain drop-shadow-md"
                         />
                     </div>
-                    <span className={`text-base md:text-lg font-black tracking-tighter uppercase leading-none transition-colors duration-500 hidden sm:inline ${textClass}`}>
-                        TUPT<span className="hidden lg:inline">-Thesis Archive</span>
-                    </span>
                 </div>
             </div>
 
             {/* Centered Search Bar (Only if logged in and NOT admin) */}
             {(mounted && isLoggedIn && !isAdmin) && (
-                <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[200px] sm:max-w-md lg:max-w-2xl px-2 sm:px-4 transition-all duration-500 ease-out z-0 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 -translate-y-[150%]'}`}>
+                <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[200px] sm:max-w-md lg:max-w-2xl px-2 sm:px-4 transition-all duration-500 ease-out z-0 opacity-100 scale-100`}>
                     <div
                         ref={searchContainerRef}
                     >
@@ -433,8 +408,8 @@ const CustomHeader = ({
                             </div>
                             <input
                                 type="text"
-                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-full border text-foreground text-[11px] sm:text-sm font-medium shadow-sm outline-none transition-all duration-300 focus:bg-card focus:ring-4 focus:ring-[#2DD4BF]/10 ${isRedHeader ? 'bg-card/10 border-white/10 text-white placeholder:text-white/50 focus:bg-card focus:border-white focus:text-foreground' : 'bg-surface border-border-custom text-foreground placeholder:text-gray-400 focus:bg-card focus:border-[#2DD4BF]/30'}`}
-                                placeholder="Search..."
+                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-xl border text-foreground text-[11px] sm:text-sm font-medium shadow-sm outline-none transition-all duration-300 focus:bg-card focus:ring-4 focus:ring-[#2DD4BF]/10 ${isRedHeader ? 'bg-card/10 border-white/10 text-white placeholder:text-white/50 focus:bg-card focus:border-white focus:text-foreground' : 'bg-surface border-border-custom text-foreground placeholder:text-gray-400 focus:bg-card focus:border-[#2DD4BF]/30'}`}
+                                placeholder="Search repository..."
                                 value={localSearchQuery}
                                 onChange={(e) => {
                                     setLocalSearchQuery(e.target.value);
@@ -507,10 +482,10 @@ const CustomHeader = ({
                                     <button
                                         onClick={handleRecommendByAi}
                                         disabled={isLoadingAi}
-                                        className="flex items-center gap-1.5 text-xs font-bold text-[#2DD4BF] bg-teal-50 px-2 py-1 rounded-md hover:bg-teal-100 transition-colors disabled:opacity-50"
+                                        className="flex items-center gap-1.5 text-xs font-bold text-[#2DD4BF] bg-teal-50/5 px-3 py-1.5 rounded-lg border border-teal-500/20 hover:bg-teal-500/10 transition-colors disabled:opacity-50"
                                     >
                                         <FaMagic className="text-[10px]" />
-                                        {isLoadingAi ? 'Generating...' : 'Recommend via AI'}
+                                        {isLoadingAi ? 'Analyzing...' : 'AI Recommend'}
                                     </button>
                                     <button
                                         className="text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-text-dim p-1"
@@ -549,7 +524,7 @@ const CustomHeader = ({
                                                 <FaCalendarAlt className="text-[10px] text-[#2DD4BF]" /> {String(result.year_range && result.year_range !== 'unknown' ? result.year_range : 'N/A')}
                                             </span>
                                         </div>
-                                        <h4 className="text-sm font-bold text-foreground mb-1.5 leading-snug">
+                                        <h4 className="text-sm font-semibold text-foreground mb-1.5 leading-snug">
                                             {highlightText(result.title, localSearchQuery)}
                                         </h4>
                                         <p className="text-xs text-text-dim leading-relaxed mb-2 line-clamp-2">
@@ -571,8 +546,8 @@ const CustomHeader = ({
                             </div>
 
                             <div className="px-4 py-2.5 bg-surface/80 border-t border-border-custom text-center">
-                                <span className="text-xs text-gray-400 font-medium">
-                                    {loading ? 'Searching...' : 'API Powered Search Engine'}
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                                    {loading ? 'Processing...' : 'Secure Archive Search'}
                                 </span>
                             </div>
                         </div>
@@ -594,7 +569,7 @@ const CustomHeader = ({
                         </button>
                         <button
                             onClick={() => router.push('/register')}
-                            className={`text-[11px] font-black uppercase tracking-[0.2em] px-6 py-2.5 rounded-lg transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-card text-primary scale-105 ring-4 ring-primary/20' : (isRedHeader ? 'text-white hover:bg-white/10' : 'bg-primary/5 text-primary border border-primary/30 hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(45,212,191,0.1)]')}`}
+                            className={`text-[11px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 rounded-xl transition-all transform active:scale-95 relative group ${pathname === '/register' ? 'bg-card text-primary scale-105 ring-4 ring-primary/20' : (isRedHeader ? 'text-white hover:bg-white/10' : 'bg-primary/5 text-primary border border-primary/30 hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(45,212,191,0.1)]')}`}
                         >
                             Register
                         </button>
