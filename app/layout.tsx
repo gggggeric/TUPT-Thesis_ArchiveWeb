@@ -49,7 +49,7 @@ function AppContent({ children }: { children: ReactNode }) {
 
       {hasSidebar && <Sidebar />}
 
-      <div className={`flex-1 flex flex-col transition-[padding] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${paddingClass}`}>
+      <div className={`flex-1 flex flex-col transition-[padding] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${paddingClass}`}>
         {!isAuthPage && <CustomHeader isLanding={isLanding} />}
 
         <main className="flex-grow">

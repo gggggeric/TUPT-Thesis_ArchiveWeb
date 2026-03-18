@@ -424,7 +424,7 @@ const CustomHeader = ({
                             </div>
                             <input
                                 type="text"
-                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-xl border text-foreground text-[11px] sm:text-sm font-medium shadow-sm outline-none transition-all duration-300 focus:bg-card focus:ring-4 focus:ring-[#2DD4BF]/10 ${isRedHeader ? 'bg-card/10 border-white/10 text-white placeholder:text-white/50 focus:bg-card focus:border-white focus:text-foreground' : 'bg-surface border-border-custom text-foreground placeholder:text-gray-400 focus:bg-card focus:border-[#2DD4BF]/30'}`}
+                                className={`w-full py-2.5 sm:py-3 pl-10 pr-12 sm:pr-24 rounded-lg border text-foreground text-[11px] sm:text-sm font-medium shadow-sm outline-none transition-all duration-300 focus:bg-card focus:ring-2 focus:ring-[#2DD4BF]/10 ${isRedHeader ? 'bg-card/10 border-white/10 text-white placeholder:text-white/50 focus:bg-card focus:border-white focus:text-foreground' : 'bg-surface border-border-custom text-foreground placeholder:text-gray-400 focus:bg-card focus:border-[#2DD4BF]/30'}`}
                                 placeholder="Search repository..."
                                 value={localSearchQuery}
                                 onChange={(e) => {
@@ -489,7 +489,7 @@ const CustomHeader = ({
 
                     {/* Search Results Dropdown */}
                     {showSearchResults && searchResults.length > 0 && (
-                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-card rounded-2xl shadow-2xl z-50 border border-border-custom max-h-[70vh] overflow-hidden flex flex-col animate-fade-in">
+                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-card rounded-xl shadow-2xl z-50 border border-border-custom max-h-[70vh] overflow-hidden flex flex-col animate-fade-in">
                             <div className="flex items-center justify-between px-4 py-3 border-b border-border-custom bg-surface/80">
                                 <span className="text-sm font-semibold text-text-dim">
                                     {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
