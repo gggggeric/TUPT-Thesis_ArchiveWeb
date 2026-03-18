@@ -109,25 +109,29 @@ export default function Sidebar() {
             initial={false}
             variants={sidebarVariants}
             animate={isExpanded ? 'expanded' : 'collapsed'}
-            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             style={{ width: isExpanded ? 280 : 80 }}
             className="fixed left-0 top-0 bottom-0 z-[60] bg-[#1E293B] border-r border-white/5 shadow-2xl flex flex-col overflow-hidden"
         >
             {/* Header / Brand / Toggle */}
-            <div className={`flex items-center ${isExpanded ? 'p-5 justify-between' : 'p-3 pt-6 pb-0 justify-center flex-col gap-2'}`}>
-                <div className={`flex items-center gap-3 ${isExpanded ? '' : 'flex-col'}`}>
-                    <div
+            <motion.div 
+                layout
+                className={`flex items-center p-5 min-h-[88px] ${isExpanded ? 'justify-between' : 'justify-center'}`}
+            >
+                <motion.div layout className="flex items-center gap-3">
+                    <motion.div
+                        layout
                         className="w-12 h-12 flex-shrink-0 flex items-center justify-center cursor-pointer group"
                         onClick={() => !isExpanded && onToggle()}
                     >
                         <img
                             src="/assets/tup-logo.png"
                             alt="TUP Logo"
-                            className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                         />
-                    </div>
+                    </motion.div>
 
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence>
                         {isExpanded && (
                             <motion.div
                                 key="brand-text"
@@ -135,14 +139,15 @@ export default function Sidebar() {
                                 animate="visible"
                                 exit="hidden"
                                 variants={labelVariants}
+                                layout
                                 className="flex flex-col min-w-0"
                             >
-                                <span className="text-white font-black uppercase tracking-tighter text-base leading-none truncate">TUPT Archive</span>
-                                <span className="text-primary font-bold uppercase tracking-[0.2em] text-[8px] mt-0.5">Active Portal</span>
+                                <span className="text-white font-extrabold uppercase tracking-tight text-base leading-none truncate whitespace-nowrap">TUPT Archive</span>
+                                <span className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] mt-1 opacity-80 whitespace-nowrap">Active Portal</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
-                </div>
+                </motion.div>
 
                 <AnimatePresence>
                     {isExpanded && (
@@ -159,22 +164,24 @@ export default function Sidebar() {
                         </motion.button>
                     )}
                 </AnimatePresence>
-            </div>
+            </motion.div>
 
             {/* Profile Section */}
-            <div
-                className={`${isExpanded ? 'px-4 mb-8 items-start' : 'px-2 mb-1 items-center'} flex flex-col transition-all duration-300`}
+            <motion.div
+                layout
+                className={`mb-8 flex flex-col transition-all duration-300 px-4 ${isExpanded ? 'items-start' : 'items-center'}`}
             >
-                <div
+                <motion.div
+                layout
                 onClick={() => router.push('/profile')}
-                    className={`relative cursor-pointer group flex items-center gap-4 p-2 rounded-2xl transition-all duration-300 ${isExpanded ? 'w-full hover:bg-white/5' : ''}`}
+                    className={`relative cursor-pointer group flex items-center gap-4 p-2 rounded-xl transition-all duration-300 ${isExpanded ? 'w-full hover:bg-white/5' : ''}`}
                 >
                     <div className="relative flex-shrink-0">
                         <motion.div
                             layout
-                            className="rounded-2xl bg-card/20 flex items-center justify-center border-2 border-white/10 shadow-xl overflow-hidden"
+                            className="rounded-xl bg-card/20 flex items-center justify-center border-2 border-white/10 shadow-xl overflow-hidden"
                             animate={{ width: isExpanded ? 56 : 48, height: isExpanded ? 56 : 48 }}
-                            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
                         >
                             {user?.profilePhoto ? (
                                 <img
@@ -202,7 +209,7 @@ export default function Sidebar() {
                         </AnimatePresence>
                     </div>
 
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence>
                         {isExpanded && (
                             <motion.div
                                 key="profile-text"
@@ -210,18 +217,19 @@ export default function Sidebar() {
                                 animate="visible"
                                 exit="hidden"
                                 variants={labelVariants}
+                                layout
                                 className="flex flex-col truncate overflow-hidden"
                             >
-                                <span className="text-white font-bold text-sm truncate">{user?.name || 'Guest User'}</span>
-                                <span className="text-secondary text-[10px] font-bold tracking-widest uppercase truncate">{user?.idNumber || 'LOGIN TO PORTAL'}</span>
+                                <span className="text-white font-bold text-sm truncate whitespace-nowrap">{user?.name || 'Guest User'}</span>
+                                <span className="text-secondary text-[10px] font-bold tracking-widest uppercase truncate whitespace-nowrap">{user?.idNumber || 'LOGIN TO PORTAL'}</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
             {/* Navigation Section */}
-            <div className={`flex-1 overflow-y-auto custom-scrollbar ${isExpanded ? 'px-4 space-y-2' : 'px-2 space-y-1 mt-[-10px]'}`}>
+            <div className={`flex-1 overflow-y-auto custom-scrollbar ${isExpanded ? 'px-4 space-y-2' : 'px-0 space-y-1 mt-[-10px]'}`}>
                 {menuItems.map((item, index) => {
                     const isActive = pathname === item.path;
                     const Icon = item.icon;
@@ -229,8 +237,8 @@ export default function Sidebar() {
                     return (
                         <div key={index}>
                             {/* Section label */}
-                            {item.section && (
-                                <AnimatePresence mode="wait">
+                             {item.section && (
+                                <AnimatePresence>
                                     {isExpanded ? (
                                         <motion.p
                                             key="section-label"
@@ -238,7 +246,7 @@ export default function Sidebar() {
                                             animate="visible"
                                             exit="hidden"
                                             variants={sectionVariants}
-                                            className="font-bold text-white/20 uppercase tracking-[0.3em] px-4 text-[10px] mt-6 mb-3"
+                                            className="font-bold text-white/20 uppercase tracking-[0.3em] px-4 text-[10px] mt-6 mb-3 whitespace-nowrap"
                                         >
                                             {item.section}
                                         </motion.p>
@@ -258,25 +266,29 @@ export default function Sidebar() {
                             <div
                                 className="relative"
                             >
-                                <button
+                                 <motion.button
+                                    layout
                                     onClick={() => router.push(item.path)}
-                                    className={`w-full group relative flex items-center transition-all duration-300 rounded-xl ${isExpanded ? 'p-3 gap-4' : 'p-2 justify-center'} ${isActive ? 'text-white bg-white/[0.04]' : 'text-white/50 hover:bg-white/5 hover:text-white'}`}
+                                    className={`w-full group relative flex items-center transition-all duration-300 rounded-lg gap-4 ${isExpanded ? 'p-3 justify-start' : 'p-0 justify-center h-12'} ${isActive ? 'text-white' : 'text-white/50 hover:bg-white/5 hover:text-white'}`}
                                 >
                                     {/* Active indicator */}
-                                    {isActive && (
-                                        <motion.div
-                                            initial={{ opacity: 0, scaleY: 0.5 }}
-                                            animate={{ opacity: 1, scaleY: 1 }}
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary rounded-r-full shadow-[0_0_10px_rgba(45,212,191,0.5)]"
-                                            transition={{ duration: 0.2 }}
-                                        />
-                                    )}
+                                     <AnimatePresence>
+                                        {isActive && (
+                                            <motion.div
+                                                initial={{ opacity: 0, scaleY: 0.5, x: -4 }}
+                                                animate={{ opacity: 1, scaleY: 1, x: 0 }}
+                                                exit={{ opacity: 0, scaleY: 0.5, x: -4 }}
+                                                className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-r-full shadow-[0_0_12px_rgba(45,212,191,0.4)] z-10"
+                                                transition={{ duration: 0.2 }}
+                                            />
+                                        )}
+                                    </AnimatePresence>
 
-                                    <div className={`w-10 h-10 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${isActive ? '' : 'group-hover:scale-110'}`}>
-                                        <Icon className={`text-lg transition-all duration-300 ${isActive ? 'scale-110 text-primary' : 'group-hover:scale-110'}`} />
-                                    </div>
+                                     <motion.div layout className={`w-10 h-10 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${isActive ? '' : 'group-hover:scale-105'}`}>
+                                        <Icon className={`text-lg transition-all duration-300 ${isActive ? 'scale-105 text-primary' : 'group-hover:scale-105'}`} />
+                                    </motion.div>
 
-                                    <AnimatePresence mode="wait">
+                                    <AnimatePresence>
                                         {isExpanded && (
                                             <motion.span
                                                 key={`label-${item.label}`}
@@ -284,7 +296,8 @@ export default function Sidebar() {
                                                 animate="visible"
                                                 exit="hidden"
                                                 variants={labelVariants}
-                                                className="text-[13px] font-bold uppercase tracking-wider"
+                                                layout
+                                                className="text-[13px] font-bold uppercase tracking-wider whitespace-nowrap overflow-hidden"
                                             >
                                                 {item.label}
                                             </motion.span>
@@ -295,12 +308,13 @@ export default function Sidebar() {
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
+                                            layout
                                             className="ml-auto"
                                         >
                                             <FaChevronRight className="text-[10px] text-primary/50" />
                                         </motion.div>
                                     )}
-                                </button>
+                                </motion.button>
 
                             </div>
                         </div>
@@ -308,17 +322,18 @@ export default function Sidebar() {
                 })}
             </div>
 
-            {/* Bottom Sign-out Section */}
-            <div className={`mt-auto border-t border-white/5 bg-black/10 ${isExpanded ? 'p-4' : 'p-2'}`}>
+             {/* Bottom Sign-out Section */}
+            <motion.div layout className={`mt-auto border-t border-white/5 bg-black/10 p-3`}>
                 <div className="relative">
-                    <button
+                    <motion.button
+                        layout
                         onClick={handleLogout}
-                        className={`w-full flex items-center transition-all duration-300 group ${isExpanded ? 'gap-4 p-3 rounded-2xl hover:bg-red-500/10 text-white/50 hover:text-red-400' : 'justify-center p-2 text-white/30 hover:text-red-400'}`}
+                        className={`w-full flex items-center transition-all duration-300 group gap-4 rounded-xl hover:bg-red-500/10 text-white/50 hover:text-red-400 ${isExpanded ? 'p-3 justify-start' : 'p-0 justify-center h-12'}`}
                     >
-                        <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-white/[0.03] flex items-center justify-center transition-all duration-300 border border-white/[0.03] group-hover:border-red-500/20 group-hover:bg-red-500/10">
+                        <motion.div layout className="w-10 h-10 flex-shrink-0 rounded-xl bg-white/[0.03] flex items-center justify-center transition-all duration-300 border border-white/[0.03] group-hover:border-red-500/20 group-hover:bg-red-500/10">
                             <FaSignOutAlt className="text-lg group-hover:scale-110 transition-transform" />
-                        </div>
-                        <AnimatePresence mode="wait">
+                        </motion.div>
+                        <AnimatePresence>
                             {isExpanded && (
                                 <motion.span
                                     key="signout-label"
@@ -326,16 +341,17 @@ export default function Sidebar() {
                                     animate="visible"
                                     exit="hidden"
                                     variants={labelVariants}
-                                    className="text-xs font-bold uppercase tracking-widest text-inherit transition-colors"
+                                    layout
+                                    className="text-xs font-bold uppercase tracking-widest text-inherit transition-colors whitespace-nowrap"
                                 >
                                     Sign Out
                                 </motion.span>
                             )}
                         </AnimatePresence>
-                    </button>
+                    </motion.button>
 
                 </div>
-            </div>
+            </motion.div>
 
             <style jsx>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 0px; }
