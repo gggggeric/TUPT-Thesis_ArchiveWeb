@@ -22,7 +22,8 @@ import {
     FaBookOpen,
     FaChevronLeft,
     FaChevronRight,
-    FaMagic
+    FaMagic,
+    FaExclamationTriangle
 } from 'react-icons/fa';
 import API_BASE_URL from '@/app/lib/api';
 import AiReportSidebar from '@/app/components/Sidebar-modal/AiReportSidebar';
@@ -216,17 +217,28 @@ const HomePage: React.FC = () => {
     const confirmClearAllAiHistory = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_BASE_URL}/user/ai-history`, {
+            // Sequential deletion for safety
+            const resAi = await fetch(`${API_BASE_URL}/user/ai-history`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (res.ok) {
+            
+            const resLocal = await fetch(`${API_BASE_URL}/user/local-history`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (resAi.ok && resLocal.ok) {
                 setAiHistory([]);
-            } else {
-                alert('Failed to clear history');
+                setLocalHistory([]);
+            } else if (!resAi.ok || !resLocal.ok) {
+                // If at least one worked, partial success
+                if (resAi.ok) setAiHistory([]);
+                if (resLocal.ok) setLocalHistory([]);
+                alert('Partial history clear. Some records may remain.');
             }
         } catch (err) {
-            console.error('Error clearing AI history:', err);
+            console.error('Error clearing history:', err);
             alert('An error occurred while clearing history.');
         } finally {
             setClearAllModalOpen(false);
@@ -517,39 +529,46 @@ const HomePage: React.FC = () => {
             </main>
 
             {deleteModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in text-white/90">
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                     <motion.div
-                        className="bg-[#0f0f0f] rounded-2xl p-10 w-full max-w-md shadow-2xl border border-white/[0.05] relative overflow-hidden"
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.2 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => { setDeleteModalOpen(false); setItemToDelete(null); }}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="relative w-full max-w-md bg-[#1E293B] border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden p-8"
                     >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none" />
-
-                        <div className="relative z-10 flex flex-col items-center text-center">
-                            <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-6 border border-white/[0.05]">
-                                <FaTrash className="text-primary text-2xl" />
+                        <button
+                            onClick={() => { setDeleteModalOpen(false); setItemToDelete(null); }}
+                            className="absolute top-6 right-6 text-white/20 hover:text-white transition-colors"
+                        >
+                            <FaTimes />
+                        </button>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mb-6 border border-red-500/20 shadow-lg shadow-red-500/5">
+                                <FaExclamationTriangle className="text-3xl text-red-500" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-3">Delete Analysis?</h3>
-                            <p className="text-sm text-white/40 font-medium mb-10 leading-relaxed">
-                                Are you sure you want to permanently remove this insight from the research log? This action cannot be reversed.
+                            <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">Delete Entry?</h3>
+                            <p className="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] mb-6 px-4 leading-relaxed">
+                                Are you sure you want to permanently remove this insight from the research log? This action is permanent and cannot be undone.
                             </p>
-
-                            <div className="flex w-full gap-4">
-                                <button
-                                    onClick={() => {
-                                        setDeleteModalOpen(false);
-                                        setItemToDelete(null);
-                                    }}
-                                    className="flex-1 bg-white/[0.03] hover:bg-white/[0.06] text-white/60 font-bold py-3.5 rounded-xl transition-all text-xs uppercase tracking-widest border border-white/[0.05]"
-                                >
-                                    Cancel
-                                </button>
+                            <div className="flex flex-col w-full gap-3 mt-4">
                                 <button
                                     onClick={confirmDeleteAiHistory}
-                                    className="flex-1 bg-primary/10 border border-primary/20 text-primary font-bold text-[10px] uppercase tracking-[0.2em] py-3.5 rounded-xl transition-all duration-300 hover:bg-primary/20"
+                                    className="w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-red-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                                 >
-                                    Confirm Delete
+                                    <FaTrash className="text-[12px]" />
+                                    Delete Permanently
+                                </button>
+                                <button
+                                    onClick={() => { setDeleteModalOpen(false); setItemToDelete(null); }}
+                                    className="w-full py-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-white/40 hover:text-white font-black text-[10px] uppercase tracking-widest transition-all border border-white/5"
+                                >
+                                    Cancel
                                 </button>
                             </div>
                         </div>
@@ -558,36 +577,46 @@ const HomePage: React.FC = () => {
             )}
 
             {clearAllModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in text-white/90">
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                     <motion.div
-                        className="bg-[#0f0f0f] rounded-2xl p-10 w-full max-w-md shadow-2xl border border-white/[0.05] relative overflow-hidden"
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.2 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setClearAllModalOpen(false)}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="relative w-full max-w-md bg-[#1E293B] border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden p-8"
                     >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none" />
-
-                        <div className="relative z-10 flex flex-col items-center text-center">
-                            <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-6 border border-white/[0.05]">
-                                <FaTrash className="text-primary text-2xl" />
+                        <button
+                            onClick={() => setClearAllModalOpen(false)}
+                            className="absolute top-6 right-6 text-white/20 hover:text-white transition-colors"
+                        >
+                            <FaTimes />
+                        </button>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mb-6 border border-red-500/20 shadow-lg shadow-red-500/5">
+                                <FaExclamationTriangle className="text-3xl text-red-500" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-3">Clear All History?</h3>
-                            <p className="text-sm text-white/40 font-medium mb-10 leading-relaxed">
-                                You are about to wipe the entire research insight log. All search results and AI recommendations will be lost.
+                            <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">Clear History?</h3>
+                            <p className="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] mb-6 px-4 leading-relaxed">
+                                You are about to wipe the entire research insight log. All search results and AI recommendations will be lost permanently.
                             </p>
-
-                            <div className="flex w-full gap-4">
-                                <button
-                                    onClick={() => setClearAllModalOpen(false)}
-                                    className="flex-1 bg-white/[0.03] hover:bg-white/[0.06] text-white/60 font-bold py-3.5 rounded-xl transition-all text-xs uppercase tracking-widest border border-white/[0.05]"
-                                >
-                                    Retain Log
-                                </button>
+                            <div className="flex flex-col w-full gap-3 mt-4">
                                 <button
                                     onClick={confirmClearAllAiHistory}
-                                    className="flex-1 bg-primary/10 border border-primary/20 text-primary font-bold text-[10px] uppercase tracking-[0.2em] py-3.5 rounded-xl transition-all duration-300 hover:bg-primary/20"
+                                    className="w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-red-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                                 >
-                                    Clear All
+                                    <FaTrash className="text-[12px]" />
+                                    Clear All Data
+                                </button>
+                                <button
+                                    onClick={() => setClearAllModalOpen(false)}
+                                    className="w-full py-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-white/40 hover:text-white font-black text-[10px] uppercase tracking-widest transition-all border border-white/5"
+                                >
+                                    Retain Log
                                 </button>
                             </div>
                         </div>

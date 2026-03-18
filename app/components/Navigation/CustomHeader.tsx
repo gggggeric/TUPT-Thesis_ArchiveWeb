@@ -376,18 +376,19 @@ const CustomHeader = ({
 
 
 
-    const isTransparentPage = isLanding;
+    const isLandingPage = pathname === '/';
+    const isTransparentPage = isLandingPage || isLanding;
     const isRedHeader = !isTransparentPage || scrolled;
 
-    const headerBgClass = !isLanding 
-        ? 'bg-black/10 backdrop-blur-xl border-b border-white/5 h-[88px]' 
-        : (scrolled ? 'bg-black/20 backdrop-blur-xl shadow-2xl py-3' : 'bg-transparent py-6');
+    const headerBgClass = !isTransparentPage
+        ? 'bg-black/10 backdrop-blur-xl border-b border-white/5 h-[88px]'
+        : (scrolled ? 'bg-black/20 backdrop-blur-xl shadow-2xl py-3 h-[88px]' : 'bg-transparent py-6');
 
     const textClass = 'text-white drop-shadow-sm';
     const iconClass = 'text-white drop-shadow-sm';
 
     return (
-        <header className={`sticky top-0 z-50 transition-all duration-500 flex items-center justify-between px-8 ${headerBgClass}`}>
+        <header className={`${isTransparentPage && !scrolled ? 'fixed' : 'sticky'} top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-8 ${headerBgClass} ${!isTransparentPage ? 'border-b border-white/5' : ''}`}>
             {/* Left Section: Branding - Only show on landing, login, and register where there is no sidebar */}
             <div className={`flex items-center gap-3 md:gap-4 z-10 ${!(isLanding || pathname === '/auth/login' || pathname === '/auth/register') ? 'hidden' : ''}`}>
                 <div

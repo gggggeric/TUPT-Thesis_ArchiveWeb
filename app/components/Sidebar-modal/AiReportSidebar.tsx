@@ -28,6 +28,9 @@ const AiReportSidebar: React.FC<AiReportSidebarProps> = ({
     headerTitle,
     headerSubtitle,
 }) => {
+    const accessionNumber = React.useMemo(() => `THESIS_${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`, [isOpen]);
+    const analysisDate = React.useMemo(() => new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), [isOpen]);
+
     if (!isOpen) return null;
 
     return (
@@ -93,11 +96,11 @@ const AiReportSidebar: React.FC<AiReportSidebarProps> = ({
                         <div className="relative z-10 flex justify-between items-end border-b border-[#1A1A1A]/10 pb-6 text-[10px]">
                             <div className="flex flex-col gap-1">
                                 <span className="font-black text-[#999] uppercase tracking-widest">Accession Number</span>
-                                <span className="font-bold uppercase">THESIS_{Math.floor(Math.random() * 1000).toString().padStart(4, '0')}</span>
+                                <span className="font-bold uppercase">{accessionNumber}</span>
                             </div>
                             <div className="flex flex-col items-end gap-1 text-right">
                                 <span className="font-black text-[#999] uppercase tracking-widest">Analysis Date</span>
-                                <span className="font-bold uppercase">{new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                                <span className="font-bold uppercase">{analysisDate}</span>
                             </div>
                         </div>
 
@@ -128,58 +131,120 @@ const AiReportSidebar: React.FC<AiReportSidebarProps> = ({
                                         </p>
                                     )}
                                 </div>
-                            )}
-
-                            {/* Analysis Body */}
+                            )}                            {/* Analysis Body */}
                             <div className="space-y-12 text-[15.5px] leading-[1.8]">
-                                {recommendation.split(/\n\n(?=[A-Z])/).map((section, idx) => {
-                                    const [title, ...contentLines] = section.split('\n');
-                                    const isTitleFormatted = title.endsWith(':');
-                                    
-                                    return (
-                                        <div key={idx} className="relative">
-                                            {isTitleFormatted ? (
-                                                <div className="space-y-6">
-                                                    <h4 className="text-[13px] font-black text-[#1A1A1A] uppercase tracking-[0.2em] mb-6 flex items-center gap-4">
-                                                        <span className="w-10 h-[2px] bg-[#1A1A1A]" />
-                                                        {title.replace(':', '')}
-                                                        <span className="flex-1 h-[1px] bg-[#1A1A1A]/10" />
-                                                    </h4>
-                                                    <div className="space-y-5">
-                                                        {contentLines.map((line, lIdx) => (
-                                                            <p key={lIdx} className={line.trim().startsWith('-') || line.trim().startsWith('•') || /^\d+\./.test(line.trim()) ? "pl-8 border-l border-[#1A1A1A]/20 italic text-[#333]" : ""}>
-                                                                {line.replace(/^[-•\d.]\s*/, '').split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
-                                                                    part.startsWith('**') ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2)}</strong> : part
-                                                                ))}
-                                                            </p>
-                                                        ))}
+                                {(() => {
+                                    // Robust Section Splitter
+                                    // We look for Analysis:, Improvements:, and Final Tip:
+                                    const sectionMarkers = [
+                                        { key: 'Analysis', regex: /(?:^|\n)(?:\**)?Analysis:(?:\**)?\s*/i },
+                                        { key: 'Improvements', regex: /(?:^|\n)(?:\**)?Improvements:(?:\**)?\s*/i },
+                                        { key: 'Final Tip', regex: /(?:^|\n)(?:\**)?Final Tip:(?:\**)?\s*/i }
+                                    ];
+
+                                    let rawText = recommendation.trim();
+                                    const sections: { title: string, content: string[] }[] = [];
+
+                                    // Find all marker positions
+                                    const matches = sectionMarkers
+                                        .map(sm => ({ sm, match: rawText.match(sm.regex) }))
+                                        .filter(m => m.match)
+                                        .sort((a, b) => (a.match?.index ?? 0) - (b.match?.index ?? 0));
+
+                                    if (matches.length === 0) {
+                                        // Fallback if no sections found
+                                        sections.push({ title: '', content: rawText.split('\n').filter(l => l.trim()) });
+                                    } else {
+                                        for (let i = 0; i < matches.length; i++) {
+                                            const start = (matches[i].match?.index ?? 0) + (matches[i].match?.[0].length ?? 0);
+                                            const end = i < matches.length - 1 ? matches[i + 1].match?.index : rawText.length;
+                                            const contentRaw = rawText.substring(start, end).trim();
+                                            
+                                            // Split content into lines, also handling inline bullets if they exist without newlines
+                                            let contentLines = contentRaw.split('\n').filter(l => l.trim());
+                                            
+                                            // If it's a single block but looks like a list (has multiple * or - markers)
+                                            if (contentLines.length === 1 && (contentRaw.match(/[*•-]/g)?.length ?? 0) > 1) {
+                                                contentLines = contentRaw.split(/(?=\s[*•-])/).map(l => l.trim()).filter(l => l);
+                                            }
+
+                                            sections.push({
+                                                title: matches[i].sm.key,
+                                                content: contentLines
+                                            });
+                                        }
+                                    }
+
+                                    return sections.map((section, idx) => {
+                                        const isMainSection = section.title !== '';
+                                        
+                                        return (
+                                            <div key={idx} className="relative">
+                                                {isMainSection ? (
+                                                    <div className="space-y-6">
+                                                        <h4 className="text-[13px] font-black text-[#1A1A1A] uppercase tracking-[0.2em] mb-6 flex items-center gap-4">
+                                                            <span className="w-10 h-[2px] bg-[#1A1A1A]" />
+                                                            {section.title}
+                                                            <span className="flex-1 h-[1px] bg-[#1A1A1A]/10" />
+                                                        </h4>
+                                                        <div className="space-y-5">
+                                                            {section.content.map((line, lIdx) => {
+                                                                const trimmedLine = line.trim();
+                                                                const isBullet = trimmedLine.startsWith('-') || trimmedLine.startsWith('*') || trimmedLine.startsWith('•') || /^\d+\./.test(trimmedLine);
+                                                                const cleanLine = trimmedLine.replace(/^[-*•\d.]\s*/, '');
+                                                                
+                                                                return (
+                                                                    <p key={lIdx} className={isBullet ? "pl-8 border-l border-[#1A1A1A]/20 italic text-[#333]" : ""}>
+                                                                        {cleanLine.split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
+                                                                            part.startsWith('**') && part.endsWith('**') 
+                                                                                ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2).trim()}</strong> 
+                                                                                : part
+                                                                        ))}
+                                                                    </p>
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ) : (
-                                                <div className="space-y-4">
-                                                    {idx === 0 && section.length > 50 ? (
-                                                        <p>
-                                                            <span className="float-left text-6xl font-black mr-4 mt-2 leading-[0.8] text-[#1A1A1A]">
-                                                                {section.charAt(0)}
-                                                            </span>
-                                                            {section.slice(1).split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
-                                                                part.startsWith('**') ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2)}</strong> : part
-                                                            ))}
-                                                        </p>
-                                                    ) : (
-                                                        section.split('\n').map((line, lIdx) => (
-                                                            <p key={lIdx}>
-                                                                {line.split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
-                                                                    part.startsWith('**') ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2)}</strong> : part
-                                                                ))}
-                                                            </p>
-                                                        ))
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
+                                                ) : (
+                                                    <div className="space-y-4">
+                                                        {section.content.map((line, lIdx) => {
+                                                            const trimmedLine = line.trim();
+                                                            // Sanitize for drop cap: find first alphanumeric
+                                                            const dropCapMatch = trimmedLine.match(/[a-zA-Z]/);
+                                                            const dropCap = dropCapMatch ? dropCapMatch[0] : trimmedLine.charAt(0);
+                                                            const remainingText = dropCapMatch 
+                                                                ? trimmedLine.substring(trimmedLine.indexOf(dropCap) + 1)
+                                                                : trimmedLine.substring(1);
+
+                                                            return (
+                                                                <p key={lIdx}>
+                                                                    {lIdx === 0 && idx === 0 && trimmedLine.length > 50 ? (
+                                                                        <>
+                                                                            <span className="float-left text-6xl font-black mr-4 mt-2 leading-[0.8] text-[#1A1A1A]">
+                                                                                {dropCap}
+                                                                            </span>
+                                                                            {remainingText.split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
+                                                                                part.startsWith('**') && part.endsWith('**') 
+                                                                                    ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2).trim()}</strong> 
+                                                                                    : part
+                                                                            ))}
+                                                                        </>
+                                                                    ) : (
+                                                                        trimmedLine.split(/(\*\*.*?\*\*)/g).map((part, pIdx) => (
+                                                                            part.startsWith('**') && part.endsWith('**') 
+                                                                                ? <strong key={pIdx} className="font-black text-[#000]">{part.slice(2, -2).trim()}</strong> 
+                                                                                : part
+                                                                        ))
+                                                                    )}
+                                                                </p>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
                         </div>
 
