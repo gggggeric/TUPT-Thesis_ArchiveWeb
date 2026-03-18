@@ -19,8 +19,8 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link';
 
-import CustomHeader from '@/components/Navigation/CustomHeader';
-import Footer from '@/components/Navigation/Footer';
+import CustomHeader from '@/app/components/Navigation/CustomHeader';
+import Footer from '@/app/components/Navigation/Footer';
 
 /* ───── Shared animation variants ───── */
 const fadeUp = {
@@ -204,8 +204,8 @@ const LandingPage: React.FC = () => {
             >
               <span className="text-primary font-semibold uppercase tracking-[0.3em] text-xs">Innovation First</span>
               <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter text-white mb-6 leading-[0.9] drop-shadow-2xl">
-                  Archive of <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary animate-gradient">Knowledge</span>
+                Archive of <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary animate-gradient">Knowledge</span>
               </h1>
               <p className="text-xl text-text-dim leading-relaxed font-normal transition-colors text-subtle">
                 We&apos;ve built more than just a storage system. It&apos;s a high-performance environment designed to protect institutional knowledge while making it accessible for the next generation of researchers.
