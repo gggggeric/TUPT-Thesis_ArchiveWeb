@@ -249,8 +249,8 @@ const SearchResultContent = () => {
     };
 
     return (
-        <div className="flex-1 relative z-10 py-16">
-            <main className="flex-grow flex flex-col pt-12 px-4 md:px-8 max-w-7xl mx-auto w-full relative z-10">
+        <div className="flex-1 relative py-16">
+            <main className="flex-grow flex flex-col pt-12 px-4 md:px-8 max-w-7xl mx-auto w-full relative">
                 <div className="flex flex-col lg:flex-row gap-8">
 
                     {/* Results Area */}
@@ -272,7 +272,7 @@ const SearchResultContent = () => {
                                         </button>
                                     ) : (
                                         <Link
-                                            href="/user/home"
+                                            href="/home"
                                             className="flex items-center gap-2 text-secondary hover:text-teal-200 font-black uppercase tracking-widest hover:underline transition-all"
                                         >
                                             <FaArrowLeft className="text-xs" /> Back to Portal
@@ -623,7 +623,7 @@ const SearchResultContent = () => {
                                         </div>
                                         <h2 className="text-2xl font-black text-foreground">No results found</h2>
                                         <p className="text-text-dim mt-2">Try adjusting your search or filters in the header.</p>
-                                        <Link href="/user/home" className="inline-block mt-8 bg-primary/5 text-primary border border-primary/30 px-8 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.2em] shadow-lg hover:bg-primary/20 transition-all">
+                                        <Link href="/home" className="inline-block mt-8 bg-primary/5 text-primary border border-primary/30 px-8 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.2em] shadow-lg hover:bg-primary/20 transition-all">
                                             Return to Portal
                                         </Link>
                                     </div>

@@ -184,7 +184,7 @@ const EditProfilePage = () => {
                 localStorage.setItem('userData', JSON.stringify(data.data.user));
 
                 toast.success('Profile updated successfully!');
-                router.push('/user/profile');
+                router.push('/profile');
             } else {
                 toast.error(data.message || 'Update failed');
             }

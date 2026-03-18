@@ -67,7 +67,7 @@ export default function AdminThesesPage() {
 
         const userData = JSON.parse(userDataString);
         if (!userData.isAdmin) {
-            window.location.href = '/user/home';
+            window.location.href = '/home';
             return;
         }
 

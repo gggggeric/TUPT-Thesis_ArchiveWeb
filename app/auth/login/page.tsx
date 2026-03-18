@@ -96,7 +96,7 @@ const Login: React.FC = () => {
                 if (data.user.isAdmin) {
                     router.push('/admin');
                 } else {
-                    router.push('/user/home');
+                    router.push('/home');
                 }
             } else {
                 toast.error(data.message || 'Login failed');

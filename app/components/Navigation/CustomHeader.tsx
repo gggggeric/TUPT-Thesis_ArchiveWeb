@@ -193,7 +193,7 @@ const CustomHeader = ({
             if (filters.category !== 'all') params.append('category', filters.category);
             if (filters.searchType !== 'all') params.append('type', filters.searchType);
 
-            router.push(`/user/search_result?${params.toString()}`);
+            router.push(`/search_result?${params.toString()}`);
             setShowSearchResults(false);
             setShowFilters(false);
         }
@@ -359,16 +359,16 @@ const CustomHeader = ({
         setFilters(prev => ({ ...prev, [filterType]: value }));
 
         // If we are on search_result page, we might want to update the URL immediately
-        if (pathname === '/user/search_result') {
+        if (pathname === '/search_result') {
             const params = new URLSearchParams(window.location.search);
             params.set(filterType === 'searchType' ? 'type' : filterType, value);
-            router.push(`/user/search_result?${params.toString()}`);
+            router.push(`/search_result?${params.toString()}`);
         } else if ((filterType === 'year' || filterType === 'category') && value !== 'all') {
             // Redirect to search_result page if year or category is filtered to a specific value from home
             const params = new URLSearchParams();
             if (filterType === 'year') params.append('year', value);
             if (filterType === 'category') params.append('category', value);
-            router.push(`/user/search_result?${params.toString()}`);
+            router.push(`/search_result?${params.toString()}`);
             setShowFilters(false);
             setShowSearchResults(false);
         }
@@ -394,7 +394,7 @@ const CustomHeader = ({
                     className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition-opacity active:scale-95 transform duration-200"
                     onClick={() => {
                         if (isLoggedIn) {
-                            router.push(isAdmin ? '/admin' : '/user/home');
+                            router.push(isAdmin ? '/admin' : '/home');
                         } else {
                             router.push('/');
                         }
@@ -531,7 +531,7 @@ const CustomHeader = ({
                                         key={`${result.id}-${index}`}
                                         className="px-4 py-3.5 border-b border-gray-50 hover:bg-surface/80 transition-colors cursor-pointer"
                                         onClick={() => {
-                                            router.push(`/user/search_result?id=${result.id}`);
+                                            router.push(`/search_result?id=${result.id}`);
                                             setShowSearchResults(false);
                                         }}
                                     >

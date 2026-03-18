@@ -29,7 +29,7 @@ export default function AdminPage() {
 
         const userData = JSON.parse(userDataString);
         if (!userData.isAdmin) {
-            router.push('/user/home');
+            router.push('/home');
             return;
         }
 

@@ -98,7 +98,7 @@ const ProfilePage = () => {
                     <main className="max-w-4xl mx-auto space-y-12 relative z-10">
                         {/* Back Button */}
                         <button
-                            onClick={() => router.push('/user/home')}
+                            onClick={() => router.push('/home')}
                             className="flex items-center gap-2 text-primary/80 font-bold uppercase tracking-widest text-xs mb-8 hover:text-primary group transition-all"
                         >
                             <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back to Portal
@@ -180,7 +180,7 @@ const ProfilePage = () => {
                         {/* Action Footer */}
                         <div className="bg-white/5 p-8 border border-white/5 flex justify-center rounded-[2.5rem] shadow-sm">
                             <button
-                                onClick={() => router.push('/user/profile/edit')}
+                                onClick={() => router.push('/profile/edit')}
                                 className="bg-primary/5 border border-primary/30 text-primary font-bold uppercase tracking-[0.2em] text-[11px] px-10 py-4 rounded-2xl shadow-lg hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(45,212,191,0.15)] transition-all duration-300 active:scale-95 flex items-center gap-3"
                             >
                                 <FaEdit className="text-sm" /> Edit Profile Details

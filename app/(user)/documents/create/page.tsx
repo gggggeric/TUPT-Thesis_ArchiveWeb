@@ -49,7 +49,7 @@ const CreateDocumentPage: React.FC = () => {
 
             if (res.ok) {
                 toast.success('Thesis submitted for approval!');
-                router.push('/user/documents');
+                router.push('/documents');
             } else {
                 toast.error('Failed to submit thesis');
             }
@@ -78,7 +78,7 @@ const CreateDocumentPage: React.FC = () => {
                             <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Repository Archive Registration</p>
                         </div>
                         <button
-                            onClick={() => router.push('/user/documents')}
+                            onClick={() => router.push('/documents')}
                             className="group flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary hover:border-primary/30 transition-all active:scale-95"
                         >
                             <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back to workspace

@@ -31,7 +31,7 @@ const AiReportSidebar: React.FC<AiReportSidebarProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex justify-end">
+        <div className="fixed inset-0 z-[9999] flex justify-end">
             <div 
                 className="absolute inset-0 bg-black/70 backdrop-blur-md animate-fade-in"
                 onClick={onClose}

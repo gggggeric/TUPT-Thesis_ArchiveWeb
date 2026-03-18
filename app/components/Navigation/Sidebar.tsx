@@ -76,11 +76,11 @@ export default function Sidebar() {
     };
 
     const menuItems: MenuItem[] = [
-        { icon: FaHome, label: 'Home', path: '/user/home' },
+        { icon: FaHome, label: 'Home', path: '/home' },
         ...(user?.isAdmin ? [{ icon: FaUserShield, label: 'Admin Panel', path: '/admin' }] : []),
-        { icon: FaFileAlt, label: 'Analysis Workspace', path: '/user/documents', section: 'TOOLS' },
-        { icon: FaUpload, label: 'Submit Thesis', path: '/user/documents/create' },
-        { icon: FaFolderOpen, label: 'My Submissions', path: '/user/documents/submissions' },
+        { icon: FaFileAlt, label: 'Analysis Workspace', path: '/documents', section: 'TOOLS' },
+        { icon: FaUpload, label: 'Submit Thesis', path: '/documents/create' },
+        { icon: FaFolderOpen, label: 'My Submissions', path: '/documents/submissions' },
     ];
 
     const handleLogout = async () => {
@@ -166,7 +166,7 @@ export default function Sidebar() {
                 className={`${isExpanded ? 'px-4 mb-8 items-start' : 'px-2 mb-1 items-center'} flex flex-col transition-all duration-300`}
             >
                 <div
-                onClick={() => router.push('/user/profile')}
+                onClick={() => router.push('/profile')}
                     className={`relative cursor-pointer group flex items-center gap-4 p-2 rounded-2xl transition-all duration-300 ${isExpanded ? 'w-full hover:bg-white/5' : ''}`}
                 >
                     <div className="relative flex-shrink-0">

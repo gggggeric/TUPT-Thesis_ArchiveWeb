@@ -196,7 +196,7 @@ const DocumentsPage: React.FC = () => {
                                         onFileSelect={handleFileSelect}
                                         onClearFile={() => setSelectedFile(null)}
                                         onUpload={handleUpload}
-                                        onOpenSubmitModal={() => router.push('/user/documents/create')}
+                                        onOpenSubmitModal={() => router.push('/documents/create')}
                                     />
                                     <HowItWorks />
                                 </div>

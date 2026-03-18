@@ -104,7 +104,7 @@ const SubmissionsPage: React.FC = () => {
             <main className="relative z-10 flex-1 w-full pt-32 px-6 pb-16">
                 <div className="max-w-6xl mx-auto">
                     <button
-                        onClick={() => router.push('/user/documents')}
+                        onClick={() => router.push('/documents')}
                         className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-[-40px] ml-6 relative z-20"
                     >
                         <FaArrowLeft /> Back to Workspace
@@ -113,7 +113,7 @@ const SubmissionsPage: React.FC = () => {
                     {mounted && (
                         <MySubmissions
                             myTheses={myTheses}
-                            onViewThesis={(id) => router.push(`/user/search_result?id=${id}`)}
+                            onViewThesis={(id) => router.push(`/search_result?id=${id}`)}
                             onEditThesis={handleEdit}
                             onDeleteThesis={handleDelete}
                             hasAnalysisOrFile={false}

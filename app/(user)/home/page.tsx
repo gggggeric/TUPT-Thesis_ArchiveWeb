@@ -168,7 +168,7 @@ const HomePage: React.FC = () => {
 
     const onSearch = () => {
         if (searchQuery.trim()) {
-            router.push(`/user/search_result?query=${encodeURIComponent(searchQuery.trim())}`);
+            router.push(`/search_result?query=${encodeURIComponent(searchQuery.trim())}`);
         }
     };
 
@@ -255,7 +255,7 @@ const HomePage: React.FC = () => {
     const historyPageItems = allHistoryItems.slice((historyPage - 1) * HISTORY_PAGE_SIZE, historyPage * HISTORY_PAGE_SIZE);
 
     return (
-        <div className="flex-1 relative z-10 py-16">
+        <div className="flex-1 relative py-16">
             <main className="flex-grow flex flex-col items-center relative px-6 md:px-12 pt-12 pb-20">
                 <div className="max-w-6xl w-full flex flex-col relative z-10">
 
@@ -472,7 +472,7 @@ const HomePage: React.FC = () => {
                                                 <div
                                                     key={thesis.id}
                                                     className="group/item cursor-pointer flex items-start gap-4 transition-all"
-                                                    onClick={() => router.push(`/user/search_result?id=${thesis.id}`)}
+                                                    onClick={() => router.push(`/search_result?id=${thesis.id}`)}
                                                 >
                                                     <div className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-orange-400/20 group-hover/item:bg-orange-400 group-hover/item:scale-125 transition-all" />
                                                     <div className="flex-1 min-w-0">
@@ -502,7 +502,7 @@ const HomePage: React.FC = () => {
                                             <div
                                                 key={dept.category + idx}
                                                 className="flex items-center justify-between p-4 rounded-xl hover:bg-white/[0.01] transition-all cursor-pointer group border border-transparent hover:border-white/[0.03]"
-                                                onClick={() => router.push(`/user/search_result?category=${encodeURIComponent(dept.category)}`)}
+                                                onClick={() => router.push(`/search_result?category=${encodeURIComponent(dept.category)}`)}
                                             >
                                                 <span className="text-[11px] font-medium text-gray-500 group-hover:text-primary transition-colors tracking-wide">{dept.category}</span>
                                                 <span className="text-[11px] font-bold text-foreground/60 group-hover:text-foreground">{dept.count}</span>
