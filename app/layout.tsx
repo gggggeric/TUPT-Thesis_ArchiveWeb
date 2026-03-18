@@ -16,12 +16,21 @@ interface RootLayoutProps {
 
 function AppContent({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { isExpanded } = useSidebar();
+  const { isExpanded, isReady, toggleSidebar: onToggle } = useSidebar();
   const [mounted, setMounted] = useState(false);
+  const [canAnimate, setCanAnimate] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Delay transition until after initial mount
+  useEffect(() => {
+    if (mounted && isReady) {
+      const timer = setTimeout(() => setCanAnimate(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted, isReady]);
 
   const noLayoutRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password'];
   const isLanding = pathname === '/';
@@ -33,7 +42,9 @@ function AppContent({ children }: { children: ReactNode }) {
     ? (isExpanded ? 'pl-[280px]' : 'pl-[80px]')
     : 'pl-0';
 
-  if (!mounted) return <>{children}</>;
+  const transitionClass = canAnimate ? 'transition-[padding] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]' : '';
+
+  if (!mounted || !isReady) return <div className="min-h-screen bg-[#111827]" />;
 
   return (
     <div className="min-h-screen flex flex-col relative font-sans text-white">
@@ -49,7 +60,7 @@ function AppContent({ children }: { children: ReactNode }) {
 
       {hasSidebar && <Sidebar />}
 
-      <div className={`flex-1 flex flex-col transition-[padding] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${paddingClass}`}>
+      <div className={`flex-1 flex flex-col ${transitionClass} ${paddingClass}`}>
         {!isAuthPage && <CustomHeader isLanding={isLanding} />}
 
         <main className="flex-grow">
@@ -88,7 +99,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="light"
+            theme="dark"
           />
         </SidebarProvider>
       </body>

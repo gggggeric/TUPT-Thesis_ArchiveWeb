@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface SidebarContextType {
     isExpanded: boolean;
+    isReady: boolean;
     toggleSidebar: () => void;
     setExpanded: (expanded: boolean) => void;
 }
@@ -34,7 +35,7 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     return (
-        <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setExpanded }}>
+        <SidebarContext.Provider value={{ isExpanded, isReady: mounted, toggleSidebar, setExpanded }}>
             {children}
         </SidebarContext.Provider>
     );

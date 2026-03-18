@@ -58,7 +58,7 @@ const CustomHeader = ({
     onSearchChange = () => { },
     isLanding = false
 }: CustomHeaderProps) => {
-    const { toggleSidebar: onMenuPress } = useSidebar();
+    const { isExpanded, toggleSidebar: onMenuPress } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
@@ -379,17 +379,17 @@ const CustomHeader = ({
     const isTransparentPage = isLanding;
     const isRedHeader = !isTransparentPage || scrolled;
 
-    const headerBgClass = scrolled
-        ? 'bg-black/20 backdrop-blur-xl shadow-2xl py-3'
-        : 'bg-transparent py-6';
+    const headerBgClass = !isLanding 
+        ? 'bg-black/10 backdrop-blur-xl border-b border-white/5 h-[88px]' 
+        : (scrolled ? 'bg-black/20 backdrop-blur-xl shadow-2xl py-3' : 'bg-transparent py-6');
 
     const textClass = 'text-white drop-shadow-sm';
     const iconClass = 'text-white drop-shadow-sm';
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between px-6 ${headerBgClass}`}>
-            {/* Left Section: Branding */}
-            <div className="flex items-center gap-3 md:gap-4 z-10">
+        <header className={`sticky top-0 z-50 transition-all duration-500 flex items-center justify-between px-8 ${headerBgClass}`}>
+            {/* Left Section: Branding - Only show on landing, login, and register where there is no sidebar */}
+            <div className={`flex items-center gap-3 md:gap-4 z-10 ${!(isLanding || pathname === '/auth/login' || pathname === '/auth/register') ? 'hidden' : ''}`}>
                 <div
                     className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition-opacity active:scale-95 transform duration-200"
                     onClick={() => {
@@ -414,9 +414,10 @@ const CustomHeader = ({
 
             {/* Centered Search Bar (Only if logged in and NOT admin) */}
             {(mounted && isLoggedIn && !isAdmin) && (
-                <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[200px] sm:max-w-md lg:max-w-2xl px-2 sm:px-4 transition-all duration-500 ease-out z-0 opacity-100 scale-100`}>
+                <div className="flex-1 flex justify-center px-4 max-w-4xl mx-auto">
                     <div
                         ref={searchContainerRef}
+                        className="w-full max-w-2xl"
                     >
                         <div className="relative flex items-center w-full">
                             <div className={`absolute left-4 text-gray-400 z-10 pointer-events-none transition-colors ${localSearchQuery ? 'text-[#2DD4BF]' : ''}`}>
