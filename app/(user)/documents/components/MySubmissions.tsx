@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaFileAlt, FaArrowRight, FaLightbulb, FaEdit, FaTrash } from 'react-icons/fa';
+import DeleteThesisModal from './DeleteThesisModal';
 
 interface Thesis {
     _id: string;
@@ -19,6 +20,22 @@ interface MySubmissionsProps {
 }
 
 const MySubmissions: React.FC<MySubmissionsProps> = ({ myTheses, onViewThesis, onEditThesis, onDeleteThesis, hasAnalysisOrFile }) => {
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [thesisToDelete, setThesisToDelete] = useState<Thesis | null>(null);
+
+    const handleDeleteClick = (thesis: Thesis) => {
+        setThesisToDelete(thesis);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (thesisToDelete) {
+            onDeleteThesis(thesisToDelete._id);
+            setIsDeleteModalOpen(false);
+            setThesisToDelete(null);
+        }
+    };
+
     return (
         <section className="max-w-6xl mx-auto px-6 py-10 md:py-20 relative z-10">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-16 px-4">
@@ -86,7 +103,7 @@ const MySubmissions: React.FC<MySubmissionsProps> = ({ myTheses, onViewThesis, o
                                         <FaEdit className="text-[13px]" />
                                     </button>
                                     <button
-                                        onClick={() => onDeleteThesis(thesis._id)}
+                                        onClick={() => handleDeleteClick(thesis)}
                                         className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center text-white/20 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/20 transition-all duration-500 border border-white/5 active:scale-90"
                                         title="Delete Submission"
                                     >
@@ -125,6 +142,13 @@ const MySubmissions: React.FC<MySubmissionsProps> = ({ myTheses, onViewThesis, o
                     </div>
                 </div>
             )}
+
+            <DeleteThesisModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                thesisTitle={thesisToDelete?.title || ''}
+            />
         </section>
     );
 };

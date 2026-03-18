@@ -50,7 +50,7 @@ const sectionVariants: Variants = {
 };
 
 export default function Sidebar() {
-    const { isExpanded, toggleSidebar: onToggle } = useSidebar();
+    const { isExpanded, isReady, toggleSidebar: onToggle } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
     const [user, setUser] = useState<UserData | null>(null);
@@ -102,26 +102,26 @@ export default function Sidebar() {
         }
     };
 
-    if (!mounted) return null;
+    if (!mounted || !isReady) return null;
 
     return (
         <motion.div
-            initial={false}
+            initial={isExpanded ? 'expanded' : 'collapsed'}
             variants={sidebarVariants}
             animate={isExpanded ? 'expanded' : 'collapsed'}
             transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             style={{ width: isExpanded ? 280 : 80 }}
-            className="fixed left-0 top-0 bottom-0 z-[60] bg-[#1E293B] border-r border-white/5 shadow-2xl flex flex-col overflow-hidden"
+            className="fixed left-0 top-0 bottom-0 z-[60] bg-black/20 backdrop-blur-xl border-r border-white/5 shadow-2xl flex flex-col overflow-hidden"
         >
             {/* Header / Brand / Toggle */}
             <motion.div 
-                layout
-                className={`flex items-center p-5 min-h-[88px] ${isExpanded ? 'justify-between' : 'justify-center'}`}
+                className={`flex items-center transition-all duration-300 min-h-[88px] ${isExpanded ? 'p-5 justify-between' : 'p-2 justify-center'}`}
             >
-                <motion.div layout className="flex items-center gap-3">
+                <motion.div className="flex items-center gap-3">
                     <motion.div
-                        layout
-                        className="w-12 h-12 flex-shrink-0 flex items-center justify-center cursor-pointer group"
+                        className={`flex-shrink-0 flex items-center justify-center cursor-pointer group overflow-hidden ${isExpanded ? 'w-12 h-12' : 'w-10 h-10'}`}
+                        initial={false}
+                        animate={{ width: isExpanded ? 48 : 40, height: isExpanded ? 48 : 40 }}
                         onClick={() => !isExpanded && onToggle()}
                     >
                         <img
@@ -135,11 +135,10 @@ export default function Sidebar() {
                         {isExpanded && (
                             <motion.div
                                 key="brand-text"
-                                initial="hidden"
+                                initial={false}
                                 animate="visible"
                                 exit="hidden"
                                 variants={labelVariants}
-                                layout
                                 className="flex flex-col min-w-0"
                             >
                                 <span className="text-white font-extrabold uppercase tracking-tight text-base leading-none truncate whitespace-nowrap">TUPT Archive</span>
@@ -168,18 +167,16 @@ export default function Sidebar() {
 
             {/* Profile Section */}
             <motion.div
-                layout
-                className={`mb-8 flex flex-col transition-all duration-300 px-4 ${isExpanded ? 'items-start' : 'items-center'}`}
+                className={`mb-8 flex flex-col transition-all duration-300 ${isExpanded ? 'px-4 items-start' : 'px-0 items-center'}`}
             >
                 <motion.div
-                layout
                 onClick={() => router.push('/profile')}
                     className={`relative cursor-pointer group flex items-center gap-4 p-2 rounded-xl transition-all duration-300 ${isExpanded ? 'w-full hover:bg-white/5' : ''}`}
                 >
                     <div className="relative flex-shrink-0">
                         <motion.div
-                            layout
-                            className="rounded-xl bg-card/20 flex items-center justify-center border-2 border-white/10 shadow-xl overflow-hidden"
+                            className={`rounded-xl bg-card/20 flex items-center justify-center border-2 border-white/10 shadow-xl overflow-hidden ${isExpanded ? 'w-14 h-14' : 'w-12 h-12'}`}
+                            initial={false}
                             animate={{ width: isExpanded ? 56 : 48, height: isExpanded ? 56 : 48 }}
                             transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
                         >
@@ -213,11 +210,10 @@ export default function Sidebar() {
                         {isExpanded && (
                             <motion.div
                                 key="profile-text"
-                                initial="hidden"
+                                initial={false}
                                 animate="visible"
                                 exit="hidden"
                                 variants={labelVariants}
-                                layout
                                 className="flex flex-col truncate overflow-hidden"
                             >
                                 <span className="text-white font-bold text-sm truncate whitespace-nowrap">{user?.name || 'Guest User'}</span>
@@ -266,10 +262,9 @@ export default function Sidebar() {
                             <div
                                 className="relative"
                             >
-                                 <motion.button
-                                    layout
+                                 <button
                                     onClick={() => router.push(item.path)}
-                                    className={`w-full group relative flex items-center transition-all duration-300 rounded-lg gap-4 ${isExpanded ? 'p-3 justify-start' : 'p-0 justify-center h-12'} ${isActive ? 'text-white' : 'text-white/50 hover:bg-white/5 hover:text-white'}`}
+                                    className={`w-full group relative flex items-center transition-all duration-300 rounded-lg ${isExpanded ? 'p-3 justify-start gap-4' : 'p-0 justify-center h-12'} ${isActive ? 'text-white' : 'text-white/50 hover:bg-white/5 hover:text-white'}`}
                                 >
                                     {/* Active indicator */}
                                      <AnimatePresence>
@@ -284,19 +279,18 @@ export default function Sidebar() {
                                         )}
                                     </AnimatePresence>
 
-                                     <motion.div layout className={`w-10 h-10 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${isActive ? '' : 'group-hover:scale-105'}`}>
+                                     <div className={`w-10 h-10 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${isActive ? '' : 'group-hover:scale-105'}`}>
                                         <Icon className={`text-lg transition-all duration-300 ${isActive ? 'scale-105 text-primary' : 'group-hover:scale-105'}`} />
-                                    </motion.div>
+                                    </div>
 
                                     <AnimatePresence>
                                         {isExpanded && (
                                             <motion.span
                                                 key={`label-${item.label}`}
-                                                initial="hidden"
+                                                initial={false}
                                                 animate="visible"
                                                 exit="hidden"
                                                 variants={labelVariants}
-                                                layout
                                                 className="text-[13px] font-bold uppercase tracking-wider whitespace-nowrap overflow-hidden"
                                             >
                                                 {item.label}
@@ -308,13 +302,12 @@ export default function Sidebar() {
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            layout
                                             className="ml-auto"
                                         >
                                             <FaChevronRight className="text-[10px] text-primary/50" />
                                         </motion.div>
                                     )}
-                                </motion.button>
+                                </button>
 
                             </div>
                         </div>
@@ -337,7 +330,7 @@ export default function Sidebar() {
                             {isExpanded && (
                                 <motion.span
                                     key="signout-label"
-                                    initial="hidden"
+                                    initial={false}
                                     animate="visible"
                                     exit="hidden"
                                     variants={labelVariants}

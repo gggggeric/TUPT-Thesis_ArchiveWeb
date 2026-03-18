@@ -19,8 +19,6 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link';
 
-import CustomHeader from '@/app/components/Navigation/CustomHeader';
-import Footer from '@/app/components/Navigation/Footer';
 
 /* ───── Shared animation variants ───── */
 const fadeUp = {
@@ -95,7 +93,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent font-sans text-white scroll-smooth">
-      <CustomHeader isLanding={true} />
 
       {/* ════════════════════════════════════════════
           HERO SECTION
@@ -331,7 +328,6 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <Footer />
     </div>
   );
 };
