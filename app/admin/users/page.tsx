@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import CustomHeader from '@/components/Navigation/CustomHeader';
-import Sidebar from '@/components/Navigation/Sidebar';
 import { FaUsers, FaArrowLeft, FaUserShield, FaUser, FaTrash, FaCheckCircle, FaExclamationCircle, FaPlus, FaChevronLeft, FaChevronRight, FaTimes, FaSearch, FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -11,7 +9,6 @@ export default function AdminUsersPage() {
     const router = useRouter();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [sidebarExpanded, setSidebarExpanded] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
@@ -31,7 +28,6 @@ export default function AdminUsersPage() {
 
     const handleIDNumberChange = (value: string) => {
         const val = value.toUpperCase();
-        // If deleting, don't re-format aggressively to allow backspacing
         if (val.length < formData.idNumber.length) {
             setFormData(prev => ({ ...prev, idNumber: val }));
             return;
@@ -89,20 +85,19 @@ export default function AdminUsersPage() {
         const token = localStorage.getItem('token');
 
         if (!userDataString || !token) {
-            router.push('/login');
+            router.push('/auth/login');
             return;
         }
 
         const userData = JSON.parse(userDataString);
         if (!userData.isAdmin) {
-            router.push('/home');
+            router.push('/user/home');
             return;
         }
 
         fetchUsers(1);
     }, [router]);
 
-    // Debounced search
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchUsers(1, searchQuery);
@@ -140,7 +135,6 @@ export default function AdminUsersPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            // Filter out empty password so it doesn't overwrite with blank
             const { password, ...dataToSubmit } = formData as any;
             const payload = formData.password ? formData : dataToSubmit;
 
@@ -175,7 +169,7 @@ export default function AdminUsersPage() {
             name: user.name,
             idNumber: user.idNumber,
             birthdate: user.birthdate ? user.birthdate.split('T')[0] : '',
-            password: '', // Don't show password
+            password: '',
             isAdmin: user.isAdmin
         });
         setIsEditModalOpen(true);
@@ -237,16 +231,8 @@ export default function AdminUsersPage() {
     }
 
     return (
-        <div className="min-h-screen bg-transparent flex font-sans text-white">
-            <Sidebar 
-                isExpanded={sidebarExpanded} 
-                onToggle={() => setSidebarExpanded(!sidebarExpanded)} 
-            />
-
-            <div className={`flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${sidebarExpanded ? 'pl-[280px]' : 'pl-[80px]'}`}>
-                <CustomHeader onMenuPress={() => setSidebarExpanded(!sidebarExpanded)} />
-
-                <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
+        <div className="min-h-screen bg-transparent flex flex-col font-sans text-white">
+            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                     <div className="flex items-center gap-6">
@@ -297,7 +283,7 @@ export default function AdminUsersPage() {
                                     <th className="px-8 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 border-b border-border-custom text-right">Moderation</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-gray-100/10">
                                 {users.length > 0 ? users.map((user) => (
                                     <tr key={user._id} className="hover:bg-surface/30 transition-all group">
                                         <td className="px-8 py-8">
@@ -308,7 +294,7 @@ export default function AdminUsersPage() {
                                                 <div>
                                                     <p className="font-black text-foreground text-sm mb-1 group-hover:text-[#2DD4BF] transition-colors">{user.name}</p>
                                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                                                        <FaUser className="text-[10px] opacity-40" /> 
+                                                        <FaUser className="text-[10px] opacity-40" />
                                                         {user.birthdate ? new Date(user.birthdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                                     </p>
                                                 </div>
@@ -320,7 +306,7 @@ export default function AdminUsersPage() {
                                             </span>
                                         </td>
                                         <td className="px-8 py-8">
-                                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-teal-50 text-[#2DD4BF] border-primary/30' : 'bg-gray-100 text-text-dim border-border-custom'}`}>
+                                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-teal-50/10 text-[#2DD4BF] border-primary/30' : 'bg-gray-100/10 text-text-dim border-border-custom'}`}>
                                                 {user.isAdmin ? <FaUserShield className="text-[10px]" /> : <FaUser className="text-[10px]" />}
                                                 {user.isAdmin ? 'Administrator' : 'Student Account'}
                                             </span>
@@ -335,21 +321,21 @@ export default function AdminUsersPage() {
                                             <div className="flex items-center justify-end gap-3 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-x-4 lg:group-hover:translate-x-0">
                                                 <button
                                                     onClick={() => openEditModal(user)}
-                                                    className="p-3 bg-card text-gray-400 hover:text-blue-600 rounded-xl shadow-lg border border-border-custom hover:border-border-custom transition-all hover:-translate-y-1"
+                                                    className="p-3 bg-card text-gray-400 hover:text-blue-600 rounded-xl shadow-lg border border-border-custom transition-all hover:-translate-y-1"
                                                     title="Edit User Profile"
                                                 >
                                                     <FaEdit className="text-sm" />
                                                 </button>
                                                 <button
                                                     onClick={() => toggleAdminStatus(user)}
-                                                    className={`p-3 bg-card rounded-xl shadow-lg border border-border-custom transition-all hover:-translate-y-1 ${user.isAdmin ? 'text-[#2DD4BF] hover:border-teal-100' : 'text-gray-400 hover:text-green-600 hover:border-border-custom'}`}
+                                                    className={`p-3 bg-card rounded-xl shadow-lg border border-border-custom transition-all hover:-translate-y-1 ${user.isAdmin ? 'text-[#2DD4BF] border-teal-100' : 'text-gray-400 hover:text-green-600'}`}
                                                     title={user.isAdmin ? "Revoke Admin Rights" : "Grant Admin Rights"}
                                                 >
                                                     <FaUserShield className="text-sm" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteUser(user._id)}
-                                                    className="p-3 bg-card text-gray-400 hover:text-teal-700 rounded-xl shadow-lg border border-border-custom hover:border-teal-100 transition-all hover:-translate-y-1"
+                                                    className="p-3 bg-card text-gray-400 hover:text-red-500 rounded-xl shadow-lg border border-border-custom transition-all hover:-translate-y-1"
                                                     title="Purge User Account"
                                                 >
                                                     <FaTrash className="text-sm" />
@@ -386,14 +372,14 @@ export default function AdminUsersPage() {
                             <button
                                 disabled={currentPage === 1 || loading}
                                 onClick={() => fetchUsers(currentPage - 1)}
-                                className="p-4 bg-card rounded-2xl border border-border-custom shadow-xl text-text-dim disabled:opacity-30 disabled:cursor-not-allowed hover:bg-teal-50 hover:text-[#2DD4BF] transition-all active:scale-90"
+                                className="p-4 bg-card rounded-2xl border border-border-custom shadow-xl text-text-dim disabled:opacity-30 disabled:cursor-not-allowed hover:bg-teal-500/10 hover:text-primary transition-all active:scale-90"
                             >
                                 <FaChevronLeft className="text-xs" />
                             </button>
                             <button
                                 disabled={currentPage === totalPages || loading}
                                 onClick={() => fetchUsers(currentPage + 1)}
-                                className="p-4 bg-card rounded-2xl border border-border-custom shadow-xl text-text-dim disabled:opacity-30 disabled:cursor-not-allowed hover:bg-teal-50 hover:text-[#2DD4BF] transition-all active:scale-90"
+                                className="p-4 bg-card rounded-2xl border border-border-custom shadow-xl text-text-dim disabled:opacity-30 disabled:cursor-not-allowed hover:bg-teal-500/10 hover:text-primary transition-all active:scale-90"
                             >
                                 <FaChevronRight className="text-xs" />
                             </button>
@@ -405,73 +391,73 @@ export default function AdminUsersPage() {
             {/* Create User Modal */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
-                    <div className="fixed inset-0 bg-primary/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsAddModalOpen(false)}></div>
-                    <div className="relative bg-card w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-border-custom overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
-                        <div className="p-6 md:p-10 border-b border-border-custom flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsAddModalOpen(false)}></div>
+                    <div className="relative bg-[#1A1A2E] w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden animate-in fade-in zoom-in duration-300">
+                        <div className="p-6 md:p-10 border-b border-white/5 flex items-center justify-between bg-white/5">
                             <div>
-                                <h2 className="text-2xl font-black text-foreground tracking-tight mb-1">New User Entry</h2>
-                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Register technical system access</p>
+                                <h2 className="text-2xl font-black text-white tracking-tight mb-1">New User Entry</h2>
+                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Register technical system access</p>
                             </div>
-                            <button onClick={() => setIsAddModalOpen(false)} className="w-12 h-12 bg-surface rounded-2xl flex items-center justify-center text-gray-400 hover:bg-teal-50 hover:text-primary transition-all"><FaTimes /></button>
+                            <button onClick={() => setIsAddModalOpen(false)} className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 hover:bg-white/10 hover:text-white transition-all"><FaTimes /></button>
                         </div>
                         <form onSubmit={handleCreateUser} className="p-6 md:p-10 space-y-6">
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Legal Identity / Full Name</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Legal Identity / Full Name</label>
                                 <input
                                     type="text" required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm text-white"
                                     placeholder="Enter full name"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Academic / System ID</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Academic / System ID</label>
                                 <input
                                     type="text" required
                                     value={formData.idNumber}
                                     onChange={(e) => handleIDNumberChange(e.target.value)}
                                     maxLength={12}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm text-white"
                                     placeholder="TUPT-XX-XXXX"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Birth Record Date</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Birth Record Date</label>
                                 <input
                                     type="date" required
                                     value={formData.birthdate}
                                     onChange={(e) => setFormData({ ...formData, birthdate: e.target.value })}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm shadow-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm text-white"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Access Credentials</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Access Credentials</label>
                                 <input
                                     type="password" required
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-[#2DD4BF]/5 focus:border-[#2DD4BF] transition-all font-bold text-sm text-white"
                                     placeholder="Set initial password"
                                 />
                             </div>
-                            <div className="flex items-center gap-6 p-6 bg-[#2DD4BF]/5 rounded-[1.5rem] border border-teal-900/10">
+                            <div className="flex items-center gap-6 p-6 bg-[#2DD4BF]/5 rounded-[1.5rem] border border-[#2DD4BF]/20">
                                 <input
                                     type="checkbox"
                                     id="isAdmin"
                                     checked={formData.isAdmin}
                                     onChange={(e) => setFormData({ ...formData, isAdmin: e.target.checked })}
-                                    className="w-6 h-6 text-[#2DD4BF] rounded-[0.5rem] focus:ring-[#2DD4BF] border-gray-300"
+                                    className="w-6 h-6 text-[#2DD4BF] bg-white/5 border-white/10 rounded-[0.5rem] focus:ring-[#2DD4BF]"
                                 />
                                 <div>
-                                    <label htmlFor="isAdmin" className="block text-[11px] font-black text-teal-900 uppercase tracking-widest mb-0.5">Administrative Power</label>
-                                    <p className="text-[9px] text-teal-700/60 font-bold uppercase tracking-wider">Grant full system moderation rights</p>
+                                    <label htmlFor="isAdmin" className="block text-[11px] font-black text-[#2DD4BF] uppercase tracking-widest mb-0.5">Administrative Power</label>
+                                    <p className="text-[9px] text-[#2DD4BF]/60 font-bold uppercase tracking-wider">Grant full system moderation rights</p>
                                 </div>
                             </div>
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full py-5 bg-[#2DD4BF] text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-primary transition-all shadow-2xl shadow-teal-900/30 disabled:opacity-50 active:scale-95"
+                                className="w-full py-5 bg-[#2DD4BF] text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-primary transition-all shadow-xl shadow-teal-900/40 disabled:opacity-50 active:scale-95"
                             >
                                 {isSubmitting ? 'Finalizing Registry...' : 'Initialize User Account'}
                             </button>
@@ -483,65 +469,65 @@ export default function AdminUsersPage() {
             {/* Edit User Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 overflow-y-auto">
-                    <div className="fixed inset-0 bg-primary/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsEditModalOpen(false)}></div>
-                    <div className="relative bg-card w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-border-custom overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-10 duration-500 ease-out">
-                        <div className="p-6 md:p-10 border-b border-border-custom flex items-center justify-between bg-gradient-to-r from-blue-50 to-white">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-md" onClick={() => !isSubmitting && setIsEditModalOpen(false)}></div>
+                    <div className="relative bg-[#1A1A2E] w-full max-w-md rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden animate-in fade-in zoom-in duration-300">
+                        <div className="p-6 md:p-10 border-b border-white/5 flex items-center justify-between bg-white/5">
                             <div>
-                                <h2 className="text-2xl font-black text-foreground tracking-tight mb-1">Modify User Profile</h2>
+                                <h2 className="text-2xl font-black text-white tracking-tight mb-1">Modify User Profile</h2>
                                 <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest">Administrative credential override</p>
                             </div>
-                            <button onClick={() => setIsEditModalOpen(false)} className="w-12 h-12 bg-surface rounded-2xl flex items-center justify-center text-gray-400 hover:bg-card/40 hover:text-blue-600 transition-all"><FaTimes /></button>
+                            <button onClick={() => setIsEditModalOpen(false)} className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 hover:bg-white/10 hover:text-white transition-all"><FaTimes /></button>
                         </div>
                         <form onSubmit={handleUpdateUser} className="p-6 md:p-10 space-y-6">
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Account Identity</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Account Identity</label>
                                 <input
                                     type="text" required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm text-white"
                                     placeholder="Full name"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">ID Verification Reference</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">ID Verification Reference</label>
                                 <input
                                     type="text" required
                                     value={formData.idNumber}
                                     onChange={(e) => handleIDNumberChange(e.target.value)}
                                     maxLength={12}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm text-white"
                                     placeholder="TUPT-XX-XXXX"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-text-dim uppercase tracking-widest mb-3 ml-2">Date of Birth</label>
+                                <label className="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3 ml-2">Date of Birth</label>
                                 <input
                                     type="date" required
                                     value={formData.birthdate}
                                     onChange={(e) => setFormData({ ...formData, birthdate: e.target.value })}
-                                    className="w-full px-6 py-4 bg-surface border border-border-custom rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm shadow-sm"
+                                    className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all font-bold text-sm text-white"
                                 />
                             </div>
-                            <div className="p-6 bg-card/40 rounded-[1.5rem] border border-border-custom shadow-sm">
+                            <div className="p-6 bg-white/5 rounded-[1.5rem] border border-white/10">
                                 <div className="flex items-center gap-6">
                                     <input
                                         type="checkbox"
                                         id="isAdminEdit"
                                         checked={formData.isAdmin}
                                         onChange={(e) => setFormData({ ...formData, isAdmin: e.target.checked })}
-                                        className="w-6 h-6 text-blue-600 rounded-[0.5rem] focus:ring-blue-500 border-gray-300"
+                                        className="w-6 h-6 text-blue-500 bg-white/5 border-white/10 rounded-[0.5rem] focus:ring-blue-500"
                                     />
                                     <div>
-                                        <label htmlFor="isAdminEdit" className="block text-[11px] font-black text-blue-900 uppercase tracking-widest mb-0.5">Admin Privileges</label>
-                                        <p className="text-[9px] text-blue-700/60 font-bold uppercase tracking-wider">Toggle administrative system access</p>
+                                        <label htmlFor="isAdminEdit" className="block text-[11px] font-black text-blue-400 uppercase tracking-widest mb-0.5">Admin Privileges</label>
+                                        <p className="text-[9px] text-blue-400/60 font-bold uppercase tracking-wider">Toggle administrative system access</p>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-2xl shadow-blue-900/30 disabled:opacity-50 active:scale-95"
+                                className="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/40 disabled:opacity-50 active:scale-95"
                             >
                                 {isSubmitting ? 'Syncing Profile...' : 'Authorize and Save Changes'}
                             </button>
@@ -550,6 +536,5 @@ export default function AdminUsersPage() {
                 </div>
             )}
         </div>
-    </div>
     );
 }
