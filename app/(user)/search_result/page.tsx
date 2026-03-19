@@ -1,12 +1,14 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect, Suspense, useMemo } from 'react';
+import { useState, useEffect, Suspense, useMemo, useRef } from 'react';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { FaCalendarAlt, FaFileAlt, FaUserGraduate, FaArrowLeft, FaBookOpen, FaTimes, FaMagic, FaSave, FaRobot } from 'react-icons/fa';
 import Link from 'next/link';
 import LottieLoader from '@/app/components/UI/LottieLoader';
 import AiReportSidebar from '@/app/components/Sidebar-modal/AiReportSidebar';
+import SearchResultSkeleton from '@/app/components/UI/SearchResultSkeleton';
+import ThesisDetailSkeleton from '@/app/components/UI/ThesisDetailSkeleton';
 
 
 interface Thesis {
@@ -32,6 +34,7 @@ const SearchResultContent = () => {
     const [results, setResults] = useState<Thesis[]>([]);
     const [singleThesis, setSingleThesis] = useState<Thesis | null>(null);
     const [loading, setLoading] = useState(true);
+    const isBackNavRef = useRef(false);
 
     // AI Feature States
     const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
@@ -58,7 +61,20 @@ const SearchResultContent = () => {
     useEffect(() => {
         const fetchData = async () => {
             const startTime = Date.now();
+            
+            // Sync UI state immediately with URL to prevent flickering
+            if (!id && singleThesis) {
+                setSingleThesis(null);
+            }
+            if (id && singleThesis && singleThesis.id !== id) {
+                setSingleThesis(null);
+            }
+
+            // If we're going back to search and already have results, don't show full loading
+            isBackNavRef.current = !id && results.length > 0;
             setLoading(true);
+
+            let didFetch = false;
             try {
                 const token = localStorage.getItem('token');
                 const headers: Record<string, string> = {
@@ -67,6 +83,7 @@ const SearchResultContent = () => {
                 };
 
                 if (id) {
+                    didFetch = true;
                     const res = await fetch(`${API_BASE_URL}/thesis/${id}`, { headers });
                     const contentType = res.headers.get("content-type");
                     if (res.ok && contentType && contentType.includes("application/json")) {
@@ -75,7 +92,6 @@ const SearchResultContent = () => {
                     } else {
                         setSingleThesis(null);
                     }
-                    setResults([]);
                 } else if (query || year || category) {
                     const params = new URLSearchParams();
                     if (query) params.append('query', query);
@@ -84,6 +100,7 @@ const SearchResultContent = () => {
                     if (type && type !== 'all') params.append('type', type);
 
                     const res = await fetch(`${API_BASE_URL}/thesis/search?${params.toString()}`, { headers });
+                    didFetch = true;
                     const contentType = res.headers.get("content-type");
                     if (res.ok && contentType && contentType.includes("application/json")) {
                         const data = await res.json();
@@ -98,13 +115,15 @@ const SearchResultContent = () => {
                 }
             } catch (err) {
                 console.error('Error fetching data:', err);
-                setResults([]);
+                if (!id) setResults([]);
                 setSingleThesis(null);
             } finally {
-                // Ensure minimum 3s delay
                 const elapsed = Date.now() - startTime;
-                if (elapsed < 3000) {
-                    await new Promise(resolve => setTimeout(resolve, 3000 - elapsed));
+                // Only enforce 2s delay if we actually fetched from server
+                const minDelay = didFetch ? 2000 : 0;
+                
+                if (elapsed < minDelay) {
+                    await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
                 }
                 setLoading(false);
             }
@@ -255,10 +274,8 @@ const SearchResultContent = () => {
 
                     {/* Results Area */}
                     <div className="flex-1">
-                        {loading ? (
-                            <div className="py-20 flex flex-col items-center justify-center">
-                                <LottieLoader type="search" isModal text="Finding Theses..." />
-                            </div>
+                        {loading && (results.length === 0 || !isBackNavRef.current) ? (
+                            <SearchResultSkeleton />
                         ) : (
                             <>
                                 {/* Header Navigation */}
@@ -500,7 +517,9 @@ const SearchResultContent = () => {
                                     );
                                 })()}
 
-                                {singleThesis ? (
+                                {loading && id && !singleThesis ? (
+                                    <ThesisDetailSkeleton />
+                                ) : singleThesis ? (
                                     /* Document-Style Detail View */
                                     <div className="max-w-3xl mx-auto animate-fade-in pb-16">
                                         <div className="relative group/paper">
@@ -657,8 +676,8 @@ const SearchResultContent = () => {
 const SearchResultPage = () => {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center fixed inset-0 z-[100] pointer-events-none backdrop-blur-sm">
-                <LottieLoader type="search" isModal text="Finding Theses..." />
+            <div className="max-w-7xl mx-auto px-4 md:px-8 py-28 relative">
+                <SearchResultSkeleton />
             </div>
         }>
             <SearchResultContent />

@@ -25,6 +25,7 @@ import {
     FaMagic,
     FaExclamationTriangle
 } from 'react-icons/fa';
+import HomeSkeletons from '@/app/components/UI/HomeSkeletons';
 import API_BASE_URL from '@/app/lib/api';
 import AiReportSidebar from '@/app/components/Sidebar-modal/AiReportSidebar';
 
@@ -96,11 +97,13 @@ const HomePage: React.FC = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [clearAllModalOpen, setClearAllModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [historyPage, setHistoryPage] = useState(1);
     const HISTORY_PAGE_SIZE = 5;
 
     useEffect(() => {
         setMounted(true);
+        const startTime = Date.now();
         const userData = localStorage.getItem('userData');
         const token = localStorage.getItem('token');
         const recent = JSON.parse(localStorage.getItem('recent_theses') || '[]');
@@ -152,6 +155,14 @@ const HomePage: React.FC = () => {
                     console.error('Error fetching history:', err);
                 } finally {
                     setLoadingAi(false);
+                    
+                    // Universal 2s delay for home page initial load
+                    const elapsed = Date.now() - startTime;
+                    const minDelay = 2000;
+                    if (elapsed < minDelay) {
+                        await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
+                    }
+                    setLoading(false);
                 }
             };
             fetchAiHistory();
@@ -270,6 +281,10 @@ const HomePage: React.FC = () => {
         <div className="flex-1 relative py-16">
             <main className="flex-grow flex flex-col items-center relative px-6 md:px-12 pt-12 pb-20">
                 <div className="max-w-6xl w-full flex flex-col relative z-10">
+                    {loading ? (
+                        <HomeSkeletons />
+                    ) : (
+                        <>
 
                     <div className="mb-12">
                         <motion.div
@@ -525,6 +540,8 @@ const HomePage: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             </main>
 

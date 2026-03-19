@@ -171,10 +171,26 @@ const CustomHeader = ({
 
 
 
+    const sanitizeText = (text: string | undefined) => {
+        if (!text) return '';
+        // Common encoding artifacts fix
+        return text
+            .replace(/Â€™/g, "'")
+            .replace(/Â€“/g, "—")
+            .replace(/Â/g, "")
+            .replace(/&lsquo;/g, "'")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&ndash;/g, "—")
+            .replace(/&mdash;/g, "—");
+    };
+
     const highlightText = (text: string | undefined, query: string): ReactElement | string => {
-        if (!text || !query) return text || '';
+        const sanitized = sanitizeText(text);
+        if (!query) return sanitized;
         const regex = new RegExp(`(${query})`, 'gi');
-        const parts = text.split(regex);
+        const parts = sanitized.split(regex);
         return (
             <>
                 {parts.map((part, index) =>
@@ -489,84 +505,86 @@ const CustomHeader = ({
                         </div>
                     )}
 
-                    {/* Search Results Dropdown */}
-                    {showSearchResults && searchResults.length > 0 && (
-                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-card rounded-xl shadow-2xl z-50 border border-border-custom max-h-[70vh] overflow-hidden flex flex-col animate-fade-in">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-border-custom bg-surface/80">
-                                <span className="text-sm font-semibold text-text-dim">
-                                    {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
-                                </span>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={handleRecommendByAi}
-                                        disabled={isLoadingAi}
-                                        className="flex items-center gap-1.5 text-xs font-bold text-[#2DD4BF] bg-teal-50/5 px-3 py-1.5 rounded-lg border border-teal-500/20 hover:bg-teal-500/10 transition-colors disabled:opacity-50"
-                                    >
-                                        <FaMagic className="text-[10px]" />
-                                        {isLoadingAi ? 'Loading...' : 'AI Suggest'}
-                                    </button>
-                                    <button
-                                        className="text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-text-dim p-1"
-                                        onClick={() => setShowSearchResults(false)}
-                                        aria-label="Close results"
-                                    >
-                                        <FaTimes />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* AI Recommendation Banner */}
+                    {/* Minimalist Search Results Dropdown */}
+                    {showSearchResults && (
+                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-[#1e1e1e]/98 backdrop-blur-xl rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.6)] z-50 border border-white/5 max-h-[70vh] min-w-[320px] overflow-hidden flex flex-col animate-fade-in">
+                            
+                            {/* AI Suggestion Row (Integrated) */}
                             {aiRecommendation && (
-                                <div className="px-4 py-3 bg-blue-50/50 border-b border-blue-100">
-                                    <div className="flex items-start gap-2">
-                                        <FaRobot className="text-blue-500 mt-0.5 shrink-0" />
-                                        <div className="flex-1 whitespace-pre-wrap text-xs text-text-dim font-medium">
-                                            {aiRecommendation}
+                                <div className="px-5 py-3.5 bg-[#2DD4BF]/5 border-b border-white/5 flex items-center gap-4 group/ai hover:bg-[#2DD4BF]/10 transition-colors">
+                                    <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center border border-[#2DD4BF]/20 shrink-0">
+                                        <FaRobot className="text-[#2DD4BF] text-base group-hover/ai:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-[#2DD4BF]">Institutional Intelligence</span>
+                                        </div>
+                                        <div className="text-xs text-white/70 leading-normal font-medium max-h-16 overflow-y-auto custom-scrollbar pr-2 italic">
+                                            "{aiRecommendation}"
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            <div className="overflow-y-auto flex-1">
-                                {searchResults.map((result, index) => (
-                                    <div
-                                        key={`${result.id}-${index}`}
-                                        className="px-4 py-3.5 border-b border-gray-50 hover:bg-surface/80 transition-colors cursor-pointer"
-                                        onClick={() => {
-                                            router.push(`/search_result?id=${result.id}`);
-                                            setShowSearchResults(false);
-                                        }}
-                                    >
-                                        <div className="flex items-center justify-end mb-2">
-                                            <span className="flex items-center gap-1 text-xs text-text-dim font-semibold">
-                                                <FaCalendarAlt className="text-[10px] text-[#2DD4BF]" /> {String(result.year_range && result.year_range !== 'unknown' ? result.year_range : 'N/A')}
-                                            </span>
-                                        </div>
-                                        <h4 className="text-sm font-semibold text-foreground mb-1.5 leading-snug">
-                                            {highlightText(result.title, localSearchQuery)}
-                                        </h4>
-                                        <p className="text-xs text-text-dim leading-relaxed mb-2 line-clamp-2">
-                                            {highlightText(
-                                                result.abstract && result.abstract.length > 120
-                                                    ? `${result.abstract.substring(0, 120)}...`
-                                                    : result.abstract,
-                                                localSearchQuery
-                                            )}
-                                        </p>
-                                        <div className="flex items-center gap-3 text-xs text-gray-400 font-semibold">
-                                            {/* Date info already shown in header badge area */}
-                                            <span className="flex items-center gap-1">
-                                                <FaFileAlt className="text-[10px] text-[#2DD4BF]" /> {result.filename}
-                                            </span>
-                                        </div>
+                            <div className="overflow-y-auto flex-1 custom-scrollbar">
+                                {searchResults.length > 0 ? (
+                                    <div className="py-1">
+                                        {searchResults.map((result, index) => (
+                                            <div
+                                                key={`${result.id}-${index}`}
+                                                className="px-5 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-4 transition-all group/item relative active:bg-white/10"
+                                                onClick={() => {
+                                                    router.push(`/search_result?id=${result.id}`);
+                                                    setShowSearchResults(false);
+                                                }}
+                                            >
+                                                {/* Consistent Left Icon (Browser Style) */}
+                                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 group-hover/item:text-primary group-hover/item:bg-primary/5 transition-all">
+                                                    <FaSearch className="text-sm" />
+                                                </div>
+
+                                                <div className="flex-1 min-w-0 flex flex-col">
+                                                    <div className="flex items-center gap-2 overflow-hidden items-baseline">
+                                                        <h4 className="text-[13px] font-bold text-white/90 group-hover/item:text-primary transition-colors truncate">
+                                                            {highlightText(result.title, localSearchQuery)}
+                                                        </h4>
+                                                        <span className="text-[11px] text-slate-500 font-medium shrink-0 whitespace-nowrap">
+                                                            — {result.year_range || 'Archive'} ({result.id})
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Interaction Hint */}
+                                                <div className="opacity-0 group-hover/item:opacity-100 transition-opacity text-[10px] text-slate-600 font-black uppercase tracking-widest hidden sm:block">
+                                                    View Record
+                                                </div>
+
+                                                {/* Highlight Border */}
+                                                <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary scale-y-0 group-hover/item:scale-y-100 transition-transform rounded-r-full" />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                ) : localSearchQuery.trim().length > 0 && !loading ? (
+                                    <div className="py-12 text-center">
+                                        <FaSearch className="text-2xl text-slate-700 mb-3 mx-auto" />
+                                        <p className="text-xs font-black text-slate-500 uppercase tracking-widest">No Matches Encountered</p>
+                                    </div>
+                                ) : null}
                             </div>
 
-                            <div className="px-4 py-2.5 bg-surface/80 border-t border-border-custom text-center">
-                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                                    {loading ? 'Processing...' : 'End of results'}
+                            {/* Minimal Footer / Action Row */}
+                            <div className="px-5 py-3 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
+                                <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">
+                                    {loading ? 'Consulting Repository...' : `Showing ${searchResults.length} Records`}
                                 </span>
+                                <button
+                                    onClick={handleRecommendByAi}
+                                    disabled={isLoadingAi || !localSearchQuery.trim()}
+                                    className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#2DD4BF] hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                                >
+                                    <FaMagic className={isLoadingAi ? 'animate-spin' : ''} />
+                                    {isLoadingAi ? 'Analyzing...' : 'Request AI Suggestion'}
+                                </button>
                             </div>
                         </div>
                     )}
