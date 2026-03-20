@@ -19,8 +19,8 @@ export default function AdminDashboardSkeleton() {
                 </div>
 
                 {/* Stats Grid Skeleton */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    {[1, 2, 3].map((i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    {[1, 2, 3, 4].map((i) => (
                         <div key={i} className="h-44 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
                             <Skeleton width="100%" height="100%" borderRadius="1rem" />
                         </div>

@@ -36,7 +36,8 @@ export default function AdminUsersPage() {
         idNumber: '',
         birthdate: '',
         password: '',
-        isAdmin: false
+        isAdmin: false,
+        isGraduate: false
     });
 
     const handleIDNumberChange = (value: string) => {
@@ -131,7 +132,7 @@ export default function AdminUsersPage() {
             if (res.ok) {
                 toast.success('User created successfully');
                 setIsAddModalOpen(false);
-                setFormData({ name: '', idNumber: '', birthdate: '', password: '', isAdmin: false });
+                setFormData({ name: '', idNumber: '', birthdate: '', password: '', isAdmin: false, isGraduate: false });
                 fetchUsers(1);
             } else {
                 const error = await res.json();
@@ -183,7 +184,8 @@ export default function AdminUsersPage() {
             idNumber: user.idNumber,
             birthdate: user.birthdate ? user.birthdate.split('T')[0] : '',
             password: '',
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            isGraduate: user.isGraduate
         });
         setIsEditModalOpen(true);
     };
@@ -278,7 +280,7 @@ export default function AdminUsersPage() {
                         </div>
                         <button
                             onClick={() => {
-                                setFormData({ name: '', idNumber: '', birthdate: '', password: '', isAdmin: false });
+                                setFormData({ name: '', idNumber: '', birthdate: '', password: '', isAdmin: false, isGraduate: false });
                                 setIsAddModalOpen(true);
                             }}
                             className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-primary text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-primary-hover transition-all shadow-xl shadow-teal-900/20 active:scale-95"
@@ -329,10 +331,17 @@ export default function AdminUsersPage() {
                                             </span>
                                         </td>
                                         <td className="px-8 py-8">
-                                            <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-primary/5 text-primary border-primary/20' : 'bg-white/5 text-white/40 border-white/5'}`}>
-                                                {user.isAdmin ? <FaUserShield className="text-[10px]" /> : <FaUser className="text-[10px]" />}
-                                                {user.isAdmin ? 'Administrator' : 'Researcher'}
-                                            </span>
+                                            <div className="flex flex-col gap-2">
+                                                <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-primary/5 text-primary border-primary/20' : 'bg-white/5 text-white/40 border-white/5'}`}>
+                                                    {user.isAdmin ? <FaUserShield className="text-[10px]" /> : <FaUser className="text-[10px]" />}
+                                                    {user.isAdmin ? 'Administrator' : 'Researcher'}
+                                                </span>
+                                                {user.isGraduate && (
+                                                    <span className="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm bg-emerald-500/5 text-emerald-400 border-emerald-500/20">
+                                                        <FaCheckCircle className="text-[10px]" /> Alumni
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-8 py-8">
                                             <div className="flex flex-col">
@@ -495,6 +504,19 @@ export default function AdminUsersPage() {
                                             <p className="text-[9px] text-primary/40 font-medium uppercase tracking-tight">Grant full moderation access</p>
                                         </div>
                                     </div>
+                                    <div className="flex items-center gap-4 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                        <input
+                                            type="checkbox"
+                                            id="isGraduate"
+                                            checked={formData.isGraduate}
+                                            onChange={(e) => setFormData({ ...formData, isGraduate: e.target.checked })}
+                                            className="w-5 h-5 text-emerald-500 bg-white/5 border-white/10 rounded focus:ring-emerald-400/40 focus:ring-offset-0 transition-all"
+                                        />
+                                        <div>
+                                            <label htmlFor="isGraduate" className="block text-[11px] font-bold text-emerald-400/80 uppercase tracking-wider mb-0.5">Graduation Status</label>
+                                            <p className="text-[9px] text-emerald-400/40 font-medium uppercase tracking-tight">Mark as alumni/graduated</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <button
                                     type="submit"
@@ -561,7 +583,7 @@ export default function AdminUsersPage() {
                                             className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-sm text-white invert-[0.8] brightness-[0.8]"
                                         />
                                     </div>
-                                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-4">
                                         <div className="flex items-center gap-4">
                                             <input
                                                 type="checkbox"
@@ -573,6 +595,20 @@ export default function AdminUsersPage() {
                                             <div>
                                                 <label htmlFor="isAdminEdit" className="block text-[11px] font-bold text-primary/80 uppercase tracking-wider mb-0.5">Admin Access</label>
                                                 <p className="text-[9px] text-primary/40 font-medium uppercase tracking-tight">Toggle full oversight rights</p>
+                                            </div>
+                                        </div>
+                                        <div className="h-px bg-white/[0.05] w-full" />
+                                        <div className="flex items-center gap-4">
+                                            <input
+                                                type="checkbox"
+                                                id="isGraduateEdit"
+                                                checked={formData.isGraduate}
+                                                onChange={(e) => setFormData({ ...formData, isGraduate: e.target.checked })}
+                                                className="w-5 h-5 text-emerald-500 bg-white/5 border-white/10 rounded focus:ring-emerald-400/40 focus:ring-offset-0 transition-all"
+                                            />
+                                            <div>
+                                                <label htmlFor="isGraduateEdit" className="block text-[11px] font-bold text-emerald-400/80 uppercase tracking-wider mb-0.5">Alumni Status</label>
+                                                <p className="text-[9px] text-emerald-400/40 font-medium uppercase tracking-tight">Mark student as graduated</p>
                                             </div>
                                         </div>
                                     </div>

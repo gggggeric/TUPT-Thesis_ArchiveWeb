@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FaUserShield, FaChartBar, FaFileAlt, FaUsers, FaArrowRight, FaClock, FaPlus, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import AdminDashboardSkeleton from '@/app/components/UI/skeleton_loaders/admin/AdminDashboardSkeleton';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { motion } from 'framer-motion';
 
 const fadeUp = {
@@ -25,7 +25,8 @@ export default function AdminPage() {
     const [stats, setStats] = useState({
         theses: 0,
         users: 0,
-        pending: 0
+        pending: 0,
+        graduated: 0
     });
     const [recentActivity, setRecentActivity] = useState<any[]>([]);
     const [chartData, setChartData] = useState<any[]>([]);
@@ -106,9 +107,17 @@ export default function AdminPage() {
             path: '/admin/users'
         },
         {
+            label: 'Graduated Users',
+            value: stats.graduated.toLocaleString(),
+            icon: <FaCheckCircle />,
+            color: 'emerald',
+            desc: 'Alumni Students',
+            path: '/admin/users'
+        },
+        {
             label: 'Action Required',
             value: stats.pending.toLocaleString(),
-            icon: <FaChartBar />,
+            icon: <FaExclamationCircle />,
             color: 'amber',
             desc: 'Pending Review',
             path: '/admin/theses'
@@ -143,7 +152,7 @@ export default function AdminPage() {
             </motion.div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {statsCards.map((stat, idx) => (
                     <motion.div
                         key={idx}
@@ -166,29 +175,30 @@ export default function AdminPage() {
                         <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-all duration-500 shadow-xl
                             ${stat.color === 'teal' ? 'bg-primary/5 border-primary/20 text-primary group-hover:bg-primary/20' :
                               stat.color === 'blue' ? 'bg-blue-500/5 border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20' :
+                              stat.color === 'emerald' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/20' :
                               'bg-amber-500/5 border-amber-500/20 text-amber-400 group-hover:bg-amber-500/20'}`}>
                             <span className="text-2xl">{stat.icon}</span>
                         </div>
                         <div className={`absolute -right-8 -bottom-8 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-700
-                            ${stat.color === 'teal' ? 'bg-primary' : stat.color === 'blue' ? 'bg-blue-500' : 'bg-amber-500'}`} />
+                            ${stat.color === 'teal' ? 'bg-primary' : stat.color === 'blue' ? 'bg-blue-500' : stat.color === 'emerald' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                     </motion.div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <motion.div
                     initial="hidden"
                     animate="visible"
                     variants={fadeUp}
                     transition={{ ...fadeUpTransition, delay: 0.4 }}
-                    className="lg:col-span-2 space-y-10"
+                    className="lg:col-span-3 space-y-10"
                 >
                     {/* Growth Chart */}
                     <div className="bg-card rounded-2xl border border-border-custom shadow-2xl overflow-hidden backdrop-blur-md">
                         <div className="p-8 border-b border-white/[0.03] flex items-center justify-between">
                             <h2 className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase flex items-center gap-4">
                                 <span className="w-1 h-5 bg-primary rounded-full" />
-                                Statistics
+                                Growth Trends
                             </h2>
                             <div className="flex items-center gap-6">
                                 <div className="flex items-center gap-3">
@@ -199,9 +209,13 @@ export default function AdminPage() {
                                     <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                                     <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Users</span>
                                 </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Graduates</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="p-10 h-[380px] w-full">
+                        <div className="p-10 h-[500px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={chartData}>
                                     <defs>
@@ -212,6 +226,10 @@ export default function AdminPage() {
                                         <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
                                             <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                        </linearGradient>
+                                        <linearGradient id="colorGraduated" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
@@ -243,11 +261,86 @@ export default function AdminPage() {
                                     />
                                     <Area type="monotone" dataKey="theses" stroke="#2DD4BF" strokeWidth={4} fillOpacity={1} fill="url(#colorTheses)" />
                                     <Area type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorUsers)" />
+                                    <Area type="monotone" dataKey="graduated" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorGraduated)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
+                </motion.div>
 
+                {/* Graduation Distribution Pie Chart */}
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={fadeUp}
+                    transition={{ ...fadeUpTransition, delay: 0.5 }}
+                    className="lg:col-span-1 bg-card rounded-2xl border border-border-custom shadow-2xl overflow-hidden backdrop-blur-md flex flex-col h-full"
+                >
+                    <div className="p-8 border-b border-white/[0.03]">
+                        <h2 className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase flex items-center gap-4">
+                            <span className="w-1 h-5 bg-emerald-500 rounded-full" />
+                            Distribution
+                        </h2>
+                    </div>
+                    <div className="flex-1 p-6 flex flex-col items-center justify-center min-h-[400px]">
+                        <ResponsiveContainer width="100%" height={280}>
+                            <PieChart>
+                                <Pie
+                                    data={[
+                                        { name: 'Alumni', value: stats.graduated },
+                                        { name: 'Students', value: Math.max(0, stats.users - stats.graduated) }
+                                    ]}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={70}
+                                    outerRadius={100}
+                                    paddingAngle={8}
+                                    dataKey="value"
+                                    stroke="none"
+                                >
+                                    <Cell fill="#10b981" />
+                                    <Cell fill="#3b82f6" opacity={0.3} />
+                                </Pie>
+                                <Tooltip 
+                                    contentStyle={{ 
+                                        backgroundColor: '#1E1E2E', 
+                                        borderRadius: '1rem', 
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        fontSize: '10px',
+                                        fontWeight: 'bold',
+                                        textTransform: 'uppercase'
+                                    }}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        <div className="mt-8 space-y-4 w-full px-4">
+                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white/60">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                                    <span>Alumni</span>
+                                </div>
+                                <span className="text-white">{Math.round((stats.graduated / Math.max(1, stats.users)) * 100)}%</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white/60">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-50" />
+                                    <span>Students</span>
+                                </div>
+                                <span className="text-white">{Math.round(((stats.users - stats.graduated) / Math.max(1, stats.users)) * 100)}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pt-10">
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={fadeUp}
+                    transition={{ ...fadeUpTransition, delay: 0.6 }}
+                    className="lg:col-span-2 space-y-10"
+                >
                     {/* Recent Content */}
                     <div className="bg-card rounded-2xl border border-border-custom shadow-xl overflow-hidden backdrop-blur-md">
                         <div className="p-8 border-b border-white/[0.03] flex items-center justify-between">
@@ -298,7 +391,7 @@ export default function AdminPage() {
                     initial="hidden"
                     animate="visible"
                     variants={fadeUp}
-                    transition={{ ...fadeUpTransition, delay: 0.5 }}
+                    transition={{ ...fadeUpTransition, delay: 0.7 }}
                     className="space-y-10"
                 >
                     <div className="flex flex-col">
