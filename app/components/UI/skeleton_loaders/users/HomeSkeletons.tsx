@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import Skeleton from '../Skeleton';
 
 export const StatCardSkeleton = () => (
   <div className="bg-card rounded-2xl p-7 shadow-lg border border-border-custom flex items-center justify-between animate-pulse">

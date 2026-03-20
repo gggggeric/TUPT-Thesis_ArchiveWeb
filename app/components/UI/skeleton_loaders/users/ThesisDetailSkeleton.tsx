@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Skeleton from './Skeleton';
+import Skeleton from '../Skeleton';
 
 const ThesisDetailSkeleton = () => {
     return (

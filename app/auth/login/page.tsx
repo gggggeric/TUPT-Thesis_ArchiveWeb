@@ -193,7 +193,7 @@ const Login: React.FC = () => {
                                     Clear
                                 </button>
 
-                                {isLoading && <LottieLoader isModal type="general" text="Signing in..." />}
+                                {isLoading && <LottieLoader isModal type="login" text="Signing in..." />}
 
                                 <button
                                     onClick={handleLogin}
