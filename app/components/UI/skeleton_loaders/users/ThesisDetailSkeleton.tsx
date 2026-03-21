@@ -5,13 +5,13 @@ import Skeleton from '../Skeleton';
 
 const ThesisDetailSkeleton = () => {
     return (
-        <div className="max-w-3xl mx-auto animate-fade-in pb-16">
+        <div className="max-w-4xl mx-auto animate-fade-in pb-16">
             <div className="relative">
                 {/* Paper decorative backgrounds */}
                 <div className="absolute inset-0 bg-stone-200/40 rounded-3xl translate-y-6 translate-x-3 -rotate-2" />
                 <div className="absolute inset-0 bg-stone-200/60 rounded-3xl translate-y-3 translate-x-1.5 rotate-1" />
 
-                <div className="relative bg-[#fafaf8] rounded-sm shadow-[0_30px_70px_rgba(0,0,0,0.4)] min-h-[900px] flex flex-col p-8 md:p-14 border border-stone-200">
+                <div className={`relative bg-[#FCFCFA] rounded-sm shadow-[0_40px_100px_rgba(0,0,0,0.5)] min-h-[1000px] flex flex-col p-8 md:p-14 overflow-hidden border border-stone-200 animate-pulse`}>
                     {/* Header Seal */}
                     <div className="flex flex-col items-center text-center pb-8 mb-10 border-b border-stone-200">
                         <Skeleton width="64px" height="64px" circle className="mb-4" />

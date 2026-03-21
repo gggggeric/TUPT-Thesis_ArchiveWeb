@@ -22,7 +22,8 @@ export default function AdminUsersPage() {
     const router = useRouter();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [showSkeleton, setShowSkeleton] = useState(false);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -68,12 +69,12 @@ export default function AdminUsersPage() {
         setFormData(prev => ({ ...prev, idNumber: result.slice(0, 12) }));
     };
 
-    const fetchUsers = async (page: number, search: string = searchQuery) => {
+    const fetchUsers = async (pageNumber: number = page, search: string = searchQuery) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-            const res = await fetch(`${API_BASE_URL}/admin/users?page=${page}&limit=10&search=${search}`, {
+            const res = await fetch(`${API_BASE_URL}/admin/users?page=${pageNumber}&limit=10&search=${search}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -85,7 +86,7 @@ export default function AdminUsersPage() {
                 if (result.success) {
                     setUsers(result.data);
                     setTotalPages(result.pagination.pages);
-                    setCurrentPage(result.pagination.currentPage);
+                    setPage(result.pagination.currentPage);
                 }
             } else {
                 toast.error('Failed to fetch users');
@@ -131,6 +132,16 @@ export default function AdminUsersPage() {
         fetchUsers(1);
         fetchStats();
     }, [router]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -186,7 +197,7 @@ export default function AdminUsersPage() {
             if (res.ok) {
                 toast.success('User updated successfully');
                 setIsEditModalOpen(false);
-                fetchUsers(currentPage);
+                fetchUsers(page);
                 fetchStats();
             } else {
                 const error = await res.json();
@@ -224,7 +235,7 @@ export default function AdminUsersPage() {
 
             if (res.ok) {
                 toast.success('User deleted successfully');
-                fetchUsers(currentPage);
+                fetchUsers(page);
                 fetchStats();
             } else {
                 toast.error('Failed to delete user');
@@ -261,13 +272,14 @@ export default function AdminUsersPage() {
         }
     };
 
-    if (loading && !searchQuery) {
-        return <AdminTableSkeleton />;
+    if (loading) {
+        if (showSkeleton && !searchQuery) return <AdminTableSkeleton />;
+        return <div className="flex-1 min-h-screen" />; // Placeholder for first 500ms
     }
 
     return (
         <div className="min-h-screen bg-transparent flex flex-col font-sans text-white">
-            <main className="flex-1 relative z-10 pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
+            <div className="flex-1 relative z-10 pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
                 {/* Hero Title Section */}
                 <motion.div
                     initial="hidden"
@@ -369,97 +381,101 @@ export default function AdminUsersPage() {
                     className="bg-card rounded-2xl shadow-2xl border border-border-custom overflow-hidden mb-12 backdrop-blur-md"
                 >
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-white/[0.02]">
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">User Details</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">ID Number</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">Role</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">Joined</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03] text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/[0.03]">
-                                {users.length > 0 ? users.map((user) => (
-                                    <tr key={user._id} className="hover:bg-white/[0.01] transition-all group">
-                                        <td className="px-8 py-8">
-                                            <div className="flex items-center gap-5">
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg border transition-colors ${user.isAdmin ? 'bg-primary/10 text-primary border-primary/20' : 'bg-white/5 text-white/20 border-white/5 group-hover:bg-white/10'}`}>
-                                                    {user.name.charAt(0).toUpperCase()}
+                        {showSkeleton && !searchQuery ? (
+                            <AdminTableSkeleton />
+                        ) : (
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-white/[0.02]">
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">User Details</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">ID Number</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">Role</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03]">Joined</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 border-b border-white/[0.03] text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/[0.03]">
+                                    {users.length > 0 ? users.map((user) => (
+                                        <tr key={user._id} className="hover:bg-white/[0.01] transition-all group">
+                                            <td className="px-8 py-8">
+                                                <div className="flex items-center gap-5">
+                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg border transition-colors ${user.isAdmin ? 'bg-primary/10 text-primary border-primary/20' : 'bg-white/5 text-white/20 border-white/5 group-hover:bg-white/10'}`}>
+                                                        {user.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-white text-[15px] mb-1 group-hover:text-primary transition-colors">{user.name}</p>
+                                                        <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider flex items-center gap-2">
+                                                            <FaUser className="text-[9px] opacity-40" />
+                                                            {user.birthdate ? new Date(user.birthdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-white text-[15px] mb-1 group-hover:text-primary transition-colors">{user.name}</p>
-                                                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider flex items-center gap-2">
-                                                        <FaUser className="text-[9px] opacity-40" />
-                                                        {user.birthdate ? new Date(user.birthdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-8">
-                                            <span className="font-mono text-[11px] font-black text-white/40 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                                                {user.idNumber}
-                                            </span>
-                                        </td>
-                                        <td className="px-8 py-8">
-                                            <div className="flex flex-col gap-2">
-                                                <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-primary/5 text-primary border-primary/20' : 'bg-white/5 text-white/40 border-white/5'}`}>
-                                                    {user.isAdmin ? <FaUserShield className="text-[10px]" /> : <FaUser className="text-[10px]" />}
-                                                    {user.isAdmin ? 'Administrator' : 'Researcher'}
+                                            </td>
+                                            <td className="px-8 py-8">
+                                                <span className="font-mono text-[11px] font-black text-white/40 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                                                    {user.idNumber}
                                                 </span>
-                                                {user.isGraduate && (
-                                                    <span className="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm bg-emerald-500/5 text-emerald-400 border-emerald-500/20">
-                                                        <FaCheckCircle className="text-[10px]" /> Alumni
+                                            </td>
+                                            <td className="px-8 py-8">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm ${user.isAdmin ? 'bg-primary/5 text-primary border-primary/20' : 'bg-white/5 text-white/40 border-white/5'}`}>
+                                                        {user.isAdmin ? <FaUserShield className="text-[10px]" /> : <FaUser className="text-[10px]" />}
+                                                        {user.isAdmin ? 'Administrator' : 'Researcher'}
                                                     </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-8">
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-white/60">{new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest mt-1">Join Date</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-8 text-right">
-                                            <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                                <button
-                                                    onClick={() => openEditModal(user)}
-                                                    className="p-3 bg-white/5 text-white/40 hover:text-primary rounded-xl shadow-lg border border-white/5 hover:border-primary/20 transition-all hover:-translate-y-1"
-                                                    title="Edit Record"
-                                                >
-                                                    <FaEdit className="text-sm" />
-                                                </button>
-                                                <button
-                                                    onClick={() => toggleAdminStatus(user)}
-                                                    className={`p-3 bg-white/5 rounded-xl shadow-lg border border-white/5 transition-all hover:-translate-y-1 ${user.isAdmin ? 'text-primary border-primary/20' : 'text-white/40 hover:text-primary hover:border-primary/20'}`}
-                                                    title={user.isAdmin ? "Revoke Privileges" : "Grant Privileges"}
-                                                >
-                                                    <FaUserShield className="text-sm" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDeleteUser(user._id)}
-                                                    className="p-3 bg-white/5 text-white/40 hover:text-red-500 rounded-xl shadow-lg border border-white/5 hover:border-red-500/20 transition-all hover:-translate-y-1"
-                                                    title="Delete User"
-                                                >
-                                                    <FaTrash className="text-sm" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={5} className="px-8 py-32 text-center">
-                                            <div className="flex flex-col items-center gap-6 opacity-20">
-                                                <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center border border-white/5">
-                                                    <FaUsers className="text-4xl text-white" />
+                                                    {user.isGraduate && (
+                                                        <span className="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 w-fit border shadow-sm bg-emerald-500/5 text-emerald-400 border-emerald-500/20">
+                                                            <FaCheckCircle className="text-[10px]" /> Alumni
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <p className="font-black uppercase tracking-[0.4em] text-[10px] text-white">No users found</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                            </td>
+                                            <td className="px-8 py-8">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-bold text-white/60">{new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                                    <span className="text-[9px] font-black text-white/20 uppercase tracking-widest mt-1">Join Date</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-8 text-right">
+                                                <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                    <button
+                                                        onClick={() => openEditModal(user)}
+                                                        className="p-3 bg-white/5 text-white/40 hover:text-primary rounded-xl shadow-lg border border-white/5 hover:border-primary/20 transition-all hover:-translate-y-1"
+                                                        title="Edit Record"
+                                                    >
+                                                        <FaEdit className="text-sm" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => toggleAdminStatus(user)}
+                                                        className={`p-3 bg-white/5 rounded-xl shadow-lg border border-white/5 transition-all hover:-translate-y-1 ${user.isAdmin ? 'text-primary border-primary/20' : 'text-white/40 hover:text-primary hover:border-primary/20'}`}
+                                                        title={user.isAdmin ? "Revoke Privileges" : "Grant Privileges"}
+                                                    >
+                                                        <FaUserShield className="text-sm" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteUser(user._id)}
+                                                        className="p-3 bg-white/5 text-white/40 hover:text-red-500 rounded-xl shadow-lg border border-white/5 hover:border-red-500/20 transition-all hover:-translate-y-1"
+                                                        title="Delete User"
+                                                    >
+                                                        <FaTrash className="text-sm" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )) : (
+                                        <tr>
+                                            <td colSpan={5} className="px-8 py-32 text-center">
+                                                <div className="flex flex-col items-center gap-6 opacity-20">
+                                                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center border border-white/5">
+                                                        <FaUsers className="text-4xl text-white" />
+                                                    </div>
+                                                    <p className="font-black uppercase tracking-[0.4em] text-[10px] text-white">No users found</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
                 </motion.div>
 
@@ -473,21 +489,21 @@ export default function AdminUsersPage() {
                         className="flex items-center justify-between bg-white/[0.02] backdrop-blur-md p-6 rounded-2xl border border-white/[0.05]"
                     >
                         <div className="flex items-center gap-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">
-                            <span className="px-4 py-2 bg-white/5 rounded-full border border-white/5 text-white/60">Page {currentPage}</span>
+                            <span className="px-4 py-2 bg-white/5 rounded-full border border-white/5 text-white/60">Page {page}</span>
                             <span>/</span>
                             <span>{totalPages} Total</span>
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                disabled={currentPage === 1 || loading}
-                                onClick={() => fetchUsers(currentPage - 1)}
+                                disabled={page === 1 || loading}
+                                onClick={() => fetchUsers(page - 1)}
                                 className="p-4 bg-white/5 rounded-2xl border border-white/5 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all active:scale-90"
                             >
                                 <FaChevronLeft className="text-xs" />
                             </button>
                             <button
-                                disabled={currentPage === totalPages || loading}
-                                onClick={() => fetchUsers(currentPage + 1)}
+                                disabled={page === totalPages || loading}
+                                onClick={() => fetchUsers(page + 1)}
                                 className="p-4 bg-white/5 rounded-2xl border border-white/5 text-white/40 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all active:scale-90"
                             >
                                 <FaChevronRight className="text-xs" />
@@ -495,7 +511,7 @@ export default function AdminUsersPage() {
                         </div>
                     </motion.div>
                 )}
-            </main>
+            </div>
 
             {/* Modals are already styled with high contrast, but I'll ensure they match the rounded-[2.5rem] style */}
             <AnimatePresence>

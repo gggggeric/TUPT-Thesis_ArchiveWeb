@@ -14,6 +14,7 @@ import {
     FaEnvelope
 } from 'react-icons/fa';
 import API_BASE_URL from '@/app/lib/api';
+import ProfileSkeleton from '@/app/components/UI/skeleton_loaders/users/ProfileSkeleton';
 
 interface UserData {
     _id: string;
@@ -33,9 +34,22 @@ interface UserData {
 const ProfilePage = () => {
     const router = useRouter();
     const [user, setUser] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(false);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
+            setLoading(true);
             const rawUserData = localStorage.getItem('userData');
             const token = localStorage.getItem('token');
 
@@ -61,13 +75,22 @@ const ProfilePage = () => {
                 }
             } catch (error) {
                 console.error('Error fetching latest profile:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchUserProfile();
     }, [router]);
 
-    if (!user) return null;
+    if (loading && !user) {
+        if (showSkeleton) return <ProfileSkeleton />;
+        return <div className="flex-1 min-h-screen" />; // Placeholder for first 500ms
+    }
+    
+    // Narrow type for TypeScript
+    const currentUser = user;
+    if (!currentUser) return null;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -95,7 +118,7 @@ const ProfilePage = () => {
                     <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2DD4BF]/5 rounded-full blur-[120px] pointer-events-none" />
                     <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#2DD4BF]/5 rounded-full blur-[100px] pointer-events-none" />
 
-                    <main className="max-w-4xl mx-auto space-y-12 relative z-10">
+                    <div className="max-w-4xl mx-auto space-y-12 relative z-10">
                         {/* Back Button */}
                         <button
                             onClick={() => router.push('/home')}
@@ -110,7 +133,7 @@ const ProfilePage = () => {
                                 <div className="relative">
                                     <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-white/5 shadow-xl group-hover:scale-105 transition-transform duration-700 bg-white/5">
                                         <img
-                                            src={user?.profilePhoto ? (user.profilePhoto.startsWith('http') ? user.profilePhoto : `${API_BASE_URL}${user.profilePhoto}`) : (user?.avatar || "/default-avatar.png")}
+                                            src={currentUser?.profilePhoto ? (currentUser.profilePhoto.startsWith('http') ? currentUser.profilePhoto : `${API_BASE_URL}${currentUser.profilePhoto}`) : (currentUser?.avatar || "/default-avatar.png")}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />
@@ -120,10 +143,10 @@ const ProfilePage = () => {
                                     </div>
                                 </div>
                                 <div className="text-center md:text-left">
-                                    <h1 className="text-3xl font-bold tracking-tight mb-2 text-white">{user.name}</h1>
+                                    <h1 className="text-3xl font-bold tracking-tight mb-2 text-white">{currentUser.name}</h1>
                                     <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                                         <span className="bg-white/5 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/5 text-white/50">
-                                            {user.idNumber}
+                                            {currentUser.idNumber}
                                         </span>
                                         <span className="bg-primary/5 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-primary/30 shadow-sm text-primary">
                                             Student Access
@@ -145,7 +168,7 @@ const ProfilePage = () => {
                                     <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                         <FaIdCard className="text-primary opacity-80" /> University ID
                                     </p>
-                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{user.idNumber}</p>
+                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{currentUser.idNumber}</p>
                                     <div className="w-8 h-0.5 bg-white/5 mt-2 group-hover:w-full group-hover:bg-primary transition-all duration-500" />
                                 </div>
 
@@ -153,7 +176,7 @@ const ProfilePage = () => {
                                     <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                         <FaCalendarAlt className="text-primary opacity-80" /> Birth Date
                                     </p>
-                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{formatDate(user.birthdate)}</p>
+                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{formatDate(currentUser.birthdate)}</p>
                                     <div className="w-8 h-0.5 bg-white/5 mt-2 group-hover:w-full group-hover:bg-primary transition-all duration-500" />
                                 </div>
 
@@ -161,7 +184,7 @@ const ProfilePage = () => {
                                     <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                         <FaClock className="text-primary opacity-80" /> Current Age
                                     </p>
-                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{calculateAge(user.birthdate)} Years Old</p>
+                                    <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">{calculateAge(currentUser.birthdate)} Years Old</p>
                                     <div className="w-8 h-0.5 bg-white/5 mt-2 group-hover:w-full group-hover:bg-primary transition-all duration-500" />
                                 </div>
 
@@ -170,7 +193,7 @@ const ProfilePage = () => {
                                         <FaGraduationCap className="text-primary opacity-80" /> Member Since
                                     </p>
                                     <p className="text-lg font-bold text-white group-hover:text-primary transition-colors">
-                                        {user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear()}
+                                        {currentUser.createdAt ? new Date(currentUser.createdAt).getFullYear() : new Date().getFullYear()}
                                     </p>
                                     <div className="w-8 h-0.5 bg-white/5 mt-2 group-hover:w-full group-hover:bg-primary transition-all duration-500" />
                                 </div>
@@ -186,7 +209,7 @@ const ProfilePage = () => {
                                 <FaEdit className="text-sm" /> Edit Profile Details
                             </button>
                         </div>
-                    </main>
+                    </div>
 
         </div>
     );

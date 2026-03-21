@@ -22,6 +22,7 @@ export default function AdminPage() {
     const router = useRouter();
     const [adminData, setAdminData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(false);
     const [stats, setStats] = useState({
         theses: 0,
         users: 0,
@@ -30,6 +31,16 @@ export default function AdminPage() {
     });
     const [recentActivity, setRecentActivity] = useState<any[]>([]);
     const [chartData, setChartData] = useState<any[]>([]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     useEffect(() => {
         const userDataString = localStorage.getItem('userData');
@@ -86,7 +97,8 @@ export default function AdminPage() {
     }, [router]);
 
     if (loading) {
-        return <AdminDashboardSkeleton />;
+        if (showSkeleton) return <AdminDashboardSkeleton />;
+        return <div className="flex-1 min-h-screen" />; // Placeholder for first 500ms
     }
 
     const statsCards = [

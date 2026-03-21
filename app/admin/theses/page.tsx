@@ -21,6 +21,7 @@ export default function AdminThesesPage() {
     const router = useRouter();
     const [theses, setTheses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(false);
     const [totalTheses, setTotalTheses] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -159,6 +160,16 @@ export default function AdminThesesPage() {
     }, []);
 
     useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
+
+    useEffect(() => {
         const timer = setTimeout(() => {
             fetchTheses(1, searchQuery, sortBy);
         }, 500);
@@ -264,13 +275,14 @@ export default function AdminThesesPage() {
         setIsEditModalOpen(true);
     };
 
-    if (loading && !searchQuery) {
-        return <AdminTableSkeleton />;
+    if (loading) {
+        if (showSkeleton && !searchQuery) return <AdminTableSkeleton />;
+        return <div className="flex-1 min-h-screen" />; // Placeholder for first 500ms
     }
 
     return (
         <div className="min-h-screen bg-transparent flex flex-col font-sans text-white">
-            <main className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
+            <div className="flex-1 relative z-10 pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
                 {/* Hero Title Section */}
                 <motion.div
                     initial="hidden"
@@ -429,7 +441,7 @@ export default function AdminThesesPage() {
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
                                                     <FaBuilding className="text-xs" />
-                                                </div>
+                                                 </div>
                                                  <span className="text-xs font-black text-white uppercase tracking-tight">{thesis.category || thesis.department || 'General'}</span>
                                             </div>
                                         </td>
@@ -501,7 +513,7 @@ export default function AdminThesesPage() {
                         </div>
                     </motion.div>
                 )}
-            </main>
+            </div>
 
             <AnimatePresence>
                 {(isAddModalOpen || isEditModalOpen) && (

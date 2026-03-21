@@ -9,6 +9,7 @@ import UploadSection from './components/UploadSection';
 import HowItWorks from './components/HowItWorks';
 import AnalysisWorkspace, { AnalysisResult } from './components/AnalysisWorkspace';
 import DraftsList from './components/DraftsList';
+import DocumentsSkeleton from '@/app/components/UI/skeleton_loaders/users/DocumentsSkeleton';
 
 const DocumentsPage: React.FC = () => {
     const router = useRouter();
@@ -18,6 +19,8 @@ const DocumentsPage: React.FC = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
     const [mounted, setMounted] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(false);
     const [drafts, setDrafts] = useState<any[]>([]);
 
     useEffect(() => {
@@ -25,7 +28,18 @@ const DocumentsPage: React.FC = () => {
         fetchDrafts();
     }, []);
 
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
+
     const fetchDrafts = async () => {
+        setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/analysis-drafts`, {
@@ -37,6 +51,8 @@ const DocumentsPage: React.FC = () => {
             }
         } catch (err) {
             console.error('Fetch drafts error:', err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -167,6 +183,11 @@ const DocumentsPage: React.FC = () => {
         }
     };
 
+    if (loading) {
+        if (showSkeleton) return <DocumentsSkeleton />;
+        return <div className="flex-1 min-h-screen" />; // Placeholder for first 500ms
+    }
+
     return (
         <div className="flex-1 flex flex-col min-h-full">
             <div className="relative z-10 flex-grow">
@@ -178,7 +199,7 @@ const DocumentsPage: React.FC = () => {
                     </div>
                 )}
 
-                <main className="relative z-10 flex-1 pt-32 pb-16">
+                <div className="relative z-10 flex-1 pt-32 pb-16">
                     {!analysisResult ? (
                         <>
                             <DocumentsHero />
@@ -215,7 +236,7 @@ const DocumentsPage: React.FC = () => {
                             />
                         </div>
                     )}
-                </main>
+                </div>
             </div>
         </div>
     );

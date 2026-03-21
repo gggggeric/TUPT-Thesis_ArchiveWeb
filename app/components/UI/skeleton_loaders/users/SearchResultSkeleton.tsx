@@ -16,44 +16,47 @@ const SearchResultSkeleton = () => {
             </div>
 
             {/* AI Recommendation Card Skeleton */}
-            <div className="mb-8 bg-card rounded-2xl shadow-xl border border-border-custom overflow-hidden p-6 md:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-3">
-                        <Skeleton width="40px" height="40px" borderRadius="0.75rem" />
-                        <div>
-                            <Skeleton width="200px" height="24px" className="mb-2" />
-                            <Skeleton width="150px" height="14px" />
+            <div className="mb-12 bg-[#1E293B]/40 backdrop-blur-xl rounded-[2.5rem] border border-white/5 overflow-hidden p-8 md:p-10 shadow-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+                    <div className="flex items-center gap-4">
+                        <Skeleton width="56px" height="56px" borderRadius="1.25rem" className="opacity-10" />
+                        <div className="space-y-2">
+                            <Skeleton width="220px" height="20px" borderRadius="1rem" />
+                            <Skeleton width="150px" height="10px" borderRadius="1rem" className="opacity-40" />
                         </div>
                     </div>
-                    <div className="flex gap-3">
-                        <Skeleton width="120px" height="40px" borderRadius="0.75rem" />
-                        <Skeleton width="140px" height="40px" borderRadius="0.75rem" />
+                    <div className="flex gap-4">
+                        <Skeleton width="130px" height="44px" borderRadius="1rem" className="opacity-20" />
+                        <Skeleton width="140px" height="44px" borderRadius="1rem" className="opacity-20" />
                     </div>
+                </div>
+                <div className="space-y-3">
+                    <Skeleton width="100%" height="120px" borderRadius="1.5rem" className="opacity-5" />
                 </div>
             </div>
 
             {/* Archive Distribution Chart Skeleton */}
-            <div className="mb-12 bg-[#0f172a]/30 backdrop-blur-xl rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Skeleton width="48px" height="48px" borderRadius="1rem" />
-                        <div>
-                            <Skeleton width="120px" height="12px" className="mb-2" />
-                            <Skeleton width="180px" height="28px" />
+            <div className="mb-16 bg-[#0f172a]/30 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/5 shadow-2xl">
+                <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center gap-5">
+                        <Skeleton width="56px" height="56px" borderRadius="1.25rem" className="opacity-10" />
+                        <div className="space-y-2">
+                            <Skeleton width="140px" height="10px" borderRadius="1rem" className="opacity-20" />
+                            <Skeleton width="200px" height="28px" borderRadius="1rem" />
                         </div>
                     </div>
-                    <div className="flex gap-8">
-                        <div className="flex flex-col items-end">
-                            <Skeleton width="40px" height="10px" className="mb-2" />
-                            <Skeleton width="60px" height="32px" />
+                    <div className="flex gap-10">
+                        <div className="flex flex-col items-end space-y-2">
+                            <Skeleton width="40px" height="10px" borderRadius="1rem" className="opacity-20" />
+                            <Skeleton width="60px" height="32px" borderRadius="0.75rem" />
                         </div>
-                        <div className="flex flex-col items-end">
-                            <Skeleton width="60px" height="10px" className="mb-2" />
-                            <Skeleton width="80px" height="32px" />
+                        <div className="flex flex-col items-end space-y-2">
+                            <Skeleton width="60px" height="10px" borderRadius="1rem" className="opacity-20" />
+                            <Skeleton width="80px" height="32px" borderRadius="0.75rem" />
                         </div>
                     </div>
                 </div>
-                <Skeleton width="100%" height="220px" borderRadius="1rem" />
+                <Skeleton width="100%" height="220px" borderRadius="1.5rem" className="opacity-10" />
             </div>
 
             {/* Results Grid Skeleton */}
