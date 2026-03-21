@@ -6,16 +6,23 @@ export default function AdminDashboardSkeleton() {
     return (
         <div className="min-h-screen bg-transparent flex flex-col font-sans text-white">
             <main className="flex-1 relative z-10 pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
-                {/* Header Skeleton */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
-                    <div className="flex items-center gap-6">
-                        <Skeleton width="56px" height="56px" borderRadius="1rem" className="border border-white/10" />
-                        <div className="space-y-3">
-                            <Skeleton width="100px" height="10px" borderRadius="1rem" className="opacity-40" />
-                            <Skeleton width="200px" height="40px" borderRadius="0.75rem" />
+                {/* Hero Title Section Skeleton */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-12 border-b border-white/5 mb-12">
+                    <div className="space-y-6 flex-1">
+                        <div className="flex items-center gap-3">
+                            <Skeleton width="120px" height="24px" borderRadius="1rem" className="opacity-20" />
+                            <div className="h-px w-12 bg-white/10" />
+                        </div>
+                        <Skeleton width="400px" height="60px" borderRadius="1rem" />
+                        <div className="space-y-2">
+                            <Skeleton width="100%" height="12px" borderRadius="1rem" className="opacity-20 max-w-xl" />
+                            <Skeleton width="80%" height="12px" borderRadius="1rem" className="opacity-20 max-w-md" />
                         </div>
                     </div>
-                    <Skeleton width="250px" height="48px" borderRadius="1rem" />
+                    <div className="flex flex-col items-end gap-3">
+                        <Skeleton width="160px" height="48px" borderRadius="1rem" className="opacity-10" />
+                        <Skeleton width="100px" height="12px" borderRadius="1rem" className="opacity-5" />
+                    </div>
                 </div>
 
                 {/* Stats Grid Skeleton */}

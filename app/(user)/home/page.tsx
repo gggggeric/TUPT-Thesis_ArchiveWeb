@@ -99,6 +99,7 @@ const HomePage: React.FC = () => {
     const [clearAllModalOpen, setClearAllModalOpen] = useState(false);
     const [clearAllType, setClearAllType] = useState<'ai' | 'session'>('ai');
     const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(false);
     const [historyPage, setHistoryPage] = useState(1);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const HISTORY_PAGE_SIZE = 5;
@@ -155,18 +156,12 @@ const HomePage: React.FC = () => {
                         const sessionData = await sessionRes.json();
                         setSessionHistory(sessionData.data || []);
                     }
+                    setLoading(false);
                 } catch (err) {
                     console.error('Error fetching history:', err);
+                    setLoading(false);
                 } finally {
                     setLoadingAi(false);
-
-                    // Universal 2s delay for home page initial load
-                    const elapsed = Date.now() - startTime;
-                    const minDelay = 2000;
-                    if (elapsed < minDelay) {
-                        await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
-                    }
-                    setLoading(false);
                 }
             };
             fetchHistory();
@@ -174,6 +169,16 @@ const HomePage: React.FC = () => {
             router.push('/auth/login');
         }
     }, [router]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (loading) {
+            timer = setTimeout(() => setShowSkeleton(true), 500);
+        } else {
+            setShowSkeleton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     const getGreeting = (): string => {
         const hour = new Date().getHours();
@@ -316,10 +321,12 @@ const HomePage: React.FC = () => {
 
     return (
         <div className="flex-1 relative py-16">
-            <main className="flex-grow flex flex-col items-center relative px-6 md:px-12 pt-12 pb-20">
+            <div className="flex-grow flex flex-col items-center relative px-6 md:px-12 pt-12 pb-20">
                 <div className="max-w-6xl w-full flex flex-col relative z-10">
                     {loading ? (
-                        <HomeSkeletons />
+                        <>
+                            {showSkeleton ? <HomeSkeletons /> : <div className="flex-1 min-h-screen" />}
+                        </>
                     ) : (
                         <>
 
@@ -602,7 +609,7 @@ const HomePage: React.FC = () => {
                         </>
                     )}
                 </div>
-            </main>
+            </div>
 
             {deleteModalOpen && (
                 <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
