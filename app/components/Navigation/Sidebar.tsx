@@ -80,6 +80,7 @@ export default function Sidebar() {
     const menuItems: MenuItem[] = user?.isAdmin 
         ? [
             { icon: FaUserShield, label: 'Admin Dashboard', path: '/admin' },
+            { icon: FaHandshake, label: 'Collaboration', path: '/admin/collaboration' },
             { icon: FaFileAlt, label: 'Thesis Management', path: '/admin/theses' },
             { icon: FaUsers, label: 'User Management', path: '/admin/users' },
         ]

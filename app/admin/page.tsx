@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FaUserShield, FaChartBar, FaFileAlt, FaUsers, FaArrowRight, FaClock, FaPlus, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import AdminDashboardSkeleton from '@/app/components/UI/skeleton_loaders/admin/AdminDashboardSkeleton';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { motion } from 'framer-motion';
 
 const fadeUp = {
@@ -27,7 +27,8 @@ export default function AdminPage() {
         theses: 0,
         users: 0,
         pending: 0,
-        graduated: 0
+        graduated: 0,
+        collaborations: 0
     });
     const [recentActivity, setRecentActivity] = useState<any[]>([]);
     const [chartData, setChartData] = useState<any[]>([]);
@@ -119,12 +120,12 @@ export default function AdminPage() {
             path: '/admin/users'
         },
         {
-            label: 'Graduated Users',
-            value: stats.graduated.toLocaleString(),
-            icon: <FaCheckCircle />,
-            color: 'emerald',
-            desc: 'Alumni Students',
-            path: '/admin/users'
+            label: 'Collab Requests',
+            value: (stats.collaborations || 0).toLocaleString(),
+            icon: <FaUsers />,
+            color: 'indigo',
+            desc: 'Joint Research',
+            path: '/admin/theses'
         },
         {
             label: 'Action Required',
@@ -205,12 +206,12 @@ export default function AdminPage() {
                     transition={{ ...fadeUpTransition, delay: 0.4 }}
                     className="lg:col-span-3 space-y-10"
                 >
-                    {/* Growth Chart */}
+                    {/* System Growth Chart */}
                     <div className="bg-card rounded-2xl border border-border-custom shadow-2xl overflow-hidden backdrop-blur-md">
                         <div className="p-8 border-b border-white/[0.03] flex items-center justify-between">
                             <h2 className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase flex items-center gap-4">
                                 <span className="w-1 h-5 bg-primary rounded-full" />
-                                Growth Trends
+                                System Growth
                             </h2>
                             <div className="flex items-center gap-6">
                                 <div className="flex items-center gap-3">
@@ -221,13 +222,9 @@ export default function AdminPage() {
                                     <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                                     <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Users</span>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Graduates</span>
-                                </div>
                             </div>
                         </div>
-                        <div className="p-10 h-[500px] w-full">
+                        <div className="p-10 h-[400px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={chartData}>
                                     <defs>
@@ -239,42 +236,46 @@ export default function AdminPage() {
                                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
                                             <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                                         </linearGradient>
-                                        <linearGradient id="colorGraduated" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                                        </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
-                                    <XAxis
-                                        dataKey="name"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)', letterSpacing: '0.1em' }}
-                                        dy={15}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)' }}
-                                    />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: '#1E1E2E',
-                                            borderRadius: '1.25rem',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                                            fontSize: '10px',
-                                            fontWeight: '900',
-                                            textTransform: 'uppercase',
-                                            letterSpacing: '0.1em',
-                                            color: '#fff'
-                                        }}
-                                        itemStyle={{ color: '#fff' }}
-                                    />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)' }} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#1E1E2E', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', fontSize: '10px', fontWeight: '900', color: '#fff' }} itemStyle={{ color: '#fff' }} />
                                     <Area type="monotone" dataKey="theses" stroke="#2DD4BF" strokeWidth={4} fillOpacity={1} fill="url(#colorTheses)" />
                                     <Area type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorUsers)" />
-                                    <Area type="monotone" dataKey="graduated" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorGraduated)" />
                                 </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Interaction Analytics Chart */}
+                    <div className="bg-card rounded-2xl border border-border-custom shadow-2xl overflow-hidden backdrop-blur-md">
+                        <div className="p-8 border-b border-white/[0.03] flex items-center justify-between">
+                            <h2 className="text-[10px] font-bold text-indigo-400/60 tracking-[0.3em] uppercase flex items-center gap-4">
+                                <span className="w-1 h-5 bg-indigo-500 rounded-full" />
+                                Interaction Analytics
+                            </h2>
+                            <div className="flex items-center gap-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Collabs</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">AI Queries</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-10 h-[400px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={chartData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: 'rgba(255,255,255,0.2)' }} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#1E1E2E', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', fontSize: '10px', fontWeight: '900', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                                    <Line type="monotone" dataKey="collaborations" stroke="#6366f1" strokeWidth={4} dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                                    <Line type="monotone" dataKey="history" stroke="#f97316" strokeWidth={4} dot={{ r: 4, fill: '#f97316', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                                </LineChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -351,7 +352,7 @@ export default function AdminPage() {
                     animate="visible"
                     variants={fadeUp}
                     transition={{ ...fadeUpTransition, delay: 0.6 }}
-                    className="lg:col-span-2 space-y-10"
+                    className="lg:col-span-3 space-y-10"
                 >
                     {/* Recent Content */}
                     <div className="bg-card rounded-2xl border border-border-custom shadow-xl overflow-hidden backdrop-blur-md">
@@ -394,77 +395,6 @@ export default function AdminPage() {
                                     <p className="text-[10px] font-black uppercase tracking-[0.3em]">No activity yet</p>
                                 </div>
                             )}
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Sidebar Actions */}
-                <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    variants={fadeUp}
-                    transition={{ ...fadeUpTransition, delay: 0.7 }}
-                    className="space-y-10"
-                >
-                    <div className="flex flex-col">
-                        <h2 className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase flex items-center gap-4 mb-6">
-                            <span className="w-0.5 h-4 bg-primary/40" />
-                            Quick Links
-                        </h2>
-                        <div className="grid grid-cols-1 gap-6">
-                            <button
-                                onClick={() => router.push('/admin/users')}
-                                className="group relative p-8 bg-card rounded-2xl border border-border-custom hover:border-primary/40 transition-all duration-500 overflow-hidden text-left hover:-translate-y-1 shadow-2xl"
-                            >
-                                <div className="relative z-10">
-                                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                                        <FaUsers className="text-xl" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-primary transition-colors">Users</h3>
-                                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
-                                        Manage user accounts and permissions.
-                                    </p>
-                                </div>
-                                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                            </button>
-
-                            <button
-                                onClick={() => router.push('/admin/theses')}
-                                className="group relative p-8 bg-card rounded-2xl border border-border-custom hover:border-blue-500/40 transition-all duration-500 overflow-hidden text-left hover:-translate-y-1 shadow-2xl"
-                            >
-                                <div className="relative z-10">
-                                    <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 border border-blue-500/20 mb-6 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
-                                        <FaFileAlt className="text-xl" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-blue-400 transition-colors">Theses</h3>
-                                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
-                                        Review and manage research submissions.
-                                    </p>
-                                </div>
-                                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors" />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="bg-primary/5 rounded-2xl border border-primary/10 p-8 relative overflow-hidden group">
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary border border-primary/20">
-                                    <FaCheckCircle className="text-sm" />
-                                </div>
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Platform Status</span>
-                            </div>
-                            <p className="text-[13px] font-bold text-white/80 leading-relaxed mb-6">
-                                The platform is running smoothly with no detected issues.
-                            </p>
-                            <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: '100%' }}
-                                    transition={{ duration: 1.5, ease: "easeOut" }}
-                                    className="h-full bg-primary"
-                                />
-                            </div>
                         </div>
                     </div>
                 </motion.div>

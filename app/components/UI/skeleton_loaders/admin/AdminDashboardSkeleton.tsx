@@ -35,11 +35,16 @@ export default function AdminDashboardSkeleton() {
                 </div>
 
                 {/* Content Grid Skeleton */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[600px]">
-                    <div className="lg:col-span-2 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
-                        <Skeleton width="100%" height="100%" borderRadius="1rem" />
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <div className="lg:col-span-3 space-y-10">
+                        <div className="h-[400px] bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                            <Skeleton width="100%" height="100%" borderRadius="1rem" />
+                        </div>
+                        <div className="h-[400px] bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                            <Skeleton width="100%" height="100%" borderRadius="1rem" />
+                        </div>
                     </div>
-                    <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                    <div className="lg:col-span-1 bg-white/5 rounded-2xl border border-white/10 overflow-hidden h-full min-h-[500px]">
                         <Skeleton width="100%" height="100%" borderRadius="1rem" />
                     </div>
                 </div>
