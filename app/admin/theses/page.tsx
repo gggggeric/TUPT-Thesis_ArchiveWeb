@@ -262,6 +262,48 @@ export default function AdminThesesPage() {
         }
     };
 
+    const handleApproveThesis = async (id: string) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/theses/${id}/approve`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                toast.success('Thesis approved successfully');
+                fetchTheses(currentPage);
+                fetchStats();
+            } else {
+                toast.error('Failed to approve thesis');
+            }
+        } catch (err) {
+            console.error('Error approving thesis:', err);
+            toast.error('Connection error');
+        }
+    };
+
+    const handleDisapproveThesis = async (id: string) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/theses/${id}/disapprove`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                toast.success('Thesis status reverted to pending');
+                fetchTheses(currentPage);
+                fetchStats();
+            } else {
+                toast.error('Failed to disapprove thesis');
+            }
+        } catch (err) {
+            console.error('Error disapproving thesis:', err);
+            toast.error('Connection error');
+        }
+    };
+
     const openEditModal = (thesis: any) => {
         setEditingThesis(thesis);
         setFormData({
@@ -425,13 +467,31 @@ export default function AdminThesesPage() {
                                     <tr key={thesis._id} className="hover:bg-white/[0.02] transition-all group">
                                         <td className="px-8 py-8">
                                             <div className="flex items-center gap-5">
-                                                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-primary border border-white/5 shadow-inner">
-                                                    <FaFileAlt className="text-xl" />
+                                                <div className="relative flex-shrink-0">
+                                                    <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-primary border border-white/5 shadow-inner group-hover:border-primary/20 transition-all">
+                                                        <FaFileAlt className="text-xl" />
+                                                    </div>
+                                                    {!thesis.isApproved && (
+                                                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-[#1E293B] flex items-center justify-center shadow-lg">
+                                                            <FaClock className="text-[7px] text-white" />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="max-w-md">
-                                                    <p className="font-black text-white text-sm mb-1 group-hover:text-primary transition-colors line-clamp-1">{thesis.title}</p>
-                                                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-wider flex items-center gap-2">
-                                                        <FaUserGraduate className="text-[10px]" />
+                                                <div className="flex-1 min-w-0 max-w-xl">
+                                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                                        <p className="font-black text-white text-sm group-hover:text-primary transition-all line-clamp-2 leading-relaxed">{thesis.title}</p>
+                                                        {thesis.isApproved ? (
+                                                            <span className="flex-shrink-0 px-2 py-1 bg-green-500/10 text-green-500 text-[8px] font-black uppercase tracking-widest rounded-lg border border-green-500/20 flex items-center gap-1.5 shadow-sm">
+                                                                <FaCheck className="text-[7px]" /> Approved
+                                                            </span>
+                                                        ) : (
+                                                            <span className="flex-shrink-0 px-2 py-1 bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase tracking-widest rounded-lg border border-amber-500/20 flex items-center gap-1.5 shadow-sm">
+                                                                <FaClock className="text-[7px]" /> Pending
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest flex items-center gap-2 group-hover:text-white/60 transition-colors">
+                                                        <FaUserGraduate className="text-primary/60" />
                                                         {thesis.author}
                                                     </p>
                                                 </div>
@@ -453,6 +513,23 @@ export default function AdminThesesPage() {
                                         </td>
                                         <td className="px-8 py-8 text-right">
                                             <div className="flex items-center justify-end gap-3 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
+                                                {!thesis.isApproved ? (
+                                                    <button
+                                                        onClick={() => handleApproveThesis(thesis._id)}
+                                                        title="Approve Thesis"
+                                                        className="p-3 bg-green-500/10 text-green-500 hover:bg-green-500/20 rounded-xl border border-green-500/20 transition-all hover:-translate-y-1"
+                                                    >
+                                                        <FaCheck className="text-sm" />
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleDisapproveThesis(thesis._id)}
+                                                        title="Disapprove Thesis"
+                                                        className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl border border-red-500/20 transition-all hover:-translate-y-1"
+                                                    >
+                                                        <FaTimes className="text-sm" />
+                                                    </button>
+                                                )}
                                                 <button
                                                     onClick={() => openEditModal(thesis)}
                                                     className="p-3 bg-white/5 text-white/40 hover:text-white hover:bg-white/10 rounded-xl border border-white/10 transition-all hover:-translate-y-1"
