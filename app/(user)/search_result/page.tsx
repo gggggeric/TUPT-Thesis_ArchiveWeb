@@ -136,6 +136,19 @@ const SearchResultContent = () => {
                     if (res.ok) {
                         const data = await res.json();
                         setSingleThesis(data);
+
+                        // Save to session history on backend
+                        if (token) {
+                            fetch(`${API_BASE_URL}/user/session-history`, {
+                                method: 'POST',
+                                headers,
+                                body: JSON.stringify({
+                                    id: data._id || data.id,
+                                    title: data.title,
+                                    year: data.year_range || data.year || 'Unknown'
+                                })
+                            }).catch(err => console.log('Failed to save session history to DB', err));
+                        }
                     } else if (!existingThesis) {
                         throw new Error('Thesis not found');
                     }
