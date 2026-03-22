@@ -85,8 +85,6 @@ const CustomHeader = ({
     const [categories, setCategories] = useState<string[]>(['all']);
     const [loading, setLoading] = useState(false);
 
-    // AI Recommendation states
-    const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
     const [isLoadingAi, setIsLoadingAi] = useState(false);
 
     useEffect(() => {
@@ -291,59 +289,6 @@ const CustomHeader = ({
         setSearchResults([]);
         setShowSearchResults(false);
         setIsSearchFocused(false);
-        setAiRecommendation(null);
-    };
-
-    const handleRecommendByAi = async () => {
-        if (!localSearchQuery.trim()) return;
-        setIsLoadingAi(true);
-        setAiRecommendation(null);
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/thesis/recommendations`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: JSON.stringify({
-                    prompt: `I am looking for theses related to "${localSearchQuery}". Based on this query, please recommend a better or more specific thesis title. Your response MUST include three distinct sections formatted exactly like this:\n\nFunctional Requirements:\n[Your text here]\n\nConclusion:\n[Your text here]\n\nRecommendations:\n[Your text here]`
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch AI recommendation: ${response.status}`);
-            }
-
-            const data = await response.json();
-            setAiRecommendation(data.recommendation);
-
-            // Save the history to the backend for the user
-            if (token) {
-                try {
-                    await fetch(`${API_BASE_URL}/user/ai-history`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            prompt: localSearchQuery,
-                            recommendation: data.recommendation
-                        })
-                    });
-                } catch (saveError) {
-                    console.error('Quietly failed to save AI history:', saveError);
-                }
-            }
-
-        } catch (error) {
-            console.error('Error getting AI recommendation:', error);
-            toast.error('Failed to get AI recommendation. Please try again.');
-        } finally {
-            setIsLoadingAi(false);
-        }
     };
 
     const handleLogout = async () => {
@@ -434,7 +379,7 @@ const CustomHeader = ({
                 <div className="flex-1 flex justify-center px-4 max-w-4xl mx-auto">
                     <div
                         ref={searchContainerRef}
-                        className="w-full max-w-2xl"
+                        className="w-full max-w-2xl relative"
                     >
                         <div className="relative flex items-center w-full">
                             <div className={`absolute left-4 text-gray-400 z-10 pointer-events-none transition-colors ${localSearchQuery ? 'text-[#2DD4BF]' : ''}`}>
@@ -475,7 +420,68 @@ const CustomHeader = ({
                                 </button>
                             </div>
                         </div>
-                    </div>
+
+                        {/* Minimalist Search Results Dropdown */}
+                        {showSearchResults && (
+                            <div ref={resultsRef} className={`absolute top-[calc(100%+8px)] left-0 right-0 backdrop-blur-xl rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.6)] z-[100] border border-white/10 max-h-[70vh] overflow-hidden flex flex-col animate-fade-in origin-top ${isRedHeader ? 'bg-[#12121e]/98' : 'bg-surface/98'}`}>
+                                <div className="overflow-y-auto flex-1 custom-scrollbar">
+                                    {searchResults.length > 0 ? (
+                                        <div className="py-1">
+                                            {searchResults.map((result, index) => (
+                                                <div
+                                                    key={`${result.id}-${index}`}
+                                                    className="px-5 py-2.5 hover:bg-white/5 cursor-pointer flex items-center gap-4 transition-all group/item relative active:bg-white/10"
+                                                    onClick={() => {
+                                                        router.push(`/search_result?id=${result.id}`);
+                                                        setShowSearchResults(false);
+                                                    }}
+                                                >
+                                                    {/* Consistent Left Icon (Browser Style) */}
+                                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 bg-white/5 group-hover/item:text-primary group-hover/item:bg-primary/5 transition-all">
+                                                        <FaSearch className="text-xs" />
+                                                    </div>
+
+                                                    <div className="flex-1 min-w-0 flex flex-col">
+                                                        <h4 className="text-[12px] font-bold text-white/90 group-hover/item:text-primary transition-colors truncate mb-0.5">
+                                                            {highlightText(result.title, localSearchQuery)}
+                                                        </h4>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                                                                {result.year_range || 'Archive'}
+                                                            </span>
+                                                            <div className="h-1 w-1 rounded-full bg-white/10" />
+                                                            <span className="text-[10px] text-slate-600 font-medium">
+                                                                ID: {result.id}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Interaction Hint */}
+                                                    <div className="opacity-0 group-hover/item:opacity-100 transition-opacity text-[9px] text-slate-600 font-black uppercase tracking-widest hidden sm:block">
+                                                        View Record
+                                                    </div>
+
+                                                    {/* Highlight Border */}
+                                                    <div className="absolute left-0 top-2 bottom-2 w-1 bg-primary scale-y-0 group-hover/item:scale-y-100 transition-transform rounded-r-full" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : localSearchQuery.trim().length > 0 && !loading ? (
+                                        <div className="py-12 text-center">
+                                            <FaSearch className="text-2xl text-slate-700 mb-3 mx-auto" />
+                                            <p className="text-xs font-black text-slate-500 uppercase tracking-widest">No Matches Encountered</p>
+                                        </div>
+                                    ) : null}
+                                </div>
+
+                                {/* Minimal Footer / Action Row */}
+                                <div className="px-5 py-3 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
+                                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">
+                                        {loading ? 'Consulting Repository...' : `Showing ${searchResults.length} Records`}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
 
                     {/* Filters Dropdown */}
                     {showFilters && (
@@ -505,89 +511,7 @@ const CustomHeader = ({
                         </div>
                     )}
 
-                    {/* Minimalist Search Results Dropdown */}
-                    {showSearchResults && (
-                        <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-[#1e1e1e]/98 backdrop-blur-xl rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.6)] z-50 border border-white/5 max-h-[70vh] min-w-[320px] overflow-hidden flex flex-col animate-fade-in">
-                            
-                            {/* AI Suggestion Row (Integrated) */}
-                            {aiRecommendation && (
-                                <div className="px-5 py-3.5 bg-[#2DD4BF]/5 border-b border-white/5 flex items-center gap-4 group/ai hover:bg-[#2DD4BF]/10 transition-colors">
-                                    <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center border border-[#2DD4BF]/20 shrink-0">
-                                        <FaRobot className="text-[#2DD4BF] text-base group-hover/ai:scale-110 transition-transform" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-[#2DD4BF]">Institutional Intelligence</span>
-                                        </div>
-                                        <div className="text-xs text-white/70 leading-normal font-medium max-h-16 overflow-y-auto custom-scrollbar pr-2 italic">
-                                            "{aiRecommendation}"
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="overflow-y-auto flex-1 custom-scrollbar">
-                                {searchResults.length > 0 ? (
-                                    <div className="py-1">
-                                        {searchResults.map((result, index) => (
-                                            <div
-                                                key={`${result.id}-${index}`}
-                                                className="px-5 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-4 transition-all group/item relative active:bg-white/10"
-                                                onClick={() => {
-                                                    router.push(`/search_result?id=${result.id}`);
-                                                    setShowSearchResults(false);
-                                                }}
-                                            >
-                                                {/* Consistent Left Icon (Browser Style) */}
-                                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 group-hover/item:text-primary group-hover/item:bg-primary/5 transition-all">
-                                                    <FaSearch className="text-sm" />
-                                                </div>
-
-                                                <div className="flex-1 min-w-0 flex flex-col">
-                                                    <div className="flex items-center gap-2 overflow-hidden items-baseline">
-                                                        <h4 className="text-[13px] font-bold text-white/90 group-hover/item:text-primary transition-colors truncate">
-                                                            {highlightText(result.title, localSearchQuery)}
-                                                        </h4>
-                                                        <span className="text-[11px] text-slate-500 font-medium shrink-0 whitespace-nowrap">
-                                                            — {result.year_range || 'Archive'} ({result.id})
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Interaction Hint */}
-                                                <div className="opacity-0 group-hover/item:opacity-100 transition-opacity text-[10px] text-slate-600 font-black uppercase tracking-widest hidden sm:block">
-                                                    View Record
-                                                </div>
-
-                                                {/* Highlight Border */}
-                                                <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary scale-y-0 group-hover/item:scale-y-100 transition-transform rounded-r-full" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : localSearchQuery.trim().length > 0 && !loading ? (
-                                    <div className="py-12 text-center">
-                                        <FaSearch className="text-2xl text-slate-700 mb-3 mx-auto" />
-                                        <p className="text-xs font-black text-slate-500 uppercase tracking-widest">No Matches Encountered</p>
-                                    </div>
-                                ) : null}
-                            </div>
-
-                            {/* Minimal Footer / Action Row */}
-                            <div className="px-5 py-3 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
-                                <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">
-                                    {loading ? 'Consulting Repository...' : `Showing ${searchResults.length} Records`}
-                                </span>
-                                <button
-                                    onClick={handleRecommendByAi}
-                                    disabled={isLoadingAi || !localSearchQuery.trim()}
-                                    className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#2DD4BF] hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
-                                >
-                                    <FaMagic className={isLoadingAi ? 'animate-spin' : ''} />
-                                    {isLoadingAi ? 'Analyzing...' : 'Request AI Suggestion'}
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    </div>
                 </div>
             )}
 

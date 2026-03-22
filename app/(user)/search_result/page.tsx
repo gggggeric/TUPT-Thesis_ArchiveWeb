@@ -4,15 +4,15 @@ import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    FaCalendarAlt, 
-    FaFileAlt, 
-    FaUserGraduate, 
-    FaArrowLeft, 
-    FaBookOpen, 
-    FaTimes, 
-    FaMagic, 
-    FaSave, 
+import {
+    FaCalendarAlt,
+    FaFileAlt,
+    FaUserGraduate,
+    FaArrowLeft,
+    FaBookOpen,
+    FaTimes,
+    FaMagic,
+    FaSave,
     FaRobot,
     FaSearch,
     FaChevronDown,
@@ -22,7 +22,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import LottieLoader from '@/app/components/UI/LottieLoader';
-import AiReportSidebar from '@/app/components/Sidebar-modal/AiReportSidebar';
+import AiReportSidebar from '@/app/components/AI-Sidebar/AiReportSidebar';
 import SearchResultSkeleton from '@/app/components/UI/skeleton_loaders/users/SearchResultSkeleton';
 import ThesisDetailSkeleton from '@/app/components/UI/skeleton_loaders/users/ThesisDetailSkeleton';
 
@@ -55,7 +55,7 @@ const SearchResultContent = () => {
     const [singleThesis, setSingleThesis] = useState<Thesis | null>(null);
     const [loading, setLoading] = useState(true);
     const [showSkeleton, setShowSkeleton] = useState(false);
-    
+
     // AI Modal states
     const [isAiModalOpen, setIsAiModalOpen] = useState(false);
     const [isLoadingAi, setIsLoadingAi] = useState(false);
@@ -176,9 +176,9 @@ const SearchResultContent = () => {
 
     const handleRecommendByAi = async () => {
         if (!query || query.split(' ').filter(w => w.length > 0).length < 3) {
-            setStatusModal({ 
-                show: true, 
-                message: 'Your search query must be at least 3 words to use AI features.' 
+            setStatusModal({
+                show: true,
+                message: 'Your search query must be at least 3 words to use AI features.'
             });
             return;
         }
@@ -203,9 +203,9 @@ const SearchResultContent = () => {
     const handleCompareLocal = async (thesisTitle?: string) => {
         const targetQuery = thesisTitle || query;
         if (!targetQuery || targetQuery.split(' ').filter(w => w.length > 0).length < 3) {
-            setStatusModal({ 
-                show: true, 
-                message: 'The title/content must be at least 3 words to check similarity.' 
+            setStatusModal({
+                show: true,
+                message: 'The title/content must be at least 3 words to check similarity.'
             });
             return;
         }
@@ -252,13 +252,13 @@ const SearchResultContent = () => {
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_BASE_URL}/collaboration`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ 
-                    thesisId: collaborationThesis?._id, 
-                    message: collaborationMessage 
+                body: JSON.stringify({
+                    thesisId: collaborationThesis?._id,
+                    message: collaborationMessage
                 })
             });
             const data = await res.json();
@@ -266,23 +266,23 @@ const SearchResultContent = () => {
                 toast.success('Collaboration request sent successfully!');
                 setIsCollaborationModalOpen(false);
                 setCollaborationMessage('');
-                
+
                 // Update local state to reflect the sent request
                 if (singleThesis && singleThesis._id === collaborationThesis?._id) {
                     setSingleThesis({ ...singleThesis, hasRequestedCollaboration: true });
                 }
-                setResults(prev => prev.map(t => 
+                setResults(prev => prev.map(t =>
                     t._id === collaborationThesis?._id ? { ...t, hasRequestedCollaboration: true } : t
                 ));
                 setCollaborationThesis(null);
             } else {
                 toast.error(data.message || 'Failed to send collaboration request');
             }
-        } catch (err) { 
+        } catch (err) {
             console.error(err);
             toast.error('An error occurred. Please try again.');
-        } finally { 
-            setIsSubmittingCollaboration(false); 
+        } finally {
+            setIsSubmittingCollaboration(false);
         }
     };
 
@@ -321,7 +321,7 @@ const SearchResultContent = () => {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                    
+
                     {(!singleThesis && (results.length > 0 || query)) && (
                         <div className="flex items-center gap-4 animate-fade-in">
                             {results.length > 0 && (
@@ -349,16 +349,16 @@ const SearchResultContent = () => {
 
                 {/* AI / Local Loading Overlays (Full Screen Modal) */}
                 {(isLoadingAi || isLoadingLocal) && (
-                    <LottieLoader 
+                    <LottieLoader
                         isModal={true}
-                        type="ai" 
+                        type="ai"
                         text={isLoadingLocal ? 'Comparing to Local Sources please wait' : 'AI is thinking'}
                         subtext={isLoadingLocal ? 'Analyzing repository context and patterns' : 'Generating intelligent recommendations'}
                     />
                 )}
             </div>
 
-            <main className="flex-grow flex flex-col pt-6 px-4 md:px-8 max-w-7xl mx-auto w-full relative">
+            <main className="flex-grow flex flex-col pt-6 pb-32 px-4 md:px-8 max-w-7xl mx-auto w-full relative">
                 <AnimatePresence mode="wait">
                     {loading && id && showSkeleton && !singleThesis ? (
                         <motion.div
@@ -397,7 +397,7 @@ const SearchResultContent = () => {
                                         </div>
 
                                         <img src="/assets/tup-logo.png" alt="TUP Logo" className="w-20 h-20 object-contain" />
-                                        
+
                                         <div className="space-y-1">
                                             <h4 className="text-[15px] font-black uppercase tracking-[0.2em]">Technological University of the Philippines</h4>
                                             <p className="text-[11px] font-bold text-[#666] uppercase tracking-[0.3em]">Taguig City Campus</p>
@@ -488,7 +488,7 @@ const SearchResultContent = () => {
                                     </p>
                                     <div className="mt-auto pt-6 border-t border-white/[0.03] flex items-center justify-between gap-4">
                                         <div className="flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest min-w-0">
-                                            <FaFileAlt className="text-primary/50 flex-shrink-0" /> 
+                                            <FaFileAlt className="text-primary/50 flex-shrink-0" />
                                             <span className="truncate">{thesis.id}</span>
                                         </div>
                                         <div className="flex gap-2">
@@ -502,11 +502,10 @@ const SearchResultContent = () => {
                                                         setIsCollaborationModalOpen(true);
                                                     }}
                                                     disabled={thesis.hasRequestedCollaboration}
-                                                    className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all active:scale-95 group z-20 ${
-                                                        thesis.hasRequestedCollaboration 
-                                                        ? 'bg-gray-500/10 border border-gray-500/20 text-gray-500 cursor-not-allowed'
-                                                        : 'bg-primary/5 border border-primary/20 text-primary hover:bg-primary/20 hover:border-primary/40'
-                                                    }`}
+                                                    className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all active:scale-95 group z-20 ${thesis.hasRequestedCollaboration
+                                                            ? 'bg-gray-500/10 border border-gray-500/20 text-gray-500 cursor-not-allowed'
+                                                            : 'bg-primary/5 border border-primary/20 text-primary hover:bg-primary/20 hover:border-primary/40'
+                                                        }`}
                                                 >
                                                     <FaHandshake className={thesis.hasRequestedCollaboration ? "" : "group-hover:rotate-12 transition-transform"} />
                                                     <span>{thesis.hasRequestedCollaboration ? 'Request Sent' : 'Request Collaboration'}</span>
@@ -531,7 +530,7 @@ const SearchResultContent = () => {
                             <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mb-6 border border-primary/10">
                                 <FaSearch className="text-3xl text-primary" />
                             </div>
-                                <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/50 mb-2">Research Recommendation Report</h2>
+                            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/50 mb-2">Research Recommendation Report</h2>
                             <p className="mt-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest max-w-xs mx-auto">Execute search parameters to view the thesis repository inventory</p>
                             <Link href="/home" className="mt-10 px-8 py-3 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
                                 Return to Portal
@@ -570,7 +569,7 @@ const SearchResultContent = () => {
                             className="bg-card border border-white/10 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center relative overflow-hidden"
                         >
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
-                            
+
                             <div className="mb-6 flex justify-center">
                                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                                     <FaRobot className="text-primary text-2xl" />
@@ -613,7 +612,7 @@ const SearchResultContent = () => {
                                     <h3 className="text-xl font-black text-white uppercase tracking-tight">Collaboration Request</h3>
                                     <p className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Alumni to Undergraduate Proposal</p>
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => setIsCollaborationModalOpen(false)}
                                     className="p-2 hover:bg-white/5 rounded-full text-gray-500 hover:text-white transition-all"
                                 >

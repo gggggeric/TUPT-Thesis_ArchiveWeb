@@ -27,7 +27,7 @@ import {
 } from 'react-icons/fa';
 import HomeSkeletons from '@/app/components/UI/skeleton_loaders/users/HomeSkeletons';
 import API_BASE_URL from '@/app/lib/api';
-import AiReportSidebar from '@/app/components/Sidebar-modal/AiReportSidebar';
+import AiReportSidebar from '@/app/components/AI-Sidebar/AiReportSidebar';
 
 /* ───── Shared animation variants (portfolio style) ───── */
 const fadeUp = {
@@ -271,7 +271,7 @@ const HomePage: React.FC = () => {
 
                 if (resAi.ok) setAiHistory([]);
                 if (resLocal.ok) setLocalHistory([]);
-                
+
                 if (!resAi.ok || !resLocal.ok) {
                     alert('Partial history clear. Some records may remain.');
                 }
@@ -544,7 +544,7 @@ const HomePage: React.FC = () => {
                                                             key={item._id}
                                                             className="group/item flex items-center justify-between gap-4 transition-all"
                                                         >
-                                                            <div 
+                                                            <div
                                                                 className="flex items-start gap-4 cursor-pointer flex-1 min-w-0"
                                                                 onClick={() => router.push(`/search_result?id=${item.thesis?.id || item.thesis}`)}
                                                             >
@@ -554,7 +554,7 @@ const HomePage: React.FC = () => {
                                                                     <h3 className="text-[13px] font-medium leading-relaxed text-foreground/70 group-hover/item:text-foreground transition-colors line-clamp-1">{item.title}</h3>
                                                                 </div>
                                                             </div>
-                                                            <button 
+                                                            <button
                                                                 onClick={(e) => handleDeleteSessionHistory(item._id, e)}
                                                                 className="opacity-0 group-hover/item:opacity-100 p-2 text-gray-500 hover:text-red-400 transition-all"
                                                             >
@@ -591,7 +591,7 @@ const HomePage: React.FC = () => {
                                                 ))}
                                             </div>
                                             {deptCounts.length > 5 && (
-                                                <button 
+                                                <button
                                                     onClick={() => setShowAllCategories(!showAllCategories)}
                                                     className="mt-4 w-full py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-primary transition-all flex items-center justify-center gap-2 group"
                                                 >
