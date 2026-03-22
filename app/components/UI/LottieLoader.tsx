@@ -13,6 +13,7 @@ interface LottieLoaderProps {
     type?: 'general' | 'search' | 'ai' | 'login' | 'workspace';
     isModal?: boolean;
     text?: string;
+    subtext?: string;
     className?: string;
     width?: number | string;
     height?: number | string;
@@ -22,6 +23,7 @@ const LottieLoader: React.FC<LottieLoaderProps> = ({
     type = 'general',
     isModal = false,
     text,
+    subtext,
     className = '',
     width = 'auto',
     height = 'auto'
@@ -37,13 +39,23 @@ const LottieLoader: React.FC<LottieLoaderProps> = ({
                     className="w-full h-full"
                 />
             </div>
-            {isModal && text && (
+            {text && (
                 <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 text-foreground font-black text-sm uppercase tracking-[0.3em] animate-pulse text-center px-6"
+                    className={`${isModal ? 'text-white' : 'text-foreground'} font-black text-sm uppercase tracking-[0.3em] ${isModal ? '' : 'animate-pulse'} text-center px-6 mt-4`}
                 >
                     {text}
+                </motion.p>
+            )}
+            {subtext && (
+                <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className={`${isModal ? 'text-white/60' : 'text-gray-500'} text-[10px] uppercase tracking-widest text-center px-6 mt-2`}
+                >
+                    {subtext}
                 </motion.p>
             )}
         </div>
