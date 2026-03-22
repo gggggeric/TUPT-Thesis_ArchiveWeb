@@ -40,6 +40,7 @@ export default function AdminThesesPage() {
         theses: 0,
         pending: 0
     });
+    const [isCourseDropdownOpen, setIsCourseDropdownOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         id: '',
@@ -84,15 +85,14 @@ export default function AdminThesesPage() {
     const fetchCourses = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/thesis/courses`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/courses`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             if (res.ok) {
                 const data = await res.json();
-                // Remove 'all' if it's there
-                setCourses(Array.isArray(data) ? data.filter(c => c !== 'all') : []);
+                setCourses(Array.isArray(data) ? data : []);
             }
         } catch (err) {
             console.error('Error fetching courses:', err);
@@ -645,21 +645,84 @@ export default function AdminThesesPage() {
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-bold text-white/30 uppercase tracking-[0.15em] mb-2 ml-1">Course</label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            list="course-suggestions"
-                                            required
-                                            value={formData.course}
-                                            onChange={(e) => setFormData({...formData, course: e.target.value})}
-                                            className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-sm text-white placeholder:text-white/20"
-                                            placeholder="Type or select course"
-                                        />
-                                        <datalist id="course-suggestions">
-                                            {courses.map((cat, i) => (
-                                                <option key={i} value={cat} />
-                                            ))}
-                                        </datalist>
+                                    <div className="relative group/course">
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.course}
+                                                onChange={(e) => {
+                                                    setFormData({...formData, course: e.target.value});
+                                                    setIsCourseDropdownOpen(true);
+                                                }}
+                                                onFocus={() => setIsCourseDropdownOpen(true)}
+                                                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-sm text-white placeholder:text-white/20 pr-10"
+                                                placeholder="Type or select course"
+                                                autoComplete="off"
+                                            />
+                                            <button 
+                                                type="button"
+                                                onClick={() => setIsCourseDropdownOpen(!isCourseDropdownOpen)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-primary transition-colors p-1"
+                                            >
+                                                <FaChevronRight className={`text-[10px] transition-transform duration-300 ${isCourseDropdownOpen ? 'rotate-90' : ''}`} />
+                                            </button>
+                                        </div>
+                                        
+                                        <AnimatePresence>
+                                            {isCourseDropdownOpen && (
+                                                <>
+                                                    <div 
+                                                        className="fixed inset-0 z-[110]" 
+                                                        onClick={() => setIsCourseDropdownOpen(false)}
+                                                    />
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        className="absolute left-0 right-0 top-full mt-2 bg-[#1A1A2E] border border-white/10 rounded-xl shadow-2xl z-[120] max-h-48 overflow-y-auto overflow-x-hidden custom-scrollbar py-2"
+                                                    >
+                                                        {courses
+                                                            .filter(c => {
+                                                                const search = (formData.course || '').toLowerCase();
+                                                                // If empty or default "General", show everything
+                                                                if (!search || search === 'general' || search === 'uncategorized') return true;
+                                                                return c.toLowerCase().includes(search);
+                                                            })
+                                                            .map((cat, i) => (
+                                                                <button
+                                                                    key={i}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        setFormData({...formData, course: cat});
+                                                                        setIsCourseDropdownOpen(false);
+                                                                    }}
+                                                                    className="w-full text-left px-4 py-2 text-xs font-bold text-white/60 hover:text-primary hover:bg-white/5 transition-all truncate"
+                                                                >
+                                                                    {cat}
+                                                                </button>
+                                                            ))
+                                                        }
+                                                        {(() => {
+                                                            const search = (formData.course || '').toLowerCase();
+                                                            const hasMatches = courses.some(c => {
+                                                                if (!search || search === 'general' || search === 'uncategorized') return true;
+                                                                return c.toLowerCase().includes(search);
+                                                            });
+                                                            
+                                                            if (!hasMatches && search) {
+                                                                return (
+                                                                    <div className="px-4 py-2 text-[10px] text-white/20 italic">
+                                                                        No matches found. Press enter to use "{formData.course}"
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })()}
+                                                    </motion.div>
+                                                </>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
                                 </div>
                                 <div className="md:col-span-2">
